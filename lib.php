@@ -75,7 +75,7 @@ class enrol_apply_plugin extends enrol_plugin {
 
 				$roleid = $instance->roleid;
 				if(!$roleid){
-					$role = $DB->get_record_sql('select * from '.$CFG->prefix.'role where archetype="student" limit 1');
+					$role = $DB->get_record_sql("select * from ".$CFG->prefix."role where archetype='student' limit 1");
 					$roleid = $role->id;
 				}
 
@@ -161,7 +161,7 @@ function confirmEnrolment($enrols){
 
 		if($DB->update_record('user_enrolments',$enroluser)){
 			$userenrolments = $DB->get_record_sql('select * from '.$CFG->prefix.'user_enrolments where id='.$enrol);
-			$role = $DB->get_record_sql('select * from '.$CFG->prefix.'role where archetype="student" limit 1');
+			$role = $DB->get_record_sql("select * from ".$CFG->prefix."role where archetype='student' limit 1");
 			@$roleAssignments->userid = $userenrolments->userid;
 			@$roleAssignments->roleid = $role->id;
 			@$roleAssignments->contextid = 3;
