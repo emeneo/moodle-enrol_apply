@@ -50,4 +50,8 @@ $string['mailtoteacher_suject'] = 'New Enrollment request!';
 $string['setting_edit'] = 'Edit';
 $string['editdescription'] = 'Textarea description';
 $string['applymanage'] = 'Manage enrolment applications';
+
+$string['status_desc'] = 'Allow course access of internally enrolled users.';
+
+$string['status_help'] = 'This setting determines whether users can be enrolled on apply.';
 ?>
