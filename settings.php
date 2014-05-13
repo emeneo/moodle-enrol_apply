@@ -14,7 +14,7 @@ defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
 
     //--- general settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('enrol_apply_enrolname','',''));
+    $settings->add(new admin_setting_heading('enrol_apply_enrolname','',get_string('pluginname_desc', 'enrol_apply')));
     
     $settings->add(new admin_setting_configtext('enrol_apply/confirmmailsubject','',get_string('confirmmailsubject', 'enrol_apply'),null,PARAM_TEXT,60));
 
