@@ -44,5 +44,10 @@ $string['apply:unenrolapply'] = 'Cancelarse a si mismo del curso'; // Needs more
 // Description of your plugin. Shown on the plugin's configuration screen.
 $string['description'] = '';
 $string['notification'] = '<b>Solicitud de matriculación enviada correctamente</b>. <br/><br/>Será notificado por correo electrónico en cuanto se confirme su matriculación.';
- 
+
+$string['sendmailtoteacher'] = 'Enviar notificaciones por correo a los profesores';
+$string['mailtoteacher_suject'] = 'Nueva matrícula!';
+$string['setting_edit'] = 'Editar';
+$string['editdescription'] = 'Descripción del área de texto';
+$string['applymanage'] = 'Gestionar matrículas';
 ?>
