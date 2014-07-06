@@ -11,6 +11,19 @@
 */
 class enrol_apply_plugin extends enrol_plugin {
 
+	/**
+	* Add new instance of enrol plugin with default settings.
+	* @param object $course
+	* @return int id of new instance
+	*/
+	public function add_default_instance($course) {
+		$fields = array(
+		    'status'          => $this->get_config('status'),
+		    'roleid'          => $this->get_config('roleid', 0)
+		);
+		return $this->add_instance($course, $fields);
+	}
+
 	public function allow_unenrol(stdClass $instance) {
 		// users with unenrol cap may unenrol other users manually manually
 		return true;

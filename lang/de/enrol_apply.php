@@ -36,4 +36,5 @@ $string['apply:unenrolapply'] = 'Sich selbst aus dem Kurs entfernen';
 $string['description'] = '';
 $string['notification'] = '<b>Einschreibungsantrag wurde erfolgreich gesendet.</b>. <br/><br/>Sie werden via Mail informiert, sobald Ihre Einschreibung bestätigt wurde. Wenn Sie sich in andere Kurse einschreiben wollen, klicken Sie bitte den "Kurskatalog" im Hauptmenu an.';
  
+$string['status_desc'] = 'Kurszugriff für intern eingeschriebene Nutzer/innen erlauben.';
 ?>

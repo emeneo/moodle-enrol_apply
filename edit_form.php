@@ -25,9 +25,21 @@ class enrol_self_edit_form extends moodleform {
 
         $mform->addElement('text', 'name', get_string('custominstancename', 'enrol'));
         $mform->setType('name', PARAM_TEXT);
+
         $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
                          ENROL_INSTANCE_DISABLED => get_string('no'));
         $mform->addElement('select', 'status', get_string('status', 'enrol_apply'), $options);
+        $mform->addHelpButton('status', 'status', 'enrol_apply');
+        $mform->setDefault('status', $plugin->get_config('status'));
+
+        if ($instance->id) {
+            $roles = get_default_enrol_roles($context, $instance->roleid);
+        } else {
+            $roles = get_default_enrol_roles($context, $plugin->get_config('roleid'));
+        }
+        $mform->addElement('select', 'roleid', get_string('defaultrole', 'role'), $roles);
+        $mform->setDefault('roleid', $plugin->get_config('roleid'));
+
 		$mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
 	
 
