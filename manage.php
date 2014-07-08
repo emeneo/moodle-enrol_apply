@@ -15,7 +15,7 @@ require_login();
 require_capability('enrol/apply:manage', context_system::instance());
 
 $site = get_site ();
-$systemcontext = get_context_instance ( CONTEXT_SYSTEM );
+$systemcontext = context_system::instance();
 
 $PAGE->set_url ( '/enrol/manage.php');
 $PAGE->set_context($systemcontext);
@@ -50,7 +50,7 @@ echo '<th class="header" scope="col">' . get_string ( 'applydate', 'enrol_apply'
 echo '</tr>';
 foreach ( $enrols as $enrol ) {
 	echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
-	echo '<td>' . $enrol->course . '</td>';
+	echo '<td>' . format_string($enrol->course) . '</td>';
 	echo '<td>' . $enrol->firstname . ' ' . $enrol->lastname . '</td>';
 	echo '<td>' . $enrol->email . '</td>';
 	echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td></tr>';

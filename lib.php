@@ -17,7 +17,7 @@ class enrol_apply_plugin extends enrol_plugin {
 	}
 
 	public function get_newinstance_link($courseid) {
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 
 		if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
 			return NULL;
@@ -81,6 +81,7 @@ class enrol_apply_plugin extends enrol_plugin {
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
 				sendConfirmMailToTeachers($instance->courseid,$data->applydescription);
+				sendConfirmMailToManagers($instance->courseid,$data->applydescription);
 				
 				add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
@@ -101,7 +102,7 @@ class enrol_apply_plugin extends enrol_plugin {
 		if ($instance->enrol !== 'apply') {
 			throw new coding_exception('invalid enrol instance!');
 		}
-		$context = get_context_instance(CONTEXT_COURSE, $instance->courseid);
+		$context =  context_course::instance($instance->courseid);
 
 		$icons = array();
 
@@ -215,15 +216,43 @@ function sendConfirmMailToTeachers($courseid,$desc){
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 	
 	if($apply_setting['sendmailtoteacher']->value == 1){
-		$course = $DB->get_record('course',array('id'=>$courseid));
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$course = get_course($courseid);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 		$teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
 		$teachers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$teacherType->id));
 		foreach($teachers as $teacher){
 			$editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
-			$body = '<p>Course: '.$course->fullname.'</p><p>First name: '.$USER->firstname.'</p><p>Last name: '.$USER->lastname.'</p><p>Information: '.$desc.'</p>';
+			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
+			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('enrol_confirm', 'enrol_apply')).'</p>';
 			$contact = get_admin();
 			$info = $editTeacher;
+			$info->coursename = $course->fullname;
+			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
+		}
+	}
+}
+
+function sendConfirmMailToManagers($courseid,$desc){
+	global $DB;
+	global $CFG;
+	global $USER;
+	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+	
+	if($apply_setting['sendmailtomanager']->value == 1){
+		$course = get_course($courseid);
+		$context = context_system::instance();
+        $managerType = $DB->get_record('role',array("shortname"=>"manager"));
+		$managers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$managerType->id));
+		foreach($managers as $manager){
+			$userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
+			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
+			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('enrol_confirm', 'enrol_apply')).'</p>';
+			$contact = get_admin();
+			$info = $userWithManagerRole;
 			$info->coursename = $course->fullname;
 			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
 		}
