@@ -46,8 +46,12 @@ $string['description'] = 'Mètode d\'inscripció prèvia aprovació';
 $string['notification'] = '<b>Sol·licitud d\'inscripció enviada correctament</b>. <br/><br/>Rebràs una notificació per correu electrònic un cop estigui confirmada la inscripció.';
 
 $string['sendmailtoteacher'] = 'Enviar notificacions per correu als professors';
+$string['sendmailtomanager'] = 'Enviar notificacions per correu als administradors';
 $string['mailtoteacher_suject'] = 'Nova inscripció al curs!';
 $string['setting_edit'] = 'Editar';
 $string['editdescription'] = 'Descripció de l\'àrea de text';
 $string['applymanage'] = 'Gestionar inscripcions';
+
+$string['comment'] = 'Comentari';
+$string['enrol_confirm'] = 'Confirmar inscripció';
 ?>

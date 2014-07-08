@@ -46,8 +46,12 @@ $string['description'] = '';
 $string['notification'] = '<b>Solicitud de matriculación enviada correctamente</b>. <br/><br/>Será notificado por correo electrónico en cuanto se confirme su matriculación.';
 
 $string['sendmailtoteacher'] = 'Enviar notificaciones por correo a los profesores';
+$string['sendmailtomanager'] = 'Enviar notificaciones por correo a los gestores';
 $string['mailtoteacher_suject'] = 'Nueva matrícula!';
 $string['setting_edit'] = 'Editar';
 $string['editdescription'] = 'Descripción del área de texto';
 $string['applymanage'] = 'Gestionar matrículas';
+
+$string['comment'] = 'Comentario';
+$string['enrol_confirm'] = 'Confirmar matrícula';
 ?>

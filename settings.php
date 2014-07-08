@@ -26,6 +26,8 @@ if ($ADMIN->fulltree) {
     
 	$settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtoteacher',
         get_string('sendmailtoteacher', 'enrol_apply'), '', 0));
+    $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtomanager',
+        get_string('sendmailtomanager', 'enrol_apply'), '', 0));
     
 }
 
