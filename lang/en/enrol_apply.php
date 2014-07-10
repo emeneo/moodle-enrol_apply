@@ -12,6 +12,7 @@
 // The name of your plugin. Displayed on admin menus.
 $string['enrolname'] = 'Course enrol confirmation';
 $string['pluginname'] = 'Course enrol confirmation';
+$string['pluginname_desc'] = 'With this plugin users can apply to a course and a teacher have to comfirm before the user gets enroled.';
 
 $string['confirmmailsubject'] = 'Confirm mail subject';
 $string['confirmmailcontent'] = 'Confirm mail content';
