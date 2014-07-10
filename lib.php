@@ -30,7 +30,7 @@ class enrol_apply_plugin extends enrol_plugin {
 	}
 
 	public function get_newinstance_link($courseid) {
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 
 		if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
 			return NULL;
@@ -114,7 +114,7 @@ class enrol_apply_plugin extends enrol_plugin {
 		if ($instance->enrol !== 'apply') {
 			throw new coding_exception('invalid enrol instance!');
 		}
-		$context = get_context_instance(CONTEXT_COURSE, $instance->courseid);
+		$context =  context_course::instance($instance->courseid);
 
 		$icons = array();
 
@@ -229,7 +229,7 @@ function sendConfirmMailToTeachers($courseid,$desc){
 	
 	if($apply_setting['sendmailtoteacher']->value == 1){
 		$course = $DB->get_record('course',array('id'=>$courseid));
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 		$teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
 		$teachers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$teacherType->id));
 		foreach($teachers as $teacher){
