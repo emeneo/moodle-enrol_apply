@@ -11,6 +11,19 @@
 */
 class enrol_apply_plugin extends enrol_plugin {
 
+	/**
+	* Add new instance of enrol plugin with default settings.
+	* @param object $course
+	* @return int id of new instance
+	*/
+	public function add_default_instance($course) {
+		$fields = array(
+		    'status'          => $this->get_config('status'),
+		    'roleid'          => $this->get_config('roleid', 0)
+		);
+		return $this->add_instance($course, $fields);
+	}
+
 	public function allow_unenrol(stdClass $instance) {
 		// users with unenrol cap may unenrol other users manually manually
 		return true;
@@ -105,19 +118,19 @@ class enrol_apply_plugin extends enrol_plugin {
 
 		$icons = array();
 
-		if (has_capability("enrol/manual:manage", $context)) {
-			$editlink = new moodle_url("/enrol/apply/edit.php", array('courseid'=>$instance->courseid, 'id'=>$instance->id));
-            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('i/edit', get_string('edit'), 'core', array('class'=>'icon')));
-		}
+		if (has_capability('enrol/manual:config', $context)) {
+            $editlink = new moodle_url("/enrol/apply/edit.php", array('courseid'=>$instance->courseid, 'id'=>$instance->id));
+            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core', array('class' => 'iconsmall')));
+        }
 
 		if (has_capability('enrol/manual:manage', $context)) {
 			$managelink = new moodle_url("/enrol/apply/apply.php", array('id'=>$_GET['id'],'enrolid'=>$instance->id));
 			$icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
 		}
 
-		if (has_capability("enrol/manual:manage", $context)) {
-			$managelink = new moodle_url("/enrol/apply/enroluser.php", array('enrolid'=>$instance->id));
-			$icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('enrolusers', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
+		if (has_capability("enrol/manual:enrol", $context)) {
+			$enrollink = new moodle_url("/enrol/apply/enroluser.php", array('enrolid'=>$instance->id));
+			$icons[] = $OUTPUT->action_icon($enrollink, new pix_icon('t/enrolusers', get_string('enrolusers', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
 		}
 		
 		return $icons;

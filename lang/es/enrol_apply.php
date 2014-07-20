@@ -12,14 +12,12 @@
 // The name of your plugin. Displayed on admin menus.
 $string['enrolname'] = 'Matrículas solicitadas';
 $string['pluginname'] = 'Matrículas solicitadas';
+$string['pluginname_desc'] = 'With this plugin users can apply to a course and a teacher have to comfirm before the user gets enroled.'; // needs to be translated
 
 $string['confirmmailsubject'] = 'Asunto del correo de confirmación';
 $string['confirmmailcontent'] = 'Contenido del correo de confirmación';
 $string['cancelmailsubject'] = 'Asunto del correo de cancelación';
 $string['cancelmailcontent'] = 'Contenido del correo de cancelación';
-$string['mailaddress'] = 'Send mail address'; // Those configuration parameters
-$string['mailusername'] = 'Send mail username'; //  are commented out in code
-$string['mailpassword'] = 'Send mail password'; // Couldn't make an accurate translation without seen those in action
 $string['confirmmailcontent_desc'] = 'Por favor, use marcas especiales que se substituirán en el contenido del correo.<br>{firstname}:Nombre registrado por el usuario; {content}:Nombre del curso';
 $string['cancelmailcontent_desc'] = 'Por favor, use marcas especiales que se substituirán en el contenido del correo.<br>{firstname}:Nombre registrado por el usuario; {content}:Nombre del curso';
 
@@ -41,8 +39,13 @@ $string['apply:manage'] = 'Gestionar matrículas solicitadas'; // Needs more ins
 $string['apply:unenrol'] = 'Cancelar usuarios del curso'; // Needs more insight
 $string['apply:unenrolapply'] = 'Cancelarse a si mismo del curso'; // Needs more insight. Very ugly translation!
  
-// Description of your plugin. Shown on the plugin's configuration screen.
-$string['description'] = '';
 $string['notification'] = '<b>Solicitud de matriculación enviada correctamente</b>. <br/><br/>Será notificado por correo electrónico en cuanto se confirme su matriculación.';
- 
+
+$string['sendmailtoteacher'] = 'Enviar notificaciones por correo a los profesores';
+$string['mailtoteacher_suject'] = 'Nueva matrícula!';
+$string['editdescription'] = 'Descripción del área de texto';
+$string['applymanage'] = 'Gestionar matrículas';
+
+$string['status_desc'] = 'Allow course access of internally enrolled users.'; // needs to be translated
+
 ?>

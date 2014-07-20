@@ -52,24 +52,17 @@ if ($mform->is_cancelled()) {
     if ($instance->id) {
         $instance->status         = $data->status;
         $instance->name           = $data->name;
-        $instance->password       = $data->password;
-        $instance->customint1     = $data->customint1;
-        $instance->customint2     = $data->customint2;
-        $instance->customint3     = $data->customint3;
-        $instance->customint4     = $data->customint4;
         $instance->customtext1    = $data->customtext1;
         $instance->roleid         = $data->roleid;
-        $instance->enrolperiod    = $data->enrolperiod;
-        $instance->enrolstartdate = $data->enrolstartdate;
-        $instance->enrolenddate   = $data->enrolenddate;
         $instance->timemodified   = time();
         $DB->update_record('enrol', $instance);
 
     } else {
-//        $fields = array('status'=>$data->status, 'name'=>$data->name, 'password'=>$data->password, 'customint1'=>$data->customint1, 'customint2'=>$data->customint2,
-//                        'customint3'=>$data->customint3, 'customint4'=>$data->customint4, 'customtext1'=>$data->customtext1,
-//                        'roleid'=>$data->roleid, 'enrolperiod'=>$data->enrolperiod, 'enrolstartdate'=>$data->enrolstartdate, 'enrolenddate'=>$data->enrolenddate);
-        $fields = array('status'=>$data->status, 'name'=>$data->name, 'customtext1'=>$data->customtext1);
+        $fields = array(
+            'status'          =>$data->status,
+            'name'            =>$data->name,
+            'roleid'          =>$data->roleid,
+            'customtext1'     =>$data->customtext1);
         $plugin->add_instance($course, $fields);
     }
 

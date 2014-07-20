@@ -22,4 +22,3 @@ $plugin->version  = 2014061000;
 $plugin->requires = 2011080100;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Course Enrol Apply Plugin Version 1.2.2 (build 2014061000)';
-$plugin->cron = 180;
