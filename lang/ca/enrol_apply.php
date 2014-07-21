@@ -34,6 +34,7 @@ $string['btncancel'] = 'Cancel·lar';
 $string['enrolusers'] = 'Inscriure usuaris';
 
 $string['status'] = 'Permet inscripció prèvia aprovació';
+$string['status_desc'] = 'Habilitar la inscripció prèvia aprovació als nous cursos.';
 $string['confirmenrol'] = 'Gestionar sol·licituds';
 
 $string['apply:config'] = 'Configurar instàncies d\'Inscripció prèvia aprovació'; // Needs more insight

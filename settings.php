@@ -28,7 +28,26 @@ if ($ADMIN->fulltree) {
         get_string('sendmailtoteacher', 'enrol_apply'), '', 0));
     $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtomanager',
         get_string('sendmailtomanager', 'enrol_apply'), '', 0));
-    
+
+
+    //--- enrol instance defaults ----------------------------------------------------------------------------
+    $settings->add(new admin_setting_heading('enrol_apply_defaults',
+        get_string('enrolinstancedefaults', 'admin'), get_string('enrolinstancedefaults_desc', 'admin')));
+
+    $settings->add(new admin_setting_configcheckbox('enrol_apply/defaultenrol',
+        get_string('defaultenrol', 'enrol'), get_string('defaultenrol_desc', 'enrol'), 1));
+
+    $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
+                     ENROL_INSTANCE_DISABLED => get_string('no'));
+    $settings->add(new admin_setting_configselect('enrol_apply/status',
+        get_string('status', 'enrol_apply'), get_string('status_desc', 'enrol_apply'), ENROL_INSTANCE_DISABLED, $options));
+
+    $settings->add(new admin_setting_configtext('enrol_apply/name',
+        get_string('custominstancename', 'enrol'), '', '', PARAM_TEXT));
+
+    $settings->add(new admin_setting_configtextarea('enrol_apply/customtext1',
+        get_string('editdescription', 'enrol_apply'), '', '', PARAM_TEXT));
+
 }
 
 if ($hassiteconfig) { // needs this condition or there is error on login page

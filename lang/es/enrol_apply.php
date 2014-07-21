@@ -34,6 +34,7 @@ $string['btncancel'] = 'Cancelar';
 $string['enrolusers'] = 'Matricular usuarios';
 
 $string['status'] = 'Aceptar matriculación tras aprobación';
+$string['status_desc'] = 'Habilitar la matriculación tras aprobación en los nuevos cursos.';
 $string['confirmenrol'] = 'Gestionar solicitudes';
 
 $string['apply:config'] = 'Configurar instancias de matrículas solicitadas'; // Needs more insight

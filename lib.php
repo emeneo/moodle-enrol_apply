@@ -140,6 +140,31 @@ class enrol_apply_plugin extends enrol_plugin {
 		}
 		return $actions;
 	}
+
+	/**
+     * Add new instance of enrol plugin with default settings.
+     * @param stdClass $course
+     * @return int id of new instance
+     */
+    public function add_default_instance($course) {
+        $fields = $this->get_instance_defaults();
+
+        return $this->add_instance($course, $fields);
+    }
+
+    /**
+     * Returns defaults for new instances.
+     * @return array
+     */
+    public function get_instance_defaults() {
+        $fields = array();
+        $fields['status']			= $this->get_config('status');
+        $fields['name']      		= $this->get_config('name');
+        $fields['customtext1']		= $this->get_config('customtext1');
+
+        return $fields;
+    }
+
 }
 
 function getAllEnrolment($id = null){

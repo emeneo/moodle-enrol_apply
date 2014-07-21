@@ -34,6 +34,7 @@ $string['btncancel'] = 'Cancel';
 $string['enrolusers'] = 'Enrol users';
 
 $string['status'] = 'Allow Course enrol confirmation';
+$string['status_desc'] = 'Enable course enrol confirmation in new courses.';
 $string['confirmenrol'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enrol instances';
