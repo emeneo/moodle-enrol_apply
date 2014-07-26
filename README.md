@@ -2,8 +2,8 @@
 The enrolment plugin "enrol on approval" add an approval step into the course enrolment process.
 Users will be informed by mail as soon as their course application has been approved/rejected.
 
-Moodle Forum: https://moodle.org/mod/forum/discuss.php?d=189334
-Moodle Plugins Directory: https://moodle.org/plugins/view.php?plugin=enrol_apply
+* Moodle Forum: https://moodle.org/mod/forum/discuss.php?d=189334
+* Moodle Plugins Directory: https://moodle.org/plugins/view.php?plugin=enrol_apply
 
 # Installation
 ## Install from moodle.org
