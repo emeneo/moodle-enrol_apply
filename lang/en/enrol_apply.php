@@ -18,8 +18,8 @@ $string['confirmmailsubject'] = 'Confirm mail subject';
 $string['confirmmailcontent'] = 'Confirm mail content';
 $string['cancelmailsubject'] = 'Cancel mail subject';
 $string['cancelmailcontent'] = 'Cancel mail sontent';
-$string['confirmmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name';
-$string['cancelmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name';
+$string['confirmmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
+$string['cancelmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
 
 $string['confirmusers'] = 'Enrol Confirm';
 
