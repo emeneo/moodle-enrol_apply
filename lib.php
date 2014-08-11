@@ -202,7 +202,7 @@ function sendCancelMail($info){
 	global $CFG;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-	$replace = array('firstname'=>$info->firstname,'content'=>$info->coursename);
+	$replace = array('firstname'=>$info->firstname,'content'=>$info->coursename,'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['cancelmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = get_admin();
@@ -214,7 +214,7 @@ function sendConfirmMail($info){
 	global $CFG;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-	$replace = array('firstname'=>$info->firstname,'content'=>$info->coursename);
+	$replace = array('firstname'=>$info->firstname,'content'=>$info->coursename,'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['confirmmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = get_admin();
