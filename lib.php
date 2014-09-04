@@ -93,7 +93,8 @@ class enrol_apply_plugin extends enrol_plugin {
 				}
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
-				sendConfirmMailToTeachers($instance->courseid,$data->applydescription);
+				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data->applydescription);
+				sendConfirmMailToManagers($instance->courseid,$data->applydescription);
 				
 				add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
@@ -160,7 +161,7 @@ function getAllEnrolment($id = null){
 	if($id){
 		$userenrolments = $DB->get_records_sql('select ue.userid,ue.id,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated from '.$CFG->prefix.'user_enrolments as ue left join '.$CFG->prefix.'user as u on ue.userid=u.id left join '.$CFG->prefix.'enrol as e on ue.enrolid=e.id left join '.$CFG->prefix.'course as c on e.courseid=c.id where ue.status=1 and e.courseid='.$id);
 	}else{
-		$userenrolments = $DB->get_records_sql('select ue.userid,ue.id,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated from '.$CFG->prefix.'user_enrolments as ue left join '.$CFG->prefix.'user as u on ue.userid=u.id left join '.$CFG->prefix.'enrol as e on ue.enrolid=e.id left join '.$CFG->prefix.'course as c on e.courseid=c.id where ue.status=1');
+		$userenrolments = $DB->get_records_sql('select ue.id,ue.userid,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated from '.$CFG->prefix.'user_enrolments as ue left join '.$CFG->prefix.'user as u on ue.userid=u.id left join '.$CFG->prefix.'enrol as e on ue.enrolid=e.id left join '.$CFG->prefix.'course as c on e.courseid=c.id where ue.status=1');
 	}
 	return $userenrolments;
 }
@@ -221,22 +222,50 @@ function sendConfirmMail($info){
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, '', $body);
 }
 
-function sendConfirmMailToTeachers($courseid,$desc){
+function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
 	global $DB;
 	global $CFG;
 	global $USER;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 	
 	if($apply_setting['sendmailtoteacher']->value == 1){
-		$course = $DB->get_record('course',array('id'=>$courseid));
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$course = get_course($courseid);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 		$teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
 		$teachers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$teacherType->id));
 		foreach($teachers as $teacher){
 			$editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
-			$body = '<p>Course: '.$course->fullname.'</p><p>First name: '.$USER->firstname.'</p><p>Last name: '.$USER->lastname.'</p><p>Information: '.$desc.'</p>';
+			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
+			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/apply.php", array('id'=>$courseid,'enrolid'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
 			$contact = get_admin();
 			$info = $editTeacher;
+			$info->coursename = $course->fullname;
+			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
+		}
+	}
+}
+
+function sendConfirmMailToManagers($courseid,$desc){
+	global $DB;
+	global $CFG;
+	global $USER;
+	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+
+	if($apply_setting['sendmailtomanager']->value == 1){
+		$course = get_course($courseid);
+		$context = context_system::instance();
+		$managerType = $DB->get_record('role',array("shortname"=>"manager"));
+		$managers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$managerType->id));
+		foreach($managers as $manager){
+			$userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
+			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
+			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
+			$contact = get_admin();
+			$info = $userWithManagerRole;
 			$info->coursename = $course->fullname;
 			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
 		}

@@ -42,6 +42,7 @@ $string['apply:unenrolapply'] = 'Cancel·lar-se a si mateix del curs'; // Needs 
 $string['notification'] = '<b>Sol·licitud d\'inscripció enviada correctament</b>. <br/><br/>Rebràs una notificació per correu electrònic un cop estigui confirmada la inscripció.';
 
 $string['sendmailtoteacher'] = 'Enviar notificacions per correu als professors';
+$string['sendmailtomanager'] = 'Enviar notificacions per correu als administradors';
 $string['mailtoteacher_suject'] = 'Nova inscripció al curs!';
 $string['editdescription'] = 'Descripció de l\'àrea de text';
 $string['comment'] = 'Comentari';
