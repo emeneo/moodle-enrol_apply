@@ -44,6 +44,7 @@ $string['notification'] = '<b>Solicitud de matriculación enviada correctamente<
 $string['sendmailtoteacher'] = 'Enviar notificaciones por correo a los profesores';
 $string['mailtoteacher_suject'] = 'Nueva matrícula!';
 $string['editdescription'] = 'Descripción del área de texto';
+$string['comment'] = 'Comentario';
 $string['applymanage'] = 'Gestionar matrículas';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.'; // needs to be translated

@@ -44,6 +44,7 @@ $string['notification'] = '<b>Sol·licitud d\'inscripció enviada correctament</
 $string['sendmailtoteacher'] = 'Enviar notificacions per correu als professors';
 $string['mailtoteacher_suject'] = 'Nova inscripció al curs!';
 $string['editdescription'] = 'Descripció de l\'àrea de text';
+$string['comment'] = 'Comentari';
 $string['applymanage'] = 'Gestionar inscripcions';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';

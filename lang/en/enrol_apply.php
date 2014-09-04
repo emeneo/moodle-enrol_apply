@@ -44,6 +44,7 @@ $string['notification'] = '<b>Enrollment Application successfully sent</b>. <br/
 $string['sendmailtoteacher'] = 'Send email notification to teachers';
 $string['mailtoteacher_suject'] = 'New Enrollment request!';
 $string['editdescription'] = 'Textarea description';
+$string['comment'] = 'Comment';
 $string['applymanage'] = 'Manage enrolment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
