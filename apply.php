@@ -61,7 +61,7 @@ echo '</tr>';
 foreach ( $enrols as $enrol ) {
 	$picture = get_user_picture($enrol->userid);
 	echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
-	echo '<td>' . $enrol->course . '</td>';
+	echo '<td>' . format_string($enrol->course) . '</td>';
 	echo '<td>' . $OUTPUT->render($picture) . '</td>';
 	echo '<td>'.$enrol->firstname . ' ' . $enrol->lastname.'</td>';
 	echo '<td>' . $enrol->email . '</td>';
