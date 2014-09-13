@@ -15,7 +15,7 @@ require_login();
 require_capability('enrol/apply:manage', context_system::instance());
 
 $site = get_site ();
-$systemcontext = get_context_instance ( CONTEXT_SYSTEM );
+$systemcontext = context_system::instance();
 
 $PAGE->set_url ( '/enrol/manage.php');
 $PAGE->set_context($systemcontext);

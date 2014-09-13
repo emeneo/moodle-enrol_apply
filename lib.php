@@ -30,7 +30,7 @@ class enrol_apply_plugin extends enrol_plugin {
 	}
 
 	public function get_newinstance_link($courseid) {
-		$context = get_context_instance(CONTEXT_COURSE, $courseid, MUST_EXIST);
+		$context =  context_course::instance($courseid, MUST_EXIST);
 
 		if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
 			return NULL;
@@ -115,7 +115,7 @@ class enrol_apply_plugin extends enrol_plugin {
 		if ($instance->enrol !== 'apply') {
 			throw new coding_exception('invalid enrol instance!');
 		}
-		$context = get_context_instance(CONTEXT_COURSE, $instance->courseid);
+		$context =  context_course::instance($instance->courseid);
 
 		$icons = array();
 
@@ -203,7 +203,7 @@ function sendCancelMail($info){
 	global $CFG;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename));
+	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['cancelmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = get_admin();
@@ -215,7 +215,7 @@ function sendConfirmMail($info){
 	global $CFG;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename));
+	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['confirmmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = get_admin();
