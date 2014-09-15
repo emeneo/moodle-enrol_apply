@@ -42,8 +42,10 @@ $string['apply:unenrolapply'] = 'Cancelarse a si mismo del curso'; // Needs more
 $string['notification'] = '<b>Solicitud de matriculación enviada correctamente</b>. <br/><br/>Será notificado por correo electrónico en cuanto se confirme su matriculación.';
 
 $string['sendmailtoteacher'] = 'Enviar notificaciones por correo a los profesores';
+$string['sendmailtomanager'] = 'Enviar notificaciones por correo a los gestores';
 $string['mailtoteacher_suject'] = 'Nueva matrícula!';
 $string['editdescription'] = 'Descripción del área de texto';
+$string['comment'] = 'Comentario';
 $string['applymanage'] = 'Gestionar matrículas';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.'; // needs to be translated
