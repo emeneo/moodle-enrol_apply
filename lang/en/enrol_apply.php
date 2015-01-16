@@ -17,7 +17,7 @@ $string['pluginname_desc'] = 'With this plugin users can apply to a course and a
 $string['confirmmailsubject'] = 'Confirm mail subject';
 $string['confirmmailcontent'] = 'Confirm mail content';
 $string['cancelmailsubject'] = 'Cancel mail subject';
-$string['cancelmailcontent'] = 'Cancel mail sontent';
+$string['cancelmailcontent'] = 'Cancel mail content';
 $string['confirmmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
 $string['cancelmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
 
@@ -37,7 +37,8 @@ $string['confirmenrol'] = 'Manage application';
 $string['apply:config'] = 'Configure apply enrol instances';
 $string['apply:manage'] = 'Manage apply enrolment';
 $string['apply:unenrol'] = 'Cancel users from course';
-$string['apply:unenrolapply'] = 'Cancel self from the course';
+$string['apply:unenrolapply'] = 'Cancel self from the course'; // is this necessary now?
+$string['apply:unenrolself'] = 'Cancel self from the course';
  
 $string['notification'] = '<b>Enrollment Application successfully sent</b>. <br/><br/>You will be informed by email as soon as your enrollment has been confirmed. If you want to enroll to other courses, please click "course catalogue" in the top menu.';
 
