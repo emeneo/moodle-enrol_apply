@@ -9,17 +9,17 @@
  * *************************************************************************
  * ************************************************************************
 */ 
-// The name of your plugin. Displayed on admin menus.
+// The name of your plug-in. Displayed on admin menus.
 $string['enrolname'] = 'Course enrol confirmation';
 $string['pluginname'] = 'Course enrol confirmation';
-$string['pluginname_desc'] = 'With this plugin users can apply to a course and a teacher have to comfirm before the user gets enroled.';
+$string['pluginname_desc'] = 'With this plug-in users can apply to be enrolled in a course. A teacher or site manager will then have to approve the enrolment before the user gets enroled.';
 
-$string['confirmmailsubject'] = 'Confirm mail subject';
-$string['confirmmailcontent'] = 'Confirm mail content';
-$string['cancelmailsubject'] = 'Cancel mail subject';
-$string['cancelmailcontent'] = 'Cancel mail content';
-$string['confirmmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
-$string['cancelmailcontent_desc'] = 'Please use special marks designated email content replaced.<br>{firstname}:Registration name; {content}:Course name;{lastname}:The last name of the user;{username}:Registration name';
+$string['confirmmailsubject'] = 'Confirmation email subject';
+$string['confirmmailcontent'] = 'Confirmation email content';
+$string['cancelmailsubject'] = 'Cancelation email subject';
+$string['cancelmailcontent'] = 'Cancelation email content';
+$string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+$string['cancelmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
 
 $string['confirmusers'] = 'Enrol Confirm';
 
@@ -36,19 +36,19 @@ $string['confirmenrol'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enrol instances';
 $string['apply:manage'] = 'Manage apply enrolment';
-$string['apply:unenrol'] = 'Cancel users from course';
+$string['apply:unenrol'] = 'Cancel users from the course';
 $string['apply:unenrolapply'] = 'Cancel self from the course'; // is this necessary now?
 $string['apply:unenrolself'] = 'Cancel self from the course';
+
  
-$string['notification'] = '<b>Enrollment Application successfully sent</b>. <br/><br/>You will be informed by email as soon as your enrollment has been confirmed. If you want to enroll to other courses, please click "course catalogue" in the top menu.';
+$string['notification'] = '<b>Enrolment application successfully sent</b>. <br/><br/>You will be informed by email when your enrolment has been confirmed.';
 
 $string['sendmailtoteacher'] = 'Send email notification to teachers';
 $string['sendmailtomanager'] = 'Send email notification to managers';
-$string['mailtoteacher_suject'] = 'New Enrollment request!';
+$string['mailtoteacher_suject'] = 'New Enrolment request!';
 $string['editdescription'] = 'Textarea description';
 $string['comment'] = 'Comment';
 $string['applymanage'] = 'Manage enrolment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
-
 ?>
