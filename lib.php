@@ -207,7 +207,7 @@ function sendCancelMail($info){
 	$body = $apply_setting['cancelmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = core_user::get_support_user();
-	email_to_user($info, $contact, $apply_setting['cancelmailsubject']->value, '', $body);
+	email_to_user($info, $contact, $apply_setting['cancelmailsubject']->value, html_to_text($body), $body);
 }
 
 function sendConfirmMail($info){
@@ -219,7 +219,7 @@ function sendConfirmMail($info){
 	$body = $apply_setting['confirmmailcontent']->value;
 	$body = updateMailContent($body,$replace);
 	$contact = core_user::get_support_user();
-	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, '', $body);
+	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
 }
 
 function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
@@ -242,7 +242,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
 			$contact = core_user::get_support_user();
 			$info = $editTeacher;
 			$info->coursename = $course->fullname;
-			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
+			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
 		}
 	}
 }
@@ -267,7 +267,7 @@ function sendConfirmMailToManagers($courseid,$desc){
 			$contact = core_user::get_support_user();
 			$info = $userWithManagerRole;
 			$info->coursename = $course->fullname;
-			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
+			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
 		}
 	}
 }
