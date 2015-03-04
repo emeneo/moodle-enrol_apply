@@ -206,7 +206,7 @@ function sendCancelMail($info){
 	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['cancelmailcontent']->value;
 	$body = updateMailContent($body,$replace);
-	$contact = get_admin();
+	$contact = core_user::get_support_user();
 	email_to_user($info, $contact, $apply_setting['cancelmailsubject']->value, '', $body);
 }
 
@@ -218,7 +218,7 @@ function sendConfirmMail($info){
 	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
 	$body = $apply_setting['confirmmailcontent']->value;
 	$body = updateMailContent($body,$replace);
-	$contact = get_admin();
+	$contact = core_user::get_support_user();
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, '', $body);
 }
 
@@ -239,7 +239,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
 			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
 			$body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/apply.php", array('id'=>$courseid,'enrolid'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
-			$contact = get_admin();
+			$contact = core_user::get_support_user();
 			$info = $editTeacher;
 			$info->coursename = $course->fullname;
 			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
@@ -264,7 +264,7 @@ function sendConfirmMailToManagers($courseid,$desc){
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
 			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
 			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
-			$contact = get_admin();
+			$contact = core_user::get_support_user();
 			$info = $userWithManagerRole;
 			$info->coursename = $course->fullname;
 			email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), '', $body);
