@@ -60,4 +60,21 @@ $string['city'] = 'City/town';
 $string['country'] = 'Country';
 $string['lang'] = 'Preferred language';
 $string['description_editor'] = 'Description';
+
+$string['firstnamephonetic'] = 'First name - phonetic';
+$string['lastnamephonetic'] = 'Surname - phonetic';
+$string['middlename'] = 'Middle name';
+$string['alternatename'] = 'Alternate name';
+$string['url'] = 'Web page';
+$string['icq'] = 'ICQ number';
+$string['skype'] = 'Skype ID';
+$string['aim'] = 'AIM ID';
+$string['yahoo'] = 'Yahoo ID';
+$string['msn'] = 'MSN ID';
+$string['idnumber'] = 'ID number';
+$string['institution'] = 'Institution';
+$string['department'] = 'Department';
+$string['phone1'] = 'Phone';
+$string['phone2'] = 'Mobile phone';
+$string['address'] = 'Address';
 ?>
