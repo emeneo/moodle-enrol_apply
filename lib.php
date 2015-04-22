@@ -79,12 +79,8 @@ class enrol_apply_plugin extends enrol_plugin {
 		if ($instance->id == $instanceid) {
 			if ($data = $form->get_data()) {
 				$userInfo = $data;
-				$applydescription = $userInfo->applydescription;
 				unset($userInfo->applydescription);
-				$userInfo->id = $USER->id;
 				$res = $DB->update_record('user',$userInfo);
-				//echo "<pre>";print_r($userInfo);exit;
-				//var_dump($res);exit;
 				$enrol = enrol_get_plugin('self');
 				$timestart = time();
 				if ($instance->enrolperiod) {
@@ -100,8 +96,8 @@ class enrol_apply_plugin extends enrol_plugin {
 				}
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
-				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data, $applydescription);
-				sendConfirmMailToManagers($instance->courseid,$data, $applydescription);
+				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data);
+				sendConfirmMailToManagers($instance->courseid,$data);
 				
 				add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
@@ -272,7 +268,7 @@ function sendConfirmMail($info){
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
 }
 
-function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription){
+function sendConfirmMailToTeachers($courseid,$instanceid,$info){
 	global $DB;
 	global $CFG;
 	global $USER;
@@ -287,7 +283,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 			$editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
 			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$info->firstname.' '.$info->lastname.'</p>';
-			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$info->applydescription.'</p>';
 
 			$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
 			$body .= '<p>'. get_string('firstname', 'enrol_apply') .': '.$info->firstname.'</p>';
@@ -298,23 +294,6 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 			$body .= '<p>'. get_string('lang', 'enrol_apply') .': '.$info->lang.'</p>';
 			$body .= '<p>'. get_string('description_editor', 'enrol_apply') .': '.$info->description_editor['text'].'</p>';
 
-			$body .= '<p>'. get_string('firstnamephonetic', 'enrol_apply') .': '.$info->firstnamephonetic.'</p>';
-			$body .= '<p>'. get_string('lastnamephonetic', 'enrol_apply') .': '.$info->lastnamephonetic.'</p>';
-			$body .= '<p>'. get_string('middlename', 'enrol_apply') .': '.$info->middlename.'</p>';
-			$body .= '<p>'. get_string('alternatename', 'enrol_apply') .': '.$info->alternatename.'</p>';
-			$body .= '<p>'. get_string('url', 'enrol_apply') .': '.$info->url.'</p>';
-			$body .= '<p>'. get_string('icq', 'enrol_apply') .': '.$info->icq.'</p>';
-			$body .= '<p>'. get_string('skype', 'enrol_apply') .': '.$info->skype.'</p>';
-			$body .= '<p>'. get_string('aim', 'enrol_apply') .': '.$info->aim.'</p>';
-			$body .= '<p>'. get_string('yahoo', 'enrol_apply') .': '.$info->yahoo.'</p>';
-			$body .= '<p>'. get_string('msn', 'enrol_apply') .': '.$info->msn.'</p>';
-			$body .= '<p>'. get_string('idnumber', 'enrol_apply') .': '.$info->idnumber.'</p>';
-			$body .= '<p>'. get_string('institution', 'enrol_apply') .': '.$info->institution.'</p>';
-			$body .= '<p>'. get_string('department', 'enrol_apply') .': '.$info->department.'</p>';
-			$body .= '<p>'. get_string('phone1', 'enrol_apply') .': '.$info->phone1.'</p>';
-			$body .= '<p>'. get_string('phone2', 'enrol_apply') .': '.$info->phone2.'</p>';
-			$body .= '<p>'. get_string('address', 'enrol_apply') .': '.$info->address.'</p>';
-
 			$body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/apply.php", array('id'=>$courseid,'enrolid'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
 			$contact = core_user::get_support_user();
 			$info = $editTeacher;
@@ -324,7 +303,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 	}
 }
 
-function sendConfirmMailToManagers($courseid,$info,$applydescription){
+function sendConfirmMailToManagers($courseid,$info){
 	global $DB;
 	global $CFG;
 	global $USER;
@@ -339,7 +318,7 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 			$userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
 			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$info->firstname.' '.$info->lastname.'</p>';
-			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$info->applydescription.'</p>';
 			$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
 			$body .= '<p>'. get_string('firstname', 'enrol_apply') .': '.$info->firstname.'</p>';
 			$body .= '<p>'. get_string('lastname', 'enrol_apply') .': '.$info->lastname.'</p>';
@@ -348,22 +327,6 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 			$body .= '<p>'. get_string('country', 'enrol_apply') .': '.$info->country.'</p>';
 			$body .= '<p>'. get_string('lang', 'enrol_apply') .': '.$info->lang.'</p>';
 			$body .= '<p>'. get_string('description_editor', 'enrol_apply') .': '.$info->description_editor['text'].'</p>';
-			$body .= '<p>'. get_string('firstnamephonetic', 'enrol_apply') .': '.$info->firstnamephonetic.'</p>';
-			$body .= '<p>'. get_string('lastnamephonetic', 'enrol_apply') .': '.$info->lastnamephonetic.'</p>';
-			$body .= '<p>'. get_string('middlename', 'enrol_apply') .': '.$info->middlename.'</p>';
-			$body .= '<p>'. get_string('alternatename', 'enrol_apply') .': '.$info->alternatename.'</p>';
-			$body .= '<p>'. get_string('url', 'enrol_apply') .': '.$info->url.'</p>';
-			$body .= '<p>'. get_string('icq', 'enrol_apply') .': '.$info->icq.'</p>';
-			$body .= '<p>'. get_string('skype', 'enrol_apply') .': '.$info->skype.'</p>';
-			$body .= '<p>'. get_string('aim', 'enrol_apply') .': '.$info->aim.'</p>';
-			$body .= '<p>'. get_string('yahoo', 'enrol_apply') .': '.$info->yahoo.'</p>';
-			$body .= '<p>'. get_string('msn', 'enrol_apply') .': '.$info->msn.'</p>';
-			$body .= '<p>'. get_string('idnumber', 'enrol_apply') .': '.$info->idnumber.'</p>';
-			$body .= '<p>'. get_string('institution', 'enrol_apply') .': '.$info->institution.'</p>';
-			$body .= '<p>'. get_string('department', 'enrol_apply') .': '.$info->department.'</p>';
-			$body .= '<p>'. get_string('phone1', 'enrol_apply') .': '.$info->phone1.'</p>';
-			$body .= '<p>'. get_string('phone2', 'enrol_apply') .': '.$info->phone2.'</p>';
-			$body .= '<p>'. get_string('address', 'enrol_apply') .': '.$info->address.'</p>';
 			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
 			$contact = core_user::get_support_user();
 			$info = $userWithManagerRole;
