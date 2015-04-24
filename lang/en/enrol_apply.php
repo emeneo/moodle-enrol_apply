@@ -52,12 +52,4 @@ $string['applymanage'] = 'Manage enrolment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
 $string['user_profile'] = 'User Profile';
-
-$string['firstname'] = 'First name';
-$string['lastname'] = 'Surname';
-$string['email'] = 'Email address';
-$string['city'] = 'City/town';
-$string['country'] = 'Country';
-$string['lang'] = 'Preferred language';
-$string['description_editor'] = 'Description';
 ?>
