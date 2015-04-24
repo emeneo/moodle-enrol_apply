@@ -295,7 +295,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 			$body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
 			$body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
 			$body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
-			$body .= '<p>'. get_string('lang') .': '.$info->lang.'</p>';
+			$body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
 			$body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
 
 			$body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
@@ -303,15 +303,15 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 			$body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
 			$body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
 			$body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
-			$body .= '<p>'. get_string('icq') .': '.$info->icq.'</p>';
-			$body .= '<p>'. get_string('skype') .': '.$info->skype.'</p>';
-			$body .= '<p>'. get_string('aim') .': '.$info->aim.'</p>';
-			$body .= '<p>'. get_string('yahoo') .': '.$info->yahoo.'</p>';
-			$body .= '<p>'. get_string('msn') .': '.$info->msn.'</p>';
+			$body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
+			$body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
+			$body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
+			$body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
+			$body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
 			$body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
 			$body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
 			$body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
-			$body .= '<p>'. get_string('phone1') .': '.$info->phone1.'</p>';
+			$body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
 			$body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
 			$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
 
@@ -346,7 +346,7 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 			$body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
 			$body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
 			$body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
-			$body .= '<p>'. get_string('lang') .': '.$info->lang.'</p>';
+			$body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
 			$body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
 
 			$body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
@@ -354,15 +354,15 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 			$body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
 			$body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
 			$body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
-			$body .= '<p>'. get_string('icq') .': '.$info->icq.'</p>';
-			$body .= '<p>'. get_string('skype') .': '.$info->skype.'</p>';
-			$body .= '<p>'. get_string('aim') .': '.$info->aim.'</p>';
-			$body .= '<p>'. get_string('yahoo') .': '.$info->yahoo.'</p>';
-			$body .= '<p>'. get_string('msn') .': '.$info->msn.'</p>';
+			$body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
+			$body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
+			$body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
+			$body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
+			$body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
 			$body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
 			$body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
 			$body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
-			$body .= '<p>'. get_string('phone1') .': '.$info->phone1.'</p>';
+			$body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
 			$body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
 			$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
 			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
