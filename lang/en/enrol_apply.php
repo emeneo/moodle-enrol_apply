@@ -52,4 +52,7 @@ $string['applymanage'] = 'Manage enrolment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
 $string['user_profile'] = 'User Profile';
+
+$string['show_standard_user_profile'] = 'Show standard user profile fields on enrolment screen';
+$string['show_extra_user_profile'] = 'Show extra user profile fields on enrolment screen';
 ?>

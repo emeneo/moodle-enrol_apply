@@ -60,7 +60,7 @@ class enrol_apply_enrol_form extends moodleform {
         $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'),'cols="80"');
 
         //user profile
-        global $USER,$CFG;
+        global $USER,$CFG,$DB;
         require_once($CFG->libdir.'/gdlib.php');
         require_once($CFG->dirroot.'/user/edit_form.php');
         require_once($CFG->dirroot.'/user/editlib.php');
@@ -70,8 +70,15 @@ class enrol_apply_enrol_form extends moodleform {
         $user = $DB->get_record('user',array('id'=>$USER->id));
         $editoroptions = $filemanageroptions = null;
 
-        useredit_shared_definition($mform, $editoroptions, $filemanageroptions);
-        profile_definition($mform, $user->id);
+        $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+
+        if($apply_setting['show_standard_user_profile']->value == 0){
+            useredit_shared_definition($mform, $editoroptions, $filemanageroptions);
+        }
+        
+        if($apply_setting['show_extra_user_profile']->value == 0){
+            profile_definition($mform, $user->id);
+        }
 
         $profile_default_values = $user;
         if (is_object($profile_default_values)) {
