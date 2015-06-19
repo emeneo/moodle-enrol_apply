@@ -99,7 +99,14 @@ class enrol_apply_plugin extends enrol_plugin {
 				// Deprecated fixed by Shiro <gigashiro@gmail.com>
 				//add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				$context = context_course::instance($instance->courseid);
-				\core\event\user_enrolment_created::create(array('context' => $context))->trigger();
+				\core\event\user_enrolment_created::create(
+					array(
+						'objectid' => $instance->id,
+						'courseid' => $instance->courseid, 
+						'context' => $context, 
+						'relateduserid' => $USER->id,
+						'other' => array('enrol' => 'apply')
+					))->trigger();
 
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
 			}
