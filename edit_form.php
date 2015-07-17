@@ -41,7 +41,6 @@ class enrol_self_edit_form extends moodleform {
         $mform->setDefault('roleid', $plugin->get_config('roleid'));
 
 		$mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
-	
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

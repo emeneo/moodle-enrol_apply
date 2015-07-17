@@ -78,6 +78,19 @@ class enrol_apply_plugin extends enrol_plugin {
 		$instanceid = optional_param('instance', 0, PARAM_INT);
 		if ($instance->id == $instanceid) {
 			if ($data = $form->get_data()) {
+				$userInfo = $data;
+				$applydescription = $userInfo->applydescription;
+				unset($userInfo->applydescription);
+				$userInfo->id = $USER->id;
+
+				$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+				if($apply_setting['show_standard_user_profile']->value == 1 && $apply_setting['show_extra_user_profile']->value == 0){
+					profile_save_data($userInfo);
+					//$res = $DB->update_record('user',$userInfoProfile);
+				}else{
+					profile_save_data($userInfo);
+					$res = $DB->update_record('user',$userInfo);
+				}
 				$enrol = enrol_get_plugin('self');
 				$timestart = time();
 				if ($instance->enrolperiod) {
@@ -93,8 +106,8 @@ class enrol_apply_plugin extends enrol_plugin {
 				}
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
-				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data->applydescription);
-				sendConfirmMailToManagers($instance->courseid,$data->applydescription);
+				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data, $applydescription);
+				sendConfirmMailToManagers($instance->courseid,$data, $applydescription);
 				
 				add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
@@ -265,7 +278,7 @@ function sendConfirmMail($info){
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
 }
 
-function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
+function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription){
 	global $DB;
 	global $CFG;
 	global $USER;
@@ -280,7 +293,45 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
 			$editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
 			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
-			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+
+			if($apply_setting['show_standard_user_profile']->value == 0){
+				$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
+				$body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
+				$body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
+				$body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
+				$body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
+				$body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
+				$body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
+				$body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
+
+				$body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
+				$body .= '<p>'. get_string('lastnamephonetic') .': '.$info->lastnamephonetic.'</p>';
+				$body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
+				$body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
+				$body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
+				$body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
+				$body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
+				$body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
+				$body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
+				$body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
+				$body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
+				$body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
+				$body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
+				$body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
+				$body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
+				$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
+			}
+
+			if($apply_setting['show_extra_user_profile']->value == 0){
+				require_once($CFG->dirroot.'/user/profile/lib.php');
+				$user = $DB->get_record('user',array('id'=>$USER->id));
+				profile_load_custom_fields($user);
+				foreach ($user->profile as $key => $value) {
+					$body .= '<p>'. $key .': '.$value.'</p>';
+				}
+			}
+
 			$body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/apply.php", array('id'=>$courseid,'enrolid'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
 			$contact = core_user::get_support_user();
 			$info = $editTeacher;
@@ -290,7 +341,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$desc){
 	}
 }
 
-function sendConfirmMailToManagers($courseid,$desc){
+function sendConfirmMailToManagers($courseid,$info,$applydescription){
 	global $DB;
 	global $CFG;
 	global $USER;
@@ -305,7 +356,44 @@ function sendConfirmMailToManagers($courseid,$desc){
 			$userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
 			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
-			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$desc.'</p>';
+			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+			if($apply_setting['show_standard_user_profile']->value == 0){
+				$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
+				$body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
+				$body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
+				$body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
+				$body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
+				$body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
+				$body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
+				$body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
+
+				$body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
+				$body .= '<p>'. get_string('lastnamephonetic') .': '.$info->lastnamephonetic.'</p>';
+				$body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
+				$body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
+				$body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
+				$body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
+				$body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
+				$body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
+				$body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
+				$body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
+				$body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
+				$body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
+				$body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
+				$body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
+				$body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
+				$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
+			}
+
+			if($apply_setting['show_extra_user_profile']->value == 0){
+				require_once($CFG->dirroot.'/user/profile/lib.php');
+				$user = $DB->get_record('user',array('id'=>$USER->id));
+				profile_load_custom_fields($user);
+				foreach ($user->profile as $key => $value) {
+					$body .= '<p>'. $key .': '.$value.'</p>';
+				}
+			}
+
 			$body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
 			$contact = core_user::get_support_user();
 			$info = $userWithManagerRole;

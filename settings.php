@@ -41,6 +41,16 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('enrol_apply/status',
         get_string('status', 'enrol_apply'), get_string('status_desc', 'enrol_apply'), ENROL_INSTANCE_ENABLED, $options));
 
+    $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
+                     ENROL_INSTANCE_DISABLED  => get_string('no'));
+    $settings->add(new admin_setting_configselect('enrol_apply/show_standard_user_profile',
+        get_string('show_standard_user_profile', 'enrol_apply'), '', ENROL_INSTANCE_ENABLED, $options));
+
+    $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
+                     ENROL_INSTANCE_DISABLED  => get_string('no'));
+    $settings->add(new admin_setting_configselect('enrol_apply/show_extra_user_profile',
+        get_string('show_extra_user_profile', 'enrol_apply'), '', ENROL_INSTANCE_ENABLED, $options));
+
     if (!during_initial_install()) {
         $options = get_default_enrol_roles(context_system::instance());
         $student = get_archetype_roles('student');
