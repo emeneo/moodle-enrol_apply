@@ -29,7 +29,7 @@ class enrol_self_edit_form extends moodleform {
         $options = array(ENROL_INSTANCE_ENABLED  => get_string('yes'),
                          ENROL_INSTANCE_DISABLED => get_string('no'));
         $mform->addElement('select', 'status', get_string('status', 'enrol_apply'), $options);
-        $mform->addHelpButton('status', 'status', 'enrol_apply');
+        //$mform->addHelpButton('status', 'status', 'enrol_apply');
         $mform->setDefault('status', $plugin->get_config('status'));
 
         if ($instance->id) {
@@ -41,6 +41,12 @@ class enrol_self_edit_form extends moodleform {
         $mform->setDefault('roleid', $plugin->get_config('roleid'));
 
 		$mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
+
+        $mform->addElement('select', 'customint1', get_string('show_standard_user_profile', 'enrol_apply'), $options);
+        $mform->setDefault('customint1', $plugin->get_config('customint1'));
+
+        $mform->addElement('select', 'customint2', get_string('show_extra_user_profile', 'enrol_apply'), $options);
+        $mform->setDefault('customint2', $plugin->get_config('customint2'));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
