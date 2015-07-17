@@ -84,7 +84,21 @@ class enrol_apply_plugin extends enrol_plugin {
 				$userInfo->id = $USER->id;
 
 				$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
-				if($apply_setting['show_standard_user_profile']->value == 1 && $apply_setting['show_extra_user_profile']->value == 0){
+
+				$show_standard_user_profile = $show_extra_user_profile = false;
+		        if($instance->customint1 != ''){
+		            ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+		        }else{
+		            ($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+		        }
+
+		        if($instance->customint2 != ''){
+		            ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+		        }else{
+		            ($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+		        }
+
+				if(!$show_standard_user_profile && $show_extra_user_profile){
 					profile_save_data($userInfo);
 					//$res = $DB->update_record('user',$userInfoProfile);
 				}else{
@@ -106,8 +120,8 @@ class enrol_apply_plugin extends enrol_plugin {
 				}
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
-				sendConfirmMailToTeachers($instance->courseid, $instance->id, $data, $applydescription);
-				sendConfirmMailToManagers($instance->courseid,$data, $applydescription);
+				sendConfirmMailToTeachers($instance, $data, $applydescription);
+				sendConfirmMailToManagers($instance, $data, $applydescription);
 				
 				add_to_log($instance->courseid, 'course', 'enrol', '../enrol/users.php?id='.$instance->courseid, $instance->courseid); //there should be userid somewhere!
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
@@ -278,11 +292,27 @@ function sendConfirmMail($info){
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
 }
 
-function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription){
+function sendConfirmMailToTeachers($instance,$info,$applydescription){
 	global $DB;
 	global $CFG;
 	global $USER;
+
+	$courseid = $instance->courseid;
+	$instanceid = $instance->id;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+
+	$show_standard_user_profile = $show_extra_user_profile = false;
+	if($instance->customint1 != ''){
+		($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+	}else{
+		($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+	}
+
+	if($instance->customint2 != ''){
+		($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+	}else{
+		($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+	}
 	
 	if($apply_setting['sendmailtoteacher']->value == 1){
 		$course = get_course($courseid);
@@ -295,7 +325,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
 			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
 
-			if($apply_setting['show_standard_user_profile']->value == 0){
+			if($show_standard_user_profile){
 				$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
 				$body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
 				$body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
@@ -323,7 +353,7 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 				$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
 			}
 
-			if($apply_setting['show_extra_user_profile']->value == 0){
+			if($show_extra_user_profile){
 				require_once($CFG->dirroot.'/user/profile/lib.php');
 				$user = $DB->get_record('user',array('id'=>$USER->id));
 				profile_load_custom_fields($user);
@@ -341,12 +371,27 @@ function sendConfirmMailToTeachers($courseid,$instanceid,$info,$applydescription
 	}
 }
 
-function sendConfirmMailToManagers($courseid,$info,$applydescription){
+function sendConfirmMailToManagers($instance,$info,$applydescription){
 	global $DB;
 	global $CFG;
 	global $USER;
+
+	$courseid = $instance->courseid;
 	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
+	$show_standard_user_profile = $show_extra_user_profile = false;
+	if($instance->customint1 != ''){
+		($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+	}else{
+		($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+	}
+
+	if($instance->customint2 != ''){
+		($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+	}else{
+		($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
+	}
+	
 	if($apply_setting['sendmailtomanager']->value == 1){
 		$course = get_course($courseid);
 		$context = context_system::instance();
@@ -357,7 +402,7 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 			$body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
 			$body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
 			$body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
-			if($apply_setting['show_standard_user_profile']->value == 0){
+			if($show_standard_user_profile){
 				$body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
 				$body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
 				$body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
@@ -385,7 +430,7 @@ function sendConfirmMailToManagers($courseid,$info,$applydescription){
 				$body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
 			}
 
-			if($apply_setting['show_extra_user_profile']->value == 0){
+			if($show_extra_user_profile){
 				require_once($CFG->dirroot.'/user/profile/lib.php');
 				$user = $DB->get_record('user',array('id'=>$USER->id));
 				profile_load_custom_fields($user);
