@@ -18,7 +18,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2015071502;
+$plugin->version  = 2015071503;
 $plugin->requires = 2011080100;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Course Enrol Apply Plugin Version 1.3.1 (build 2014091000)';
