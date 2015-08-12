@@ -49,7 +49,7 @@ class enrol_apply_plugin extends enrol_plugin {
 		if ($DB->record_exists('user_enrolments', array('userid'=>$USER->id, 'enrolid'=>$instance->id))) {
 			//TODO: maybe we should tell them they are already enrolled, but can not access the course
 			//return null;
-			return $OUTPUT->notification(get_string('notification', 'enrol_apply'));
+			return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
 		}
 
 		if ($instance->enrolstartdate != 0 and $instance->enrolstartdate > time()) {
