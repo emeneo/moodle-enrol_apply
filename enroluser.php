@@ -104,7 +104,11 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
             }
             //echo "<pre>";print_r($instance);exit();
             $enrol_manual->enrol_user($instance, $adduser->id, $roleid, $timestart, $timeend);
-            add_to_log($course->id, 'course', 'enrol', '../enrol/users.php?id='.$course->id, $course->id); //there should be userid somewhere!
+
+						// Deprecated fixed by Shiro <gigashiro@gmail.com>
+						//add_to_log($course->id, 'course', 'enrol', '../enrol/users.php?id='.$course->id, $course->id); //there should be userid somewhere!
+						$context = context_course::instance($course->id);
+						\core\event\user_enrolment_created::create(array('context' => $context))->trigger();
         }
 
         $potentialuserselector->invalidate_selected_users();
@@ -120,7 +124,11 @@ if (optional_param('remove', false, PARAM_BOOL) && confirm_sesskey()) {
     if (!empty($userstounassign)) {
         foreach($userstounassign as $removeuser) {
             $enrol_manual->unenrol_user($instance, $removeuser->id);
-            add_to_log($course->id, 'course', 'unenrol', '../enrol/users.php?id='.$course->id, $course->id); //there should be userid somewhere!
+
+						// Deprecated fixed by Shiro <gigashiro@gmail.com>
+						//add_to_log($course->id, 'course', 'unenrol', '../enrol/users.php?id='.$course->id, $course->id); //there should be userid somewhere!
+						$context = context_course::instance($course->id);
+						\core\event\user_enrolment_deleted::delete(array('context' => $context))->trigger();
         }
 
         $potentialuserselector->invalidate_selected_users();

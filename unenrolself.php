@@ -49,7 +49,12 @@ $PAGE->set_title($plugin->get_instance_name($instance));
 
 if ($confirm and confirm_sesskey()) {
     $plugin->unenrol_user($instance, $USER->id);
-    add_to_log($course->id, 'course', 'unenrol', '../enrol/users.php?id='.$course->id, $course->id); //TODO: there should be userid somewhere!
+				
+		// Deprecated fixed by Shiro <gigashiro@gmail.com>
+    //add_to_log($course->id, 'course', 'unenrol', '../enrol/users.php?id='.$course->id, $course->id); //TODO: there should be userid somewhere!
+		$context = context_course::instance($course->id);
+		\core\event\user_enrolment_deleted::delete(array('context' => $context))->trigger();
+
     redirect(new moodle_url('/index.php'));
 }
 
