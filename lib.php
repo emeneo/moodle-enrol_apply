@@ -103,8 +103,9 @@ class enrol_apply_plugin extends enrol_plugin {
 					//$res = $DB->update_record('user',$userInfoProfile);
 				}else{
 					profile_save_data($userInfo);
-					$res = $DB->update_record('user',$userInfo);
+					//$res = $DB->update_record('user',$userInfo);
 				}
+
 				$enrol = enrol_get_plugin('self');
 				$timestart = time();
 				if ($instance->enrolperiod) {
