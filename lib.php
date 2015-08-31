@@ -70,7 +70,6 @@ class enrol_apply_plugin extends enrol_plugin {
 				return $OUTPUT->notification(get_string('maxenrolledreached', 'enrol_self'));
 			}
 		}
-
 		require_once("$CFG->dirroot/enrol/apply/locallib.php");
 
 		$form = new enrol_apply_enrol_form(NULL, $instance);
@@ -100,11 +99,13 @@ class enrol_apply_plugin extends enrol_plugin {
 
 				if(!$show_standard_user_profile && $show_extra_user_profile){
 					profile_save_data($userInfo);
-					//$res = $DB->update_record('user',$userInfoProfile);
-				}else{
-					profile_save_data($userInfo);
+					$res = $DB->update_record('user',$userInfoProfile);
 					//$res = $DB->update_record('user',$userInfo);
 				}
+				/*elseif($show_standard_user_profile && $show_extra_user_profile){
+					profile_save_data($userInfo);
+					$res = $DB->update_record('user',$userInfo);
+				}*/
 
 				$enrol = enrol_get_plugin('self');
 				$timestart = time();
@@ -139,7 +140,7 @@ class enrol_apply_plugin extends enrol_plugin {
 				redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
 			}
 		}
-
+		//exit;
 		ob_start();
 		$form->display();
 		$output = ob_get_clean();

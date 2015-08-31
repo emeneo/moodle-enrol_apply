@@ -86,9 +86,9 @@ class enrol_apply_enrol_form extends moodleform {
         }
 
         if($show_standard_user_profile){
-            useredit_shared_definition($mform, $editoroptions, $filemanageroptions);
+            useredit_shared_definition($mform, $editoroptions, $filemanageroptions,$user);
         }
-        
+
         if($show_extra_user_profile){
             profile_definition($mform, $user->id);
         }
