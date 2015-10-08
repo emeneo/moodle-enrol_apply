@@ -32,7 +32,7 @@ class enrol_apply_plugin extends enrol_plugin {
 	public function get_newinstance_link($courseid) {
 		$context =  context_course::instance($courseid, MUST_EXIST);
 
-		if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/manual:config', $context)) {
+		if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/apply:config', $context)) {
 			return NULL;
 		}
 		// multiple instances supported - different roles with different password
@@ -158,17 +158,17 @@ class enrol_apply_plugin extends enrol_plugin {
 
 		$icons = array();
 
-		if (has_capability('enrol/manual:config', $context)) {
+		if (has_capability('enrol/apply:config', $context)) {
             $editlink = new moodle_url("/enrol/apply/edit.php", array('courseid'=>$instance->courseid, 'id'=>$instance->id));
             $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core', array('class' => 'iconsmall')));
         }
 
-		if (has_capability('enrol/manual:manage', $context)) {
+		if (has_capability('enrol/apply:manage', $context)) {
 			$managelink = new moodle_url("/enrol/apply/apply.php", array('id'=>$_GET['id'],'enrolid'=>$instance->id));
 			$icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
 		}
 
-		if (has_capability("enrol/manual:enrol", $context)) {
+		if (has_capability("enrol/apply:enrol", $context)) {
 			$enrollink = new moodle_url("/enrol/apply/enroluser.php", array('enrolid'=>$instance->id));
 			$icons[] = $OUTPUT->action_icon($enrollink, new pix_icon('t/enrolusers', get_string('enrolusers', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
 		}

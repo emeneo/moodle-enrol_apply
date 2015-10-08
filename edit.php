@@ -20,7 +20,7 @@ $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
 $context =  context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
-require_capability('enrol/self:config', $context);
+require_capability('enrol/apply:config', $context);
 
 $PAGE->set_url('/enrol/apply/edit.php', array('courseid'=>$course->id, 'id'=>$instanceid));
 $PAGE->set_pagelayout('admin');
