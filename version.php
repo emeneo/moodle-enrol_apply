@@ -22,3 +22,4 @@ $plugin->version  = 2015110300;
 $plugin->requires = 2011080100;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Enrolment upon approval plugin Version 2.9-b';
+$plugin->component = 'enrol_apply';
