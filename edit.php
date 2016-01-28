@@ -71,7 +71,7 @@ if ($mform->is_cancelled()) {
     redirect($return);
 }
 
-$PAGE->set_heading($course->fullname);
+$PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_title(get_string('pluginname', 'enrol_apply'));
 
 echo $OUTPUT->header();
