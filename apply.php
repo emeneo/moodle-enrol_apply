@@ -22,6 +22,8 @@ $id = required_param ( 'id', PARAM_INT ); // course id
 $course = $DB->get_record ( 'course', array ('id' => $id ), '*', MUST_EXIST );
 $context =  context_course::instance($course->id, MUST_EXIST);
 
+$enrolid = optional_param('enrolid', 0, PARAM_INT);
+
 require_login ( $course );
 require_capability ( 'moodle/course:enrolreview', $context );
 
@@ -40,15 +42,15 @@ if (isset ( $_POST ['enrolid'] )) {
 		} elseif ($_POST ['type'] == 'cancel') {
 			cancelEnrolment ( $_POST ['enrolid'] );
 		}
-		redirect ( "$CFG->wwwroot/enrol/apply/apply.php?id=" . $id . "&enrolid=" . $_GET ['enrolid'] );
+		redirect ( "$CFG->wwwroot/enrol/apply/apply.php?id=" . $id . "&enrolid=" . $enrolid );
 	}
 }
 
-$enrols = getAllEnrolment ($id);
+$enrols = getAllEnrolment ($enrolid);
 
 echo $OUTPUT->header ();
 echo $OUTPUT->heading ( get_string ( 'confirmusers', 'enrol_apply' ) );
-echo '<form id="frmenrol" method="post" action="apply.php?id=' . $id . '&enrolid=' . $_GET ['enrolid'] . '">';
+echo '<form id="frmenrol" method="post" action="apply.php?id=' . $id . '&enrolid=' . $enrolid . '">';
 echo '<input type="hidden" id="type" name="type" value="confirm">';
 echo '<table class="generalbox editcourse boxaligncenter"><tr class="header">';
 echo '<th class="header" scope="col">&nbsp;</th>';
