@@ -53,6 +53,15 @@ $capabilities = array(
         )
     ),
 
+    'enrol/apply:enrol' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+        )
+    ),
+
     'enrol/apply:unenrol' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
