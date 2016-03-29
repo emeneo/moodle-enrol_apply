@@ -27,8 +27,8 @@ $string['coursename'] = 'Course';
 $string['applyuser'] = 'First name / Surname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Enrol date';
-$string['btnconfirm'] = 'Confirm';
-$string['btncancel'] = 'Cancel';
+$string['btnconfirm'] = 'Confirm requests';
+$string['btncancel'] = 'Cancel requests';
 $string['enrolusers'] = 'Enrol users';
 
 $string['status'] = 'Allow Course enrol confirmation';

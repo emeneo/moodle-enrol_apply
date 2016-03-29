@@ -27,8 +27,8 @@ $string['coursename'] = 'Kurs';
 $string['applyuser'] = 'Voname / Nachname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Einschreibungsdatum';
-$string['btnconfirm'] = 'Bestätigen';
-$string['btncancel'] = 'Abbruch';
+$string['btnconfirm'] = 'Einschreibungsanfragen bestätigen';
+$string['btncancel'] = ' Einschreibungsanfragen ablehnen';
 $string['enrolusers'] = 'Benutzer manuell einschreiben';
 
 $string['status'] = 'Bestätigung der Kurseinschreibung erlauben';
