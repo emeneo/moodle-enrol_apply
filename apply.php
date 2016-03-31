@@ -35,15 +35,14 @@ $PAGE->set_heading ( $course->fullname );
 $PAGE->navbar->add ( get_string ( 'confirmusers', 'enrol_apply' ) );
 $PAGE->set_title ( "$site->shortname: " . get_string ( 'confirmusers', 'enrol_apply' ) );
 
-if (isset ( $_POST ['enrolid'] )) {
-	if ($_POST ['enrolid']) {
-		if ($_POST ['type'] == 'confirm') {
-			confirmEnrolment ( $_POST ['enrolid'] );
-		} elseif ($_POST ['type'] == 'cancel') {
-			cancelEnrolment ( $_POST ['enrolid'] );
-		}
-		redirect ( "$CFG->wwwroot/enrol/apply/apply.php?id=" . $id . "&enrolid=" . $enrolid );
+$userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
+if ($userenrolments != null) {
+	if ($_POST ['type'] == 'confirm') {
+		confirmEnrolment($userenrolments);
+	} elseif ($_POST ['type'] == 'cancel') {
+		cancelEnrolment($userenrolments);
 	}
+	redirect ( "$CFG->wwwroot/enrol/apply/apply.php?id=" . $id . "&enrolid=" . $enrolid );
 }
 
 $enrols = getAllEnrolment ($enrolid);
@@ -62,7 +61,7 @@ echo '<th class="header" scope="col">' . get_string ( 'applydate', 'enrol_apply'
 echo '</tr>';
 foreach ( $enrols as $enrol ) {
 	$picture = get_user_picture($enrol->userid);
-	echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
+	echo '<tr><td><input type="checkbox" name="userenrolments[]" value="' . $enrol->id . '"></td>';
 	echo '<td>' . format_string($enrol->course) . '</td>';
 	echo '<td>' . $OUTPUT->render($picture) . '</td>';
 	echo '<td>'.$enrol->firstname . ' ' . $enrol->lastname.'</td>';
