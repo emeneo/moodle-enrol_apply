@@ -240,7 +240,7 @@ class enrol_apply_plugin extends enrol_plugin {
 function getAllEnrolment($id = null) {
 	global $DB;
 	if ($id) {
-            $sql = 'SELECT ue.userid,ue.id,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated
+            $sql = 'SELECT ue.userid,ue.id,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated,ue.status
                       FROM {course} c
                       JOIN {enrol} e
                         ON e.courseid = c.id
@@ -248,7 +248,7 @@ function getAllEnrolment($id = null) {
                         ON ue.enrolid = e.id
                       JOIN {user} u
                         ON ue.userid = u.id
-                     WHERE ue.status = 1
+                     WHERE ue.status != 0
                        AND e.id = ?';
             $userenrolments = $DB->get_records_sql($sql, array($id));
 	} else {
@@ -260,7 +260,7 @@ function getAllEnrolment($id = null) {
                         ON ue.enrolid = e.id
                  LEFT JOIN {course} c
                         ON e.courseid = c.id
-                     WHERE ue.status = 1
+                     WHERE ue.status != 0
                        AND e.enrol = ?';
             $userenrolments = $DB->get_records_sql($sql, array('apply'));
 	}
@@ -285,6 +285,20 @@ function confirmEnrolment($enrols){
 			$DB->insert_record('role_assignments',$roleAssignments);
 			$info = getRelatedInfo($enrol);
 			sendConfirmMail($info);
+		}
+	}
+}
+
+function waitEnrolment($enrols){
+	global $DB;
+	global $CFG;
+	foreach ($enrols as $enrol){
+		@$enroluser->id = $enrol;
+		@$enroluser->status = 2;
+
+		if($DB->update_record('user_enrolments',$enroluser)){
+			$info = getRelatedInfo($enrol);
+			sendWaitMail($info);
 		}
 	}
 }
@@ -321,6 +335,21 @@ function sendConfirmMail($info){
 	$body = updateMailContent($body,$replace);
 	$contact = core_user::get_support_user();
 	email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
+}
+
+function sendWaitMail($info){
+	global $DB;
+	global $CFG;
+    //global $USER;
+	$apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
+
+	$replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
+	$body = get_config('enrol_apply', 'waitmailcontent');
+	$body = updateMailContent($body,$replace);
+	$contact = get_admin();
+    //confirm mail will sent by the admin
+    //$contact = $USER;
+	email_to_user($info, $contact, get_config('enrol_apply', 'waitmailsubject'), html_to_text($body), $body);
 }
 
 function sendConfirmMailToTeachers($instance,$info,$applydescription){
