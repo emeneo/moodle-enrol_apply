@@ -16,18 +16,23 @@ $string['pluginname_desc'] = 'With this plug-in users can apply to be enrolled i
 
 $string['confirmmailsubject'] = 'Confirmation email subject';
 $string['confirmmailcontent'] = 'Confirmation email content';
+$string['waitmailsubject'] = 'Waiting list mail subject';
+$string['waitmailcontent'] = 'Waiting list mail content';
 $string['cancelmailsubject'] = 'Cancelation email subject';
 $string['cancelmailcontent'] = 'Cancelation email content';
 $string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+$string['waitmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
 $string['cancelmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
 
 $string['confirmusers'] = 'Enrol Confirm';
+$string['confirmusers_desc'] = 'Users in gray colored rows are on the waiting list.';
 
 $string['coursename'] = 'Course';
 $string['applyuser'] = 'First name / Surname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Enrol date';
 $string['btnconfirm'] = 'Confirm requests';
+$string['btnwait'] = 'put marked users on waiting list';
 $string['btncancel'] = 'Cancel requests';
 $string['enrolusers'] = 'Enrol users';
 

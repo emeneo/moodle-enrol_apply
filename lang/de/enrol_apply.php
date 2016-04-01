@@ -16,18 +16,23 @@ $string['pluginname_desc'] = 'With this plugin users can apply to a course and a
 
 $string['confirmmailsubject'] = 'E-Mail-Betreff für Bestätigung der Einschreibung';
 $string['confirmmailcontent'] = 'E-Mail für Bestätigung der Einschreibung';
+$string['waitmailsubject'] = 'E-Mail-Betreff für Benachrichtigung über das setzen auf Warteliste';
+$string['waitmailcontent'] = 'E-Mail für Benachrichtigung über das setzen auf Warteliste';
 $string['cancelmailsubject'] = 'Mail-Betreff für Verwerfen der Einschreibung';
 $string['cancelmailcontent'] = 'Mail für Verwerfen der Einschreibung';
 $string['confirmmailcontent_desc'] = 'Bitte benutzen Sie die Spezialmarkierungen, um den gewünschten Mailinhalt zu ersetzen.<br>{firstname}:Registrierungsname; {content}:Kursname';
+$string['waitmailcontent_desc'] = 'Bitte benutzen Sie die Spezialmarkierungen, um den gewünschten Mailinhalt zu ersetzen.<br>{firstname}:Registrierungsname; {content}:Kursname';
 $string['cancelmailcontent_desc'] = 'Bitte benutzen Sie die Spezialmarkierungen, um den gewünschten Mailinhalt zu ersetzen.<br>{firstname}:Registrierungsname; {content}:Kursname';
 
 $string['confirmusers'] = 'Einschreibung bestätigen';
+$string['confirmusers_desc'] = 'Nutzer in grau hinterlegten Zeilen befinden sich auf der Warteliste und können noch nachträglich dem Kurs hinzugefügt oder gelöscht werden.';
 
 $string['coursename'] = 'Kurs';
 $string['applyuser'] = 'Voname / Nachname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Einschreibungsdatum';
 $string['btnconfirm'] = 'Einschreibungsanfragen bestätigen';
+$string['btnwait'] = 'markierte Nutzer auf die Warteliste setzen';
 $string['btncancel'] = ' Einschreibungsanfragen ablehnen';
 $string['enrolusers'] = 'Benutzer manuell einschreiben';
 
