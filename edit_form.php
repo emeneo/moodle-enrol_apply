@@ -48,6 +48,8 @@ class enrol_self_edit_form extends moodleform {
         $mform->addElement('select', 'customint2', get_string('show_extra_user_profile', 'enrol_apply'), $options);
         $mform->setDefault('customint2', $plugin->get_config('customint2'));
 
+        $mform->addElement('advcheckbox', 'customint3', get_string('sendmailtoteacher', 'enrol_apply'));
+
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');

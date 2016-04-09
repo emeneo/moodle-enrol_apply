@@ -55,6 +55,7 @@ if ($mform->is_cancelled()) {
         $instance->customtext1    = $data->customtext1;
         $instance->customint1    = $data->customint1;
         $instance->customint2    = $data->customint2;
+        $instance->customint3    = $data->customint3;
         $instance->roleid         = $data->roleid;
         $instance->timemodified   = time();
         $DB->update_record('enrol', $instance);
@@ -64,6 +65,7 @@ if ($mform->is_cancelled()) {
             'status'          =>$data->status,
             'name'            =>$data->name,
             'roleid'          =>$data->roleid,
+            'customint3'      =>$data->customint3,
             'customtext1'     =>$data->customtext1);
         $plugin->add_instance($course, $fields);
     }
