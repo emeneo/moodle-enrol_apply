@@ -382,7 +382,7 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
 		($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
 	}
 	
-	if($apply_setting['sendmailtoteacher']->value == 1){
+	if($instance->customint3 == 1){
 		$course = get_course($courseid);
 		$context =  context_course::instance($courseid, MUST_EXIST);
 		$teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
