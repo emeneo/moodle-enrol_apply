@@ -48,6 +48,13 @@ if ($userenrolments != null) {
 }
 
 $enrols = getAllEnrolment ($enrolid);
+$applicationinfo = $DB->get_records_sql('
+	SELECT userenrolmentid, comment
+	FROM {enrol_apply_applicationinfo}
+	WHERE userenrolmentid IN (
+		SELECT id
+		FROM {user_enrolments}
+		WHERE enrolid = ?)', array($enrolid));
 
 echo $OUTPUT->header ();
 echo $OUTPUT->heading ( get_string ( 'confirmusers', 'enrol_apply' ) );
@@ -61,6 +68,7 @@ echo '<th class="header" scope="col">&nbsp;</th>';
 echo '<th class="header" scope="col">' . get_string ( 'applyuser', 'enrol_apply' ) . '</th>';
 echo '<th class="header" scope="col">' . get_string ( 'applyusermail', 'enrol_apply' ) . '</th>';
 echo '<th class="header" scope="col">' . get_string ( 'applydate', 'enrol_apply' ) . '</th>';
+echo '<th class="header" scope="col">' . get_string ( 'comment', 'enrol_apply' ) . '</th>';
 echo '</tr>';
 foreach ( $enrols as $enrol ) {
 	$picture = get_user_picture($enrol->userid);
@@ -74,7 +82,9 @@ foreach ( $enrols as $enrol ) {
 	echo '<td>' . $OUTPUT->render($picture) . '</td>';
 	echo '<td>'.$enrol->firstname . ' ' . $enrol->lastname.'</td>';
 	echo '<td>' . $enrol->email . '</td>';
-	echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td></tr>';
+	echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td>';
+	echo '<td>' . htmlspecialchars($applicationinfo[$enrol->id]->comment) . '</td>';
+	echo '</tr>';
 }
 echo '</table>';
 echo '<p align="center">';

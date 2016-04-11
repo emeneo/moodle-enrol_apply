@@ -122,6 +122,11 @@ class enrol_apply_plugin extends enrol_plugin {
 				}
 
 				$this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
+				$userenrolment = $DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id), 'id', MUST_EXIST);
+				$applicationinfo = new stdClass();
+				$applicationinfo->userenrolmentid = $userenrolment->id;
+				$applicationinfo->comment = $applydescription;
+				$DB->insert_record('enrol_apply_applicationinfo', $applicationinfo, false);
 				sendConfirmMailToTeachers($instance, $data, $applydescription);
 				sendConfirmMailToManagers($instance, $data, $applydescription);
 				
@@ -285,6 +290,7 @@ function confirmEnrolment($enrols){
 			@$roleAssignments->modifierid = 2;
 			$DB->insert_record('role_assignments',$roleAssignments);
 			$info = getRelatedInfo($enrol);
+			$DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 			sendConfirmMail($info);
 		}
 	}
@@ -309,6 +315,7 @@ function cancelEnrolment($enrols){
 	foreach ($enrols as $enrol){
 		$info = getRelatedInfo($enrol);
 		if($DB->delete_records('user_enrolments',array('id'=>$enrol))){
+			$DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 			sendCancelMail($info);
 		}
 	}
