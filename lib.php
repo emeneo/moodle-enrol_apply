@@ -17,10 +17,7 @@ class enrol_apply_plugin extends enrol_plugin {
 	* @return int id of new instance
 	*/
 	public function add_default_instance($course) {
-		$fields = array(
-		    'status'          => $this->get_config('status'),
-		    'roleid'          => $this->get_config('roleid', 0)
-		);
+		$fields = $this->get_instance_defaults();
 		return $this->add_instance($course, $fields);
 	}
 
@@ -240,6 +237,22 @@ class enrol_apply_plugin extends enrol_plugin {
 			$actions[] = new user_enrolment_action(new pix_icon('t/edit', ''), get_string('edit'), $url, array('class'=>'editenrollink', 'rel'=>$ue->id));
 		}
 		return $actions;
+	}
+
+	/**
+	 * Returns defaults for new instances.
+	 * @return array
+	 */
+	public function get_instance_defaults() {
+	    $fields = array();
+	    $fields['status']          = $this->get_config('status');
+	    $fields['roleid']          = $this->get_config('roleid', 0);
+	    $fields['customint1']      = $this->get_config('show_standard_user_profile');
+	    $fields['customint2']      = $this->get_config('show_extra_user_profile');
+	    $fields['customint3']      = $this->get_config('sendmailtoteacher');
+	    $fields['customint4']      = $this->get_config('sendmailtomanager');
+
+	    return $fields;
 	}
 }
 
