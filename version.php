@@ -1,7 +1,7 @@
 <?php
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -16,6 +16,7 @@
  * @copyright  Emeneo {@link http://www.emeneo.com/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2016042201;

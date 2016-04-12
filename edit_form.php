@@ -2,7 +2,7 @@
 
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -40,7 +40,7 @@ class enrol_self_edit_form extends moodleform {
         $mform->addElement('select', 'roleid', get_string('defaultrole', 'role'), $roles);
         $mform->setDefault('roleid', $plugin->get_config('roleid'));
 
-		$mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
+        $mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
 
         $mform->addElement('select', 'customint1', get_string('show_standard_user_profile', 'enrol_apply'), $options);
         $mform->setDefault('customint1', $plugin->get_config('customint1'));

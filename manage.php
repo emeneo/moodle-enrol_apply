@@ -1,7 +1,7 @@
 <?php
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -26,14 +26,14 @@ $PAGE->navbar->add ( get_string ( 'confirmusers', 'enrol_apply' ) );
 $PAGE->set_title ( "$site->shortname: " . get_string ( 'confirmusers', 'enrol_apply' ) );
 
 if (isset ( $_POST ['enrolid'] )) {
-	if ($_POST ['enrolid']) {
-		if ($_POST ['type'] == 'confirm') {
-			confirmEnrolment ( $_POST ['enrolid'] );
-		} elseif ($_POST ['type'] == 'cancel') {
-			cancelEnrolment ( $_POST ['enrolid'] );
-		}
-		redirect ( "$CFG->wwwroot/enrol/apply/manage.php" );
-	}
+    if ($_POST ['enrolid']) {
+        if ($_POST ['type'] == 'confirm') {
+            confirmEnrolment ( $_POST ['enrolid'] );
+        } elseif ($_POST ['type'] == 'cancel') {
+            cancelEnrolment ( $_POST ['enrolid'] );
+        }
+        redirect ( "$CFG->wwwroot/enrol/apply/manage.php" );
+    }
 }
 
 $enrols = getAllEnrolment();
@@ -49,11 +49,11 @@ echo '<th class="header" scope="col">' . get_string ( 'applyusermail', 'enrol_ap
 echo '<th class="header" scope="col">' . get_string ( 'applydate', 'enrol_apply' ) . '</th>';
 echo '</tr>';
 foreach ( $enrols as $enrol ) {
-	echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
-	echo '<td>' . format_string($enrol->course) . '</td>';
-	echo '<td>' . $enrol->firstname . ' ' . $enrol->lastname . '</td>';
-	echo '<td>' . $enrol->email . '</td>';
-	echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td></tr>';
+    echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
+    echo '<td>' . format_string($enrol->course) . '</td>';
+    echo '<td>' . $enrol->firstname . ' ' . $enrol->lastname . '</td>';
+    echo '<td>' . $enrol->email . '</td>';
+    echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td></tr>';
 }
 echo '</table>';
 echo '<p align="center"><input type="button" value="' . get_string ( 'btnconfirm', 'enrol_apply' ) . '" onclick="doSubmit(\'confrim\');">&nbsp;&nbsp;<input type="button" value="' . get_string ( 'btncancel', 'enrol_apply' ) . '" onclick="doSubmit(\'cancel\');"></p>';

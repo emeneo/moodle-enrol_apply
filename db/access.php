@@ -78,7 +78,4 @@ $capabilities = array(
             'student' => CAP_ALLOW,
         )
     ),
-
 );
-
-

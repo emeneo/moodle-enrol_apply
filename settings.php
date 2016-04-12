@@ -1,7 +1,7 @@
 <?php
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -31,7 +31,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('enrol_apply_cancelmailcontent', '', get_string('cancelmailcontent_desc', 'enrol_apply')));
     $settings->add(new admin_setting_confightmleditor('enrol_apply/cancelmailcontent', get_string('cancelmailcontent', 'enrol_apply'),'utf-8',''));
     
-	$settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtoteacher', get_string('sendmailtoteacher', 'enrol_apply'), '', 0));
+    $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtoteacher', get_string('sendmailtoteacher', 'enrol_apply'), '', 0));
     $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtomanager', get_string('sendmailtomanager', 'enrol_apply'), '', 0));
     
     //--- enrol instance defaults ----------------------------------------------------------------------------

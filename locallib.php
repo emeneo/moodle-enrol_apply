@@ -2,7 +2,7 @@
 
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -56,7 +56,7 @@ class enrol_apply_enrol_form extends moodleform {
             // nothing?
         }
 
-		$mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
+        $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
         $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'),'cols="80"');
 
         //user profile

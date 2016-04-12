@@ -1,7 +1,7 @@
 <?php
 /**
  * *************************************************************************
- * *                  Apply	Enrol   				                      **
+ * *                  Apply Enrol                                         **
  * *************************************************************************
  * @copyright   emeneo.com                                                **
  * @link        emeneo.com                                                **
@@ -36,7 +36,7 @@ $ctxsql = context_helper::get_preload_record_columns_sql('ctx');
 $sql = "SELECT c.*, $ctxsql
           FROM {course} c
      LEFT JOIN {enrol} e ON e.courseid = c.id
-		 LEFT JOIN {context} ctx ON (ctx.instanceid = c.id AND ctx.contextlevel = :contextcourse)
+         LEFT JOIN {context} ctx ON (ctx.instanceid = c.id AND ctx.contextlevel = :contextcourse)
          WHERE e.id = :enrolid";
 $params = array('enrolid' => $ue->enrolid, 'contextcourse' => CONTEXT_COURSE);
 $course = $DB->get_record_sql($sql, $params, MUST_EXIST);
