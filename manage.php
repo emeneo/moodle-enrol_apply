@@ -89,19 +89,32 @@ $table->define_headers($headers);
 $table->sortable(true, 'id');
 
 
-echo '<form id="frmenrol" method="post" action="manage.php?id=' . $id . '">';
-echo '<input type="hidden" id="type" name="type" value="confirm">';
+echo html_writer::start_tag('form', array('id' => 'enrol_apply_manage_form', 'method' => 'post', 'action' => $manageurl->out()));
+echo html_writer::empty_tag('input', array('type' => 'hidden', 'id' => 'type', 'name' => 'type', 'value' => 'confirm'));
 
 $table->out(50, true);
 
-echo '<p align="center">';
-echo '<input type="button" value="' . get_string ( 'btnconfirm', 'enrol_apply' ) . '" onclick="doSubmit(\'confirm\');">';
-echo '<input type="button" value="' . get_string ( 'btnwait', 'enrol_apply' ) . '" onclick="doSubmit(\'wait\');">';
-echo '<input type="button" value="' . get_string ( 'btncancel', 'enrol_apply' ) . '" onclick="doSubmit(\'cancel\');">';
-echo '</p>';
-echo '</form>';
-echo '<script>function doSubmit(type){
-    document.getElementById("type").value=type;
-    document.getElementById("frmenrol").submit();
-}</script>';
+echo html_writer::start_tag('p', array('align' => 'center'));
+echo html_writer::empty_tag('input', array(
+    'type' => 'button',
+    'onclick' => 'doSubmit("confirm");',
+    'value' => get_string('btnconfirm', 'enrol_apply')));
+echo html_writer::empty_tag('input', array(
+    'type' => 'button',
+    'onclick' => 'doSubmit("wait");',
+    'value' => get_string('btnwait', 'enrol_apply')));
+echo html_writer::empty_tag('input', array(
+    'type' => 'button',
+    'onclick' => 'doSubmit("cancel");',
+    'value' => get_string('btncancel', 'enrol_apply')));
+echo html_writer::end_tag('p');
+echo html_writer::end_tag('form');
+
+$js = "
+    function doSubmit(type){
+        document.getElementById('type').value=type;
+        document.getElementById('enrol_apply_manage_form').submit();
+    }";
+echo html_writer::tag('script', $js, array('type' => 'text/javascript'));
+
 echo $OUTPUT->footer ();
