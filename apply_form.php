@@ -23,7 +23,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/formslib.php");
 
-class enrol_apply_enrol_form extends moodleform {
+class enrol_apply_apply_form extends moodleform {
     protected $instance;
 
     /**

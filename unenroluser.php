@@ -19,7 +19,6 @@
  */
 
 require('../../config.php');
-require_once("$CFG->dirroot/enrol/locallib.php");
 require_once("$CFG->dirroot/enrol/renderer.php");
 
 $ueid    = required_param('ue', PARAM_INT); // user enrolment id

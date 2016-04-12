@@ -149,7 +149,7 @@ class enrol_apply_current_participant extends user_selector_base {
     protected function get_options() {
         $options = parent::get_options();
         $options['enrolid'] = $this->enrolid;
-        $options['file']    = 'enrol/apply/locallib.php';
+        $options['file']    = 'enrol/apply/apply_form.php';
         return $options;
     }
 }

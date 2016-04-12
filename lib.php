@@ -22,17 +22,22 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 
     public function allow_unenrol(stdClass $instance) {
-        // users with unenrol cap may unenrol other users manually manually
+        // Users with unenrol cap may unenrol other users manually.
         return true;
     }
 
+    /**
+     * Returns link to page which may be used to add new instance of enrolment plugin in course.
+     * Multiple instances supported.
+     * @param int $courseid
+     * @return moodle_url page url
+     */
     public function get_newinstance_link($courseid) {
         $context =  context_course::instance($courseid, MUST_EXIST);
 
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/apply:config', $context)) {
             return NULL;
         }
-        // multiple instances supported - different roles with different password
         return new moodle_url('/enrol/apply/edit.php', array('courseid'=>$courseid));
     }
 
@@ -44,18 +49,16 @@ class enrol_apply_plugin extends enrol_plugin {
             return null;
         }
         if ($DB->record_exists('user_enrolments', array('userid'=>$USER->id, 'enrolid'=>$instance->id))) {
-            //TODO: maybe we should tell them they are already enrolled, but can not access the course
-            //return null;
             return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
         }
 
-		require_once("$CFG->dirroot/enrol/apply/locallib.php");
+        require_once("$CFG->dirroot/enrol/apply/apply_form.php");
 
-        $form = new enrol_apply_enrol_form(NULL, $instance);
+        $form = new enrol_apply_apply_form(NULL, $instance);
 
-        $instanceid = optional_param('instance', 0, PARAM_INT);
-        if ($instance->id == $instanceid) {
-            if ($data = $form->get_data()) {
+        if ($data = $form->get_data()) {
+            // Only process when form submission is for this instance (multi instance support).
+            if ($data->instance == $instance->id) {
                 $userInfo = $data;
                 $applydescription = $userInfo->applydescription;
                 unset($userInfo->applydescription);
@@ -124,13 +127,10 @@ class enrol_apply_plugin extends enrol_plugin {
                 redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
             }
         }
-        //exit;
-        ob_start();
-        $form->display();
-        $output = ob_get_clean();
+
+        $output = $form->render();
 
         return $OUTPUT->box($output);
-
     }
 
     public function get_action_icons(stdClass $instance) {
@@ -149,7 +149,7 @@ class enrol_apply_plugin extends enrol_plugin {
         }
 
         if (has_capability('enrol/apply:manage', $context)) {
-            $managelink = new moodle_url("/enrol/apply/apply.php", array('id'=>$_GET['id'],'enrolid'=>$instance->id));
+            $managelink = new moodle_url("/enrol/apply/manage.php", array('id'=>$instance->id));
             $icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
         }
 
@@ -253,7 +253,7 @@ function getAllEnrolment($id = null) {
                        AND e.id = ?';
             $userenrolments = $DB->get_records_sql($sql, array($id));
     } else {
-            $sql = 'SELECT ue.id,ue.userid,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated
+            $sql = 'SELECT ue.id,ue.userid,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated,ue.status
                       FROM {user_enrolments} ue
                  LEFT JOIN {user} u
                         ON ue.userid = u.id
@@ -425,7 +425,7 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
                 }
             }
 
-            $body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/apply.php", array('id'=>$courseid,'enrolid'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
+            $body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/manage.php", array('id'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
             $contact = core_user::get_support_user();
             $info = $editTeacher;
             $info->coursename = $course->fullname;
