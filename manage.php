@@ -13,6 +13,7 @@
 require_once ('../../config.php');
 require_once($CFG->dirroot.'/enrol/apply/lib.php');
 require_once($CFG->dirroot.'/enrol/apply/manage_table.php');
+require_once($CFG->dirroot.'/enrol/apply/renderer.php');
 
 $id = optional_param('id', null, PARAM_INT);
 $userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
@@ -63,58 +64,8 @@ if ($userenrolments != null) {
     redirect($manageurl);
 }
 
-echo $OUTPUT->header ();
-echo $OUTPUT->heading ( get_string ( 'confirmusers', 'enrol_apply' ) );
-echo get_string('confirmusers_desc', 'enrol_apply');
-
 $table = new enrol_apply_manage_table($id);
 $table->define_baseurl($manageurl);
-$columns = array(
-    'checkboxcolumn',
-    'course',
-    'fullname', // Magic happens here: The column heading will automatically be set.
-    'email',
-    'applydate',
-    'applycomment');
-$headers = array(
-    '',
-    get_string('course'),
-    'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
-    get_string('email'),
-    get_string('applydate', 'enrol_apply'),
-    get_string('comment', 'enrol_apply'));
-$table->define_columns($columns);
-$table->define_headers($headers);
 
-$table->sortable(true, 'id');
-
-
-echo html_writer::start_tag('form', array('id' => 'enrol_apply_manage_form', 'method' => 'post', 'action' => $manageurl->out()));
-echo html_writer::empty_tag('input', array('type' => 'hidden', 'id' => 'type', 'name' => 'type', 'value' => 'confirm'));
-
-$table->out(50, true);
-
-echo html_writer::start_tag('p', array('align' => 'center'));
-echo html_writer::empty_tag('input', array(
-    'type' => 'button',
-    'onclick' => 'doSubmit("confirm");',
-    'value' => get_string('btnconfirm', 'enrol_apply')));
-echo html_writer::empty_tag('input', array(
-    'type' => 'button',
-    'onclick' => 'doSubmit("wait");',
-    'value' => get_string('btnwait', 'enrol_apply')));
-echo html_writer::empty_tag('input', array(
-    'type' => 'button',
-    'onclick' => 'doSubmit("cancel");',
-    'value' => get_string('btncancel', 'enrol_apply')));
-echo html_writer::end_tag('p');
-echo html_writer::end_tag('form');
-
-$js = "
-    function doSubmit(type){
-        document.getElementById('type').value=type;
-        document.getElementById('enrol_apply_manage_form').submit();
-    }";
-echo html_writer::tag('script', $js, array('type' => 'text/javascript'));
-
-echo $OUTPUT->footer ();
+$renderer = $PAGE->get_renderer('enrol_apply');
+$renderer->manage_page($table, $manageurl);
