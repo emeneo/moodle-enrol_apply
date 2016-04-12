@@ -64,46 +64,11 @@ class enrol_apply_plugin extends enrol_plugin {
                 unset($userInfo->applydescription);
                 $userInfo->id = $USER->id;
 
-                $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
-
-                $show_standard_user_profile = $show_extra_user_profile = false;
-                if($instance->customint1 != ''){
-                    ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-                }else{
-                    ($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-                }
-
-                if($instance->customint2 != ''){
-                    ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-                }else{
-                    ($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-                }
-
-                if(!$show_standard_user_profile && $show_extra_user_profile){
-                    profile_save_data($userInfo);
-                    $res = $DB->update_record('user',$userInfoProfile);
-                    //$res = $DB->update_record('user',$userInfo);
-                }
-                /*elseif($show_standard_user_profile && $show_extra_user_profile){
-                    profile_save_data($userInfo);
-                    $res = $DB->update_record('user',$userInfo);
-                }*/
-
-                $enrol = enrol_get_plugin('self');
-                $timestart = time();
-                if ($instance->enrolperiod) {
-                    $timeend = $timestart + $instance->enrolperiod;
-                } else {
-                    $timeend = 0;
-                }
-
+                $timestart = 0;
+                $timeend = 0;
                 $roleid = $instance->roleid;
-                if(!$roleid){
-                    $role = $DB->get_record_sql("select * from ".$CFG->prefix."role where archetype='student' limit 1");
-                    $roleid = $role->id;
-                }
 
-                $this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend,1);
+                $this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend, ENROL_USER_SUSPENDED);
                 $userenrolment = $DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id), 'id', MUST_EXIST);
                 $applicationinfo = new stdClass();
                 $applicationinfo->userenrolmentid = $userenrolment->id;
@@ -289,32 +254,29 @@ function cancelEnrolment($enrols){
 function sendCancelMail($info){
     global $DB;
     global $CFG;
-    $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
     $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
-    $body = $apply_setting['cancelmailcontent']->value;
+    $body = get_config('enrol_apply', 'cancelmailcontent');
     $body = updateMailContent($body,$replace);
     $contact = core_user::get_support_user();
-    email_to_user($info, $contact, $apply_setting['cancelmailsubject']->value, html_to_text($body), $body);
+    email_to_user($info, $contact, get_config('enrol_apply', 'cancelmailsubject'), html_to_text($body), $body);
 }
 
 function sendConfirmMail($info){
     global $DB;
     global $CFG;
-    $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
     $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
-    $body = $apply_setting['confirmmailcontent']->value;
+    $body = get_config('enrol_apply', 'confirmmailcontent');
     $body = updateMailContent($body,$replace);
     $contact = core_user::get_support_user();
-    email_to_user($info, $contact, $apply_setting['confirmmailsubject']->value, html_to_text($body), $body);
+    email_to_user($info, $contact, get_config('enrol_apply', 'confirmmailsubject'), html_to_text($body), $body);
 }
 
 function sendWaitMail($info){
     global $DB;
     global $CFG;
     //global $USER;
-    $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
     $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
     $body = get_config('enrol_apply', 'waitmailcontent');
@@ -332,20 +294,9 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
 
     $courseid = $instance->courseid;
     $instanceid = $instance->id;
-    $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-    $show_standard_user_profile = $show_extra_user_profile = false;
-    if($instance->customint1 != ''){
-        ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    }else{
-        ($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    }
-
-    if($instance->customint2 != ''){
-        ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    }else{
-        ($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    }
+    ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+    ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
     
     if($instance->customint3 == 1){
         $course = get_course($courseid);
@@ -410,22 +361,11 @@ function sendConfirmMailToManagers($instance,$info,$applydescription){
     global $USER;
 
     $courseid = $instance->courseid;
-    $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-    $show_standard_user_profile = $show_extra_user_profile = false;
-    if($instance->customint1 != ''){
-        ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    }else{
-        ($apply_setting['show_standard_user_profile']->value == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    }
-
-    if($instance->customint2 != ''){
-        ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    }else{
-        ($apply_setting['show_extra_user_profile']->value == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    }
+    ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
+    ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
     
-    if($apply_setting['sendmailtomanager']->value == 1){
+    if(get_config('enrol_apply', 'sendmailtomanager') == 1){
         $course = get_course($courseid);
         $context = context_system::instance();
         $managerType = $DB->get_record('role',array("shortname"=>"manager"));

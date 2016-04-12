@@ -65,6 +65,8 @@ if ($mform->is_cancelled()) {
             'status'          =>$data->status,
             'name'            =>$data->name,
             'roleid'          =>$data->roleid,
+            'customint1'      =>$data->customint1,
+            'customint2'      =>$data->customint2,
             'customint3'      =>$data->customint3,
             'customtext1'     =>$data->customtext1);
         $plugin->add_instance($course, $fields);
