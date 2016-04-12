@@ -238,36 +238,6 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 }
 
-function getAllEnrolment($id = null) {
-    global $DB;
-    if ($id) {
-            $sql = 'SELECT ue.userid,ue.id,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated,ue.status
-                      FROM {course} c
-                      JOIN {enrol} e
-                        ON e.courseid = c.id
-                      JOIN {user_enrolments} ue
-                        ON ue.enrolid = e.id
-                      JOIN {user} u
-                        ON ue.userid = u.id
-                     WHERE ue.status != 0
-                       AND e.id = ?';
-            $userenrolments = $DB->get_records_sql($sql, array($id));
-    } else {
-            $sql = 'SELECT ue.id,ue.userid,u.firstname,u.lastname,u.email,u.picture,c.fullname as course,ue.timecreated,ue.status
-                      FROM {user_enrolments} ue
-                 LEFT JOIN {user} u
-                        ON ue.userid = u.id
-                 LEFT JOIN {enrol} e
-                        ON ue.enrolid = e.id
-                 LEFT JOIN {course} c
-                        ON e.courseid = c.id
-                     WHERE ue.status != 0
-                       AND e.enrol = ?';
-            $userenrolments = $DB->get_records_sql($sql, array('apply'));
-    }
-    return $userenrolments;
-}
-
 function confirmEnrolment($enrols){
     global $DB;
     global $CFG;
