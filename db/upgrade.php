@@ -51,4 +51,6 @@ function xmldb_enrol_apply_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016012801, 'enrol', 'apply');
     }
 
+    return true;
+
 }
