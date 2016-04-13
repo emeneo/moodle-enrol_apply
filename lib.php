@@ -49,24 +49,6 @@ class enrol_apply_plugin extends enrol_plugin {
 			return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
 		}
 
-		if ($instance->enrolstartdate != 0 and $instance->enrolstartdate > time()) {
-			//TODO: inform that we can not enrol yet
-			return null;
-		}
-
-		if ($instance->enrolenddate != 0 and $instance->enrolenddate < time()) {
-			//TODO: inform that enrolment is not possible any more
-			return null;
-		}
-
-		if ($instance->customint3 > 0) {
-			// max enrol limit specified
-			$count = $DB->count_records('user_enrolments', array('enrolid'=>$instance->id));
-			if ($count >= $instance->customint3) {
-				// bad luck, no more self enrolments here
-				return $OUTPUT->notification(get_string('maxenrolledreached', 'enrol_self'));
-			}
-		}
 		require_once("$CFG->dirroot/enrol/apply/locallib.php");
 
 		$form = new enrol_apply_enrol_form(NULL, $instance);
