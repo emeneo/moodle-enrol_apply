@@ -43,7 +43,7 @@ if ($instanceid) {
     $instance->courseid = $course->id;
 }
 
-$mform = new enrol_self_edit_form(NULL, array($instance, $plugin, $context));
+$mform = new enrol_apply_edit_form(NULL, array($instance, $plugin, $context));
 
 if ($mform->is_cancelled()) {
     redirect($return);

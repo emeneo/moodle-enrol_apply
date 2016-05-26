@@ -14,7 +14,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
-class enrol_self_edit_form extends moodleform {
+class enrol_apply_edit_form extends moodleform {
 
     function definition() {
         $mform = $this->_form;
