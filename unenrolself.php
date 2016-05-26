@@ -15,9 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Self enrolment plugin - support for user self unenrolment.
+ * User self unenrolment action and user secrity query for the enrol_apply plugin.
+ * The presence of this file plus the capability 'apply:unenrolself'
+ * results in a self unenrolment link in the course administration
+ * navigation ('Unenrol me from ...').
  *
- * @package    enrol_self
+ * @package    enrol_apply
  * @copyright  2010 Petr Skoda  {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,11 +52,6 @@ $PAGE->set_title($plugin->get_instance_name($instance));
 
 if ($confirm and confirm_sesskey()) {
     $plugin->unenrol_user($instance, $USER->id);
-                
-        // Deprecated fixed by Shiro <gigashiro@gmail.com>
-    //add_to_log($course->id, 'course', 'unenrol', '../enrol/users.php?id='.$course->id, $course->id); //TODO: there should be userid somewhere!
-        $context = context_course::instance($course->id);
-        \core\event\user_enrolment_deleted::delete(array('context' => $context))->trigger();
 
     redirect(new moodle_url('/index.php'));
 }
