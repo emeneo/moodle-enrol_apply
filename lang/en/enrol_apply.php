@@ -14,15 +14,31 @@ $string['enrolname'] = 'Course enrol confirmation';
 $string['pluginname'] = 'Course enrol confirmation';
 $string['pluginname_desc'] = 'With this plug-in users can apply to be enrolled in a course. A teacher or site manager will then have to approve the enrolment before the user gets enroled.';
 
+$string['confirmmail_heading'] = 'Confirmation email';
+$string['confirmmail_desc'] = '';
 $string['confirmmailsubject'] = 'Confirmation email subject';
+$string['confirmmailsubject_desc'] = '';
 $string['confirmmailcontent'] = 'Confirmation email content';
-$string['waitmailsubject'] = 'Waiting list mail subject';
-$string['waitmailcontent'] = 'Waiting list mail content';
-$string['cancelmailsubject'] = 'Cancelation email subject';
-$string['cancelmailcontent'] = 'Cancelation email content';
 $string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['waitmail_heading'] = 'Waiting list email';
+$string['waitmail_desc'] = '';
+$string['waitmailsubject'] = 'Waiting list mail subject';
+$string['waitmailsubject_desc'] = '';
+$string['waitmailcontent'] = 'Waiting list mail content';
 $string['waitmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['cancelmail_heading'] = 'Cancelation email';
+$string['cancelmail_desc'] = '';
+$string['cancelmailsubject'] = 'Cancelation email subject';
+$string['cancelmailsubject_desc'] = '';
+$string['cancelmailcontent'] = 'Cancelation email content';
 $string['cancelmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['notify_heading'] = 'Notification settings';
+$string['notify_desc'] = 'Define who gets notified about new enrolment applications.';
+$string['sendmailtoteacher'] = 'Send email notification to teachers';
+$string['sendmailtomanager'] = 'Send email notification to managers';
 
 $string['confirmusers'] = 'Enrol Confirm';
 $string['confirmusers_desc'] = 'Users in gray colored rows are on the waiting list.';
@@ -49,8 +65,7 @@ $string['apply:unenrolself'] = 'Cancel self from the course';
  
 $string['notification'] = '<b>Enrolment application successfully sent</b>. <br/><br/>You will be informed by email when your enrolment has been confirmed.';
 
-$string['sendmailtoteacher'] = 'Send email notification to teachers';
-$string['sendmailtomanager'] = 'Send email notification to managers';
+
 $string['mailtoteacher_suject'] = 'New Enrolment request!';
 $string['editdescription'] = 'Textarea description';
 $string['comment'] = 'Comment';

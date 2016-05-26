@@ -13,48 +13,102 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    //--- general settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_heading('enrol_apply_enrolname','',get_string('pluginname_desc', 'enrol_apply')));
     
-    $settings->add(new admin_setting_configtext('enrol_apply/confirmmailsubject','',get_string('confirmmailsubject', 'enrol_apply'),null,PARAM_TEXT,60));
+    // Confirm mail settings.
+    $settings->add(new admin_setting_heading(
+        'enrol_apply_confirmmail',
+        get_string('confirmmail_heading', 'enrol_apply'),
+        get_string('confirmmail_desc', 'enrol_apply')));
+    $settings->add(new admin_setting_configtext(
+        'enrol_apply/confirmmailsubject',
+        get_string('confirmmailsubject', 'enrol_apply'),
+        get_string('confirmmailsubject_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT,
+        60));
+    $settings->add(new admin_setting_confightmleditor(
+        'enrol_apply/confirmmailcontent',
+        get_string('confirmmailcontent', 'enrol_apply'),
+        get_string('confirmmailcontent_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT));
 
-    $settings->add(new admin_setting_heading('enrol_apply_confirmmailcontent', '', get_string('confirmmailcontent_desc', 'enrol_apply')));
-    $settings->add(new admin_setting_confightmleditor('enrol_apply/confirmmailcontent', get_string('confirmmailcontent', 'enrol_apply'),'utf-8',''));
-    
-    $settings->add(new admin_setting_configtext('enrol_apply/waitmailsubject','',get_string('waitmailsubject', 'enrol_apply'),null,PARAM_TEXT,60));
+    // Wait mail settings.
+    $settings->add(new admin_setting_heading(
+        'enrol_apply_waitmail',
+        get_string('waitmail_heading', 'enrol_apply'),
+        get_string('waitmail_desc', 'enrol_apply')));
+    $settings->add(new admin_setting_configtext(
+        'enrol_apply/waitmailsubject',
+        get_string('waitmailsubject', 'enrol_apply'),
+        get_string('waitmailsubject_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT,
+        60));
+    $settings->add(new admin_setting_confightmleditor(
+        'enrol_apply/waitmailcontent',
+        get_string('waitmailcontent', 'enrol_apply'),
+        get_string('waitmailcontent_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT));
 
-    $settings->add(new admin_setting_heading('enrol_apply_waitmailcontent', '', get_string('waitmailcontent_desc', 'enrol_apply')));
-    $settings->add(new admin_setting_confightmleditor('enrol_apply/waitmailcontent', get_string('waitmailcontent', 'enrol_apply'),'utf-8',''));
+    // Cancel mail settings
+    $settings->add(new admin_setting_heading(
+        'enrol_apply_cancelmail',
+        get_string('cancelmail_heading', 'enrol_apply'),
+        get_string('cancelmail_desc', 'enrol_apply')));
+    $settings->add(new admin_setting_configtext(
+        'enrol_apply/cancelmailsubject',
+        get_string('cancelmailsubject', 'enrol_apply'),
+        get_string('cancelmailsubject_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT,
+        60));
+    $settings->add(new admin_setting_confightmleditor(
+        'enrol_apply/cancelmailcontent',
+        get_string('cancelmailcontent', 'enrol_apply'),
+        get_string('cancelmailcontent_desc', 'enrol_apply'),
+        null,
+        PARAM_TEXT));
 
-    $settings->add(new admin_setting_configtext('enrol_apply/cancelmailsubject','',get_string('cancelmailsubject', 'enrol_apply'),null,PARAM_TEXT,60));
+    // Notification settings.
+    $settings->add(new admin_setting_heading(
+        'enrol_apply_notify',
+        get_string('notify_heading', 'enrol_apply'),
+        get_string('notify_desc', 'enrol_apply')));
+    $settings->add(new admin_setting_configcheckbox(
+        'enrol_apply/sendmailtoteacher',
+        get_string('sendmailtoteacher', 'enrol_apply'),
+        '',
+        0));
+    $settings->add(new admin_setting_configcheckbox(
+        'enrol_apply/sendmailtomanager',
+        get_string('sendmailtomanager', 'enrol_apply'),
+        '',
+        0));
 
-    $settings->add(new admin_setting_heading('enrol_apply_cancelmailcontent', '', get_string('cancelmailcontent_desc', 'enrol_apply')));
-    $settings->add(new admin_setting_confightmleditor('enrol_apply/cancelmailcontent', get_string('cancelmailcontent', 'enrol_apply'),'utf-8',''));
-    
-    $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtoteacher', get_string('sendmailtoteacher', 'enrol_apply'), '', 0));
-    $settings->add(new admin_setting_configcheckbox('enrol_apply/sendmailtomanager', get_string('sendmailtomanager', 'enrol_apply'), '', 0));
-    
-    //--- enrol instance defaults ----------------------------------------------------------------------------
+    // Enrol instance defaults.
     $settings->add(new admin_setting_heading('enrol_manual_defaults',
         get_string('enrolinstancedefaults', 'admin'), get_string('enrolinstancedefaults_desc', 'admin')));
-    
+
     $settings->add(new admin_setting_configcheckbox('enrol_apply/defaultenrol',
         get_string('defaultenrol', 'enrol'), get_string('defaultenrol_desc', 'enrol'), 0));
-    
+
     $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
                      ENROL_INSTANCE_DISABLED  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/status',
         get_string('status', 'enrol_apply'), get_string('status_desc', 'enrol_apply'), ENROL_INSTANCE_ENABLED, $options));
 
-    $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
-                     ENROL_INSTANCE_DISABLED  => get_string('no'));
+    $options = array(1 => get_string('yes'),
+                     0  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/show_standard_user_profile',
-        get_string('show_standard_user_profile', 'enrol_apply'), '', ENROL_INSTANCE_ENABLED, $options));
+        get_string('show_standard_user_profile', 'enrol_apply'), '', 1, $options));
 
-    $options = array(ENROL_INSTANCE_ENABLED => get_string('yes'),
-                     ENROL_INSTANCE_DISABLED  => get_string('no'));
+    $options = array(1 => get_string('yes'),
+                     0  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/show_extra_user_profile',
-        get_string('show_extra_user_profile', 'enrol_apply'), '', ENROL_INSTANCE_ENABLED, $options));
+        get_string('show_extra_user_profile', 'enrol_apply'), '', 1, $options));
 
     if (!during_initial_install()) {
         $options = get_default_enrol_roles(context_system::instance());

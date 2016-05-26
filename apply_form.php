@@ -72,14 +72,11 @@ class enrol_apply_apply_form extends moodleform {
 
         $apply_setting = $DB->get_records_sql("select name,value from ".$CFG->prefix."config_plugins where plugin='enrol_apply'");
 
-        ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-        ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-
-        if($show_standard_user_profile){
+        if($instance->customint1){
             useredit_shared_definition($mform, $editoroptions, $filemanageroptions,$user);
         }
 
-        if($show_extra_user_profile){
+        if($instance->customint2){
             profile_definition($mform, $user->id);
         }
 

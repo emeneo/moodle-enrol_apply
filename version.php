@@ -19,7 +19,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2016042201;
+$plugin->version  = 2016042202;
 $plugin->requires = 2011080100;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Enrolment upon approval plugin Version 3.0-d';

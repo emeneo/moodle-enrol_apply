@@ -295,9 +295,6 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
     $courseid = $instance->courseid;
     $instanceid = $instance->id;
 
-    ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    
     if($instance->customint3 == 1){
         $course = get_course($courseid);
         $context =  context_course::instance($courseid, MUST_EXIST);
@@ -309,7 +306,7 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
             $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
             $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
 
-            if($show_standard_user_profile){
+            if($instance->customint1){
                 $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
                 $body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
                 $body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
@@ -337,7 +334,7 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
                 $body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
             }
 
-            if($show_extra_user_profile){
+            if($instance->customint2){
                 require_once($CFG->dirroot.'/user/profile/lib.php');
                 $user = $DB->get_record('user',array('id'=>$USER->id));
                 profile_load_custom_fields($user);
@@ -362,9 +359,6 @@ function sendConfirmMailToManagers($instance,$info,$applydescription){
 
     $courseid = $instance->courseid;
 
-    ($instance->customint1 == 0)?$show_standard_user_profile = true:$show_standard_user_profile = false;
-    ($instance->customint2 == 0)?$show_extra_user_profile = true:$show_extra_user_profile = false;
-    
     if(get_config('enrol_apply', 'sendmailtomanager') == 1){
         $course = get_course($courseid);
         $context = context_system::instance();
@@ -375,7 +369,7 @@ function sendConfirmMailToManagers($instance,$info,$applydescription){
             $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
             $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
             $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
-            if($show_standard_user_profile){
+            if($instance->customint1){
                 $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
                 $body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
                 $body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
@@ -403,7 +397,7 @@ function sendConfirmMailToManagers($instance,$info,$applydescription){
                 $body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
             }
 
-            if($show_extra_user_profile){
+            if($instance->customint2){
                 require_once($CFG->dirroot.'/user/profile/lib.php');
                 $user = $DB->get_record('user',array('id'=>$USER->id));
                 profile_load_custom_fields($user);
