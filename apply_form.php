@@ -11,10 +11,9 @@
  * ************************************************************************
 */
 /**
- * Self enrol plugin implementation.
+ * Apply enrol plugin implementation.
  *
  * @package    enrol
- * @subpackage self
  * @copyright  2010 Petr Skoda  {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -45,16 +44,6 @@ class enrol_apply_apply_form extends moodleform {
 
         $heading = $plugin->get_instance_name($instance);
         $mform->addElement('header', 'selfheader', $heading);
-
-        if ($instance->password) {
-            $heading = $plugin->get_instance_name($instance);
-            $mform->addElement('header', 'selfheader', $heading);
-            //change the id of self enrolment key input as there can be multiple self enrolment methods
-            $mform->addElement('passwordunmask', 'enrolpassword', get_string('password', 'enrol_self'),
-                    array('id' => $instance->id."_enrolpassword"));
-        } else {
-            // nothing?
-        }
 
         $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
         $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'),'cols="80"');
@@ -106,38 +95,6 @@ class enrol_apply_apply_form extends moodleform {
 
         $errors = parent::validation($data, $files);
         $instance = $this->instance;
-
-        if ($instance->password) {
-            if ($data['enrolpassword'] !== $instance->password) {
-                if ($instance->customint1) {
-                    $groups = $DB->get_records('groups', array('courseid'=>$instance->courseid), 'id ASC', 'id, enrolmentkey');
-                    $found = false;
-                    foreach ($groups as $group) {
-                        if (empty($group->enrolmentkey)) {
-                            continue;
-                        }
-                        if ($group->enrolmentkey === $data['enrolpassword']) {
-                            $found = true;
-                            break;
-                        }
-                    }
-                    if (!$found) {
-                        // we can not hint because there are probably multiple passwords
-                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_self');
-                    }
-
-                } else {
-                    $plugin = enrol_get_plugin('self');
-                    if ($plugin->get_config('showhint')) {
-                        $textlib = textlib_get_instance();
-                        $hint = $textlib->substr($instance->password, 0, 1);
-                        $errors['enrolpassword'] = get_string('passwordinvalidhint', 'enrol_self', $hint);
-                    } else {
-                        $errors['enrolpassword'] = get_string('passwordinvalid', 'enrol_self');
-                    }
-                }
-            }
-        }
 
         return $errors;
     }
