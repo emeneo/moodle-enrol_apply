@@ -151,13 +151,13 @@ class enrol_apply_plugin extends enrol_plugin {
     
     
     /**
-        * Sets up navigation entries.
-        *
-        * @param stdClass $instancesnode
-        * @param stdClass $instance
-        * @return void
-        */
-        public function add_course_navigation($instancesnode, stdClass $instance) {
+    * Sets up navigation entries.
+    *
+    * @param stdClass $instancesnode
+    * @param stdClass $instance
+    * @return void
+    */
+    public function add_course_navigation($instancesnode, stdClass $instance) {
         if ($instance->enrol !== 'apply') {
              throw new coding_exception('Invalid enrol instance type!');
         }
