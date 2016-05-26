@@ -118,11 +118,6 @@ class enrol_apply_plugin extends enrol_plugin {
             $icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
         }
 
-        if (has_capability("enrol/apply:enrol", $context)) {
-            $enrollink = new moodle_url("/enrol/apply/enroluser.php", array('enrolid'=>$instance->id));
-            $icons[] = $OUTPUT->action_icon($enrollink, new pix_icon('t/enrolusers', get_string('enrolusers', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
-        }
-        
         return $icons;
     }
 
@@ -175,13 +170,13 @@ class enrol_apply_plugin extends enrol_plugin {
         $instance = $ue->enrolmentinstance;
         $params = $manager->get_moodlepage()->url->params();
         $params['ue'] = $ue->id;
-        if ($this->allow_unenrol($instance) && has_capability("enrol/apply:unenrol", $context)) {
-            $url = new moodle_url('/enrol/apply/unenroluser.php', $params);
-            $actions[] = new user_enrolment_action(new pix_icon('t/delete', ''), get_string('unenrol', 'enrol'), $url, array('class'=>'unenrollink', 'rel'=>$ue->id));
-        }
-        if ($this->allow_manage($instance) && has_capability("enrol/apply:manage", $context)) {
-            $url = new moodle_url('/enrol/apply/editenrolment.php', $params);
-            $actions[] = new user_enrolment_action(new pix_icon('t/edit', ''), get_string('edit'), $url, array('class'=>'editenrollink', 'rel'=>$ue->id));
+        if ($this->allow_unenrol_user($instance, $ue) && has_capability("enrol/apply:unenrol", $context)) {
+            $url = new moodle_url('/enrol/unenroluser.php', $params);
+            $actions[] = new user_enrolment_action(
+                new pix_icon('t/delete', ''),
+                get_string('unenrol', 'enrol'),
+                $url,
+                array('class' => 'unenrollink', 'rel' => $ue->id));
         }
         return $actions;
     }
