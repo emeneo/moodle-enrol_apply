@@ -37,7 +37,6 @@ $string['confirmenrol'] = '管理申请';
 $string['apply:config'] = '配置选课确认的实例';
 $string['apply:manage'] = '管理选课申请';
 $string['apply:unenrol'] = '从课程中取消用户的选课';
-$string['apply:unenrolapply'] = '从课程中取消自身的选课'; // is this necessary now?
 $string['apply:unenrolself'] = '从课程中取消自身的选课';
 
  

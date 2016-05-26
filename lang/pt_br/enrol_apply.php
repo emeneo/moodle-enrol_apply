@@ -37,7 +37,6 @@ $string['confirmenrol'] = 'Gerenciar solicitações';
 $string['apply:config'] = 'Configurar instâncias de matrículas solicitadas'; // Needs more insight
 $string['apply:manage'] = 'Gerenciar matrículas solicitadas'; // Needs more insight
 $string['apply:unenrol'] = 'Cancelar usuários do curso'; // Needs more insight
-$string['apply:unenrolapply'] = 'Cancelar minha matrícula do curso'; // Needs more insight. Very ugly translation!
  
 $string['notification'] = '<b>Solicitação de matrícula enviada com sucesso</b>. <br/><br/>Você será notificado por e-mail quando a sua matrícula for confirmada.';
 

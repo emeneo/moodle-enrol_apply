@@ -44,15 +44,6 @@ $capabilities = array(
         )
     ),
 
-    //is this still necessary?
-    'enrol/apply:unenrolapply' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'student' => CAP_ALLOW,
-        )
-    ),
-
     'enrol/apply:enrol' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

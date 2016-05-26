@@ -37,7 +37,6 @@ $string['confirmenrol'] = 'Gestisci l\'applicazione';
 $string['apply:config'] = 'Configura le istanze del plugin';
 $string['apply:manage'] = 'Gestisci le richieste di iscrizione';
 $string['apply:unenrol'] = 'Cancella gli utenti dal corso';
-$string['apply:unenrolapply'] = 'Permetti all\'utente di disiscriversi dal corso'; // is this necessary now?
 $string['apply:unenrolself'] = 'Permetti all\'utente di disiscriversi dal corso';
  
 $string['notification'] = '<b>Richiesta di iscrizione al corso correttamente inviata</b>. <br/><br/>Verrai informato via email appena la tua richiesta di iscrizione viene confermata. Se vuoi iscriverti ad altri corsi, premi sul "catalogo dei corsi" sul top menu.';
