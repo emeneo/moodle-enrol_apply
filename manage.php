@@ -23,14 +23,14 @@ require_login();
 $manageurlparams = array();
 if ($id == null) {
     $context = context_system::instance();
-    require_capability('enrol/apply:manage', $context);
+    require_capability('enrol/apply:manageapplications', $context);
     $pageheading = get_string('confirmusers', 'enrol_apply');
 } else {
     $instance = $DB->get_record('enrol', array('id'=>$id, 'enrol'=>'apply'), '*', MUST_EXIST);
     require_course_login($instance->courseid);
     $course = get_course($instance->courseid);
     $context = context_course::instance($course->id, MUST_EXIST);
-    require_capability('moodle/course:enrolreview', $context);
+    require_capability('enrol/apply:manageapplications', $context);
     $manageurlparams['id'] = $instance->id;
     $pageheading = $course->fullname;
 }

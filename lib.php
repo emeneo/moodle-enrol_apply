@@ -113,7 +113,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core', array('class' => 'iconsmall')));
         }
 
-        if (has_capability('enrol/apply:manage', $context)) {
+        if (has_capability('enrol/apply:manageapplications', $context)) {
             $managelink = new moodle_url("/enrol/apply/manage.php", array('id'=>$instance->id));
             $icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
         }

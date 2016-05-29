@@ -40,7 +40,7 @@ $string['status'] = 'Bestätigung der Kurseinschreibung erlauben';
 $string['confirmenrol'] = 'Einschreibeanfragen bearbeiten';
 
 $string['apply:config'] = 'Einschreibungsbelegstellen anlegen';
-$string['apply:manage'] = 'Einschreibungsanfragen verwalten';
+$string['apply:manageapplications'] = 'Einschreibungsanfragen verwalten';
 $string['apply:unenrol'] = 'Benutzer aus dem Kurs entfernen';
  
 $string['notification'] = '<b>Einschreibungsantrag wurde erfolgreich gesendet.</b>. <br/><br/>Sie werden via Mail informiert, sobald Ihre Einschreibung bestätigt wurde.';

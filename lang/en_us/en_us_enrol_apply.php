@@ -35,7 +35,7 @@ $string['status'] = 'Allow course enroll confirmation';
 $string['confirmenroll'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enroll instances';
-$string['apply:manage'] = 'Manage apply enrollment';
+$string['apply:manageapplications'] = 'Manage apply enrollment';
 $string['apply:unenroll'] = 'Cancel users from the course';
 $string['apply:unenrollapply'] = 'Cancel self from the course';
  

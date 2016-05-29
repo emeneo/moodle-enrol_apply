@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
+    /* Add, edit or remove manual enrol instance. */
     'enrol/apply:config' => array(
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -34,8 +34,12 @@ $capabilities = array(
         )
     ),
 
-    'enrol/apply:manage' => array(
-
+    /**
+     * Enrolment approval.
+     * If granted on CONTEXT_SYSTEM level it allows approval for all courses
+     * at Site Administration -> Courses -> Manage enrolment applications.
+     */
+    'enrol/apply:manageapplications' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -44,15 +48,7 @@ $capabilities = array(
         )
     ),
 
-    'enrol/apply:enrol' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW,
-        )
-    ),
-
+    /* Unenrol a user */
     'enrol/apply:unenrol' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -62,6 +58,7 @@ $capabilities = array(
         )
     ),
 
+    /* Allow a user to unenrol himself */
     'enrol/apply:unenrolself' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
