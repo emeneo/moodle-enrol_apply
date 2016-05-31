@@ -41,7 +41,7 @@ class enrol_apply_manage_table extends table_sql {
             $sqlwhere .= " AND e.id = :enrolid";
             $sqlparams['enrolid'] = $enrolid;
         } else {
-            $sqlwhere = "e.enrol = :enrol";
+            $sqlwhere .= " AND e.enrol = :enrol";
             $sqlparams['enrol'] = 'apply';
         }
 
