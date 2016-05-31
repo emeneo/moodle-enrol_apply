@@ -46,20 +46,12 @@ $PAGE->set_title(get_string('confirmusers', 'enrol_apply'));
 $PAGE->requires->css('/enrol/apply/style.css');
 
 if ($userenrolments != null) {
-    $action = required_param('type', PARAM_TEXT);
-    switch ($action) {
-        case 'confirm':
-            confirmEnrolment($userenrolments);
-            break;
-        case 'wait':
-            waitEnrolment ($userenrolments);
-            break;
-        case 'cancel':
-            cancelEnrolment($userenrolments);
-            break;
-        default:
-            # code...
-            break;
+    if (optional_param('confirm', false, PARAM_BOOL)) {
+        confirmEnrolment($userenrolments);
+    } else if (optional_param('wait', false, PARAM_BOOL)) {
+        waitEnrolment ($userenrolments);
+    } else if (optional_param('cancel', false, PARAM_BOOL)) {
+        cancelEnrolment($userenrolments);
     }
     redirect($manageurl);
 }

@@ -36,32 +36,17 @@ class enrol_apply_renderer extends plugin_renderer_base {
 
     public function manage_form($table, $manageurl) {
         echo html_writer::start_tag('form', array('id' => 'enrol_apply_manage_form', 'method' => 'post', 'action' => $manageurl->out()));
-        echo html_writer::empty_tag('input', array('type' => 'hidden', 'id' => 'type', 'name' => 'type', 'value' => 'confirm'));
 
         $this->manage_table($table);
 
         echo html_writer::start_tag('p', array('align' => 'center'));
-        echo html_writer::empty_tag('input', array(
-            'type' => 'button',
-            'onclick' => 'doSubmit("confirm");',
-            'value' => get_string('btnconfirm', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array(
-            'type' => 'button',
-            'onclick' => 'doSubmit("wait");',
-            'value' => get_string('btnwait', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array(
-            'type' => 'button',
-            'onclick' => 'doSubmit("cancel");',
-            'value' => get_string('btncancel', 'enrol_apply')));
+
+        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'confirm', 'value' => get_string('btnconfirm', 'enrol_apply')));
+        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'wait', 'value' => get_string('btnwait', 'enrol_apply')));
+        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'cancel', 'value' => get_string('btncancel', 'enrol_apply')));
+
         echo html_writer::end_tag('p');
         echo html_writer::end_tag('form');
-
-        $js = "
-            function doSubmit(type){
-                document.getElementById('type').value=type;
-                document.getElementById('enrol_apply_manage_form').submit();
-            }";
-        echo html_writer::tag('script', $js, array('type' => 'text/javascript'));
     }
 
     public function manage_table($table) {
