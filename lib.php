@@ -280,7 +280,7 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 
     function send_application_notification($instance, $userid, $data) {
-        global $PAGE;
+        global $CFG, $PAGE;
 
         $renderer = $PAGE->get_renderer('enrol_apply');
 
@@ -291,7 +291,7 @@ class enrol_apply_plugin extends enrol_plugin {
         // Include standard user profile fields?
         $standarduserfields = null;
         if ($instance->customint1) {
-            $standarduserfields = $data;
+            $standarduserfields = clone $data;
             unset($standarduserfields->applydescription);
         }
 
@@ -299,7 +299,6 @@ class enrol_apply_plugin extends enrol_plugin {
         $extrauserfields = null;
         if ($instance->customint2) {
             require_once($CFG->dirroot.'/user/profile/lib.php');
-            $user = $DB->get_record('user',array('id' => $user->id));
             profile_load_custom_fields($user);
             $extrauserfields = $user->profile;
         }
