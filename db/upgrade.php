@@ -16,7 +16,7 @@
 
 /**
  * @package    enrol_apply
- * @copyright  emeneo.com
+ * @copyright  emeneo.com (http://emeneo.com/)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */

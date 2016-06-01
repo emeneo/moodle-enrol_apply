@@ -17,13 +17,12 @@
 /**
  *
  * @package    enrol_apply
- * @copyright  2015 sudile GbR (http://www.sudile.com)
+ * @copyright  2016 sudile GbR (http://www.sudile.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
-
 
 class enrol_apply_renderer extends plugin_renderer_base {
     public function manage_page($table, $manageurl) {

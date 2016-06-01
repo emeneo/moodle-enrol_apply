@@ -17,9 +17,9 @@
 /**
  *
  * @package    enrol_apply
- * @copyright  2016 Johannes Burk
+ * @copyright  2016 sudile GbR (http://www.sudile.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
+ * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
