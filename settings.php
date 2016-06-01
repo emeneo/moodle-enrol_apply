@@ -32,7 +32,7 @@ if ($ADMIN->fulltree) {
         get_string('confirmmailcontent', 'enrol_apply'),
         get_string('confirmmailcontent_desc', 'enrol_apply'),
         null,
-        PARAM_TEXT));
+        PARAM_RAW));
 
     // Wait mail settings.
     $settings->add(new admin_setting_heading(
@@ -51,7 +51,7 @@ if ($ADMIN->fulltree) {
         get_string('waitmailcontent', 'enrol_apply'),
         get_string('waitmailcontent_desc', 'enrol_apply'),
         null,
-        PARAM_TEXT));
+        PARAM_RAW));
 
     // Cancel mail settings
     $settings->add(new admin_setting_heading(
@@ -70,7 +70,7 @@ if ($ADMIN->fulltree) {
         get_string('cancelmailcontent', 'enrol_apply'),
         get_string('cancelmailcontent_desc', 'enrol_apply'),
         null,
-        PARAM_TEXT));
+        PARAM_RAW));
 
     // Notification settings.
     $settings->add(new admin_setting_heading(
