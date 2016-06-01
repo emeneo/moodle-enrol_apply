@@ -330,51 +330,30 @@ function sendConfirmMailToTeachers($instance,$info,$applydescription){
         $context =  context_course::instance($courseid, MUST_EXIST);
         $teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
         $teachers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$teacherType->id));
+
+        if (!$instance->customint1) {
+            $info = null;
+        }
+
+        $extra = null;
+        if($instance->customint2){
+            require_once($CFG->dirroot.'/user/profile/lib.php');
+            $user = $DB->get_record('user',array('id'=>$USER->id));
+            profile_load_custom_fields($user);
+            $extra = $user->profile;
+        }
+
+        $manageurl = new moodle_url("/enrol/apply/manage.php", array('id'=>$instanceid));
+
+        global $PAGE;
+        $renderer = $PAGE->get_renderer('enrol_apply');
+        $body = $renderer->application_notification_mail_body($course, $USER, $manageurl, $applydescription, $info, $extra);
+
+        $contact = core_user::get_support_user();
+
         foreach($teachers as $teacher){
             $editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
-            $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
-            $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
-            $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
 
-            if($instance->customint1){
-                $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
-                $body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
-                $body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
-                $body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
-                $body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
-                $body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
-                $body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
-                $body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
-
-                $body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
-                $body .= '<p>'. get_string('lastnamephonetic') .': '.$info->lastnamephonetic.'</p>';
-                $body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
-                $body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
-                $body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
-                $body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
-                $body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
-                $body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
-                $body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
-                $body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
-                $body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
-                $body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
-                $body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
-                $body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
-                $body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
-                $body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
-            }
-
-            if($instance->customint2){
-                require_once($CFG->dirroot.'/user/profile/lib.php');
-                $user = $DB->get_record('user',array('id'=>$USER->id));
-                profile_load_custom_fields($user);
-                foreach ($user->profile as $key => $value) {
-                    $body .= '<p>'. $key .': '.$value.'</p>';
-                }
-            }
-
-            $body .= '<p>'. html_writer::link(new moodle_url("/enrol/apply/manage.php", array('id'=>$instanceid)), get_string('applymanage', 'enrol_apply')).'</p>';
-            $contact = core_user::get_support_user();
             $info = $editTeacher;
             $info->coursename = $course->fullname;
             email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
@@ -394,50 +373,30 @@ function sendConfirmMailToManagers($instance,$info,$applydescription){
         $context = context_system::instance();
         $managerType = $DB->get_record('role',array("shortname"=>"manager"));
         $managers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$managerType->id));
+
+        if (!$instance->customint1) {
+            $info = null;
+        }
+
+        $extra = null;
+        if($instance->customint2){
+            require_once($CFG->dirroot.'/user/profile/lib.php');
+            $user = $DB->get_record('user',array('id'=>$USER->id));
+            profile_load_custom_fields($user);
+            $extra = $user->profile;
+        }
+
+        $manageurl = new moodle_url('/enrol/apply/manage.php');
+
+        global $PAGE;
+        $renderer = $PAGE->get_renderer('enrol_apply');
+        $body = $renderer->application_notification_mail_body($course, $USER, $manageurl, $applydescription, $info, $extra);
+
+        $contact = core_user::get_support_user();
+
         foreach($managers as $manager){
             $userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
-            $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
-            $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$USER->firstname.' '.$USER->lastname.'</p>';
-            $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
-            if($instance->customint1){
-                $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
-                $body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
-                $body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
-                $body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
-                $body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
-                $body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
-                $body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
-                $body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
 
-                $body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
-                $body .= '<p>'. get_string('lastnamephonetic') .': '.$info->lastnamephonetic.'</p>';
-                $body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
-                $body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
-                $body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
-                $body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
-                $body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
-                $body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
-                $body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
-                $body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
-                $body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
-                $body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
-                $body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
-                $body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
-                $body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
-                $body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
-            }
-
-            if($instance->customint2){
-                require_once($CFG->dirroot.'/user/profile/lib.php');
-                $user = $DB->get_record('user',array('id'=>$USER->id));
-                profile_load_custom_fields($user);
-                foreach ($user->profile as $key => $value) {
-                    $body .= '<p>'. $key .': '.$value.'</p>';
-                }
-            }
-
-            $body .= '<p>'. html_writer::link(new moodle_url('/enrol/apply/manage.php'), get_string('applymanage', 'enrol_apply')).'</p>';
-            $contact = core_user::get_support_user();
             $info = $userWithManagerRole;
             $info->coursename = $course->fullname;
             email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);

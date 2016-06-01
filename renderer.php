@@ -71,4 +71,47 @@ class enrol_apply_renderer extends plugin_renderer_base {
 
         $table->out(50, true);
     }
+
+    public function application_notification_mail_body($course, $user, $manageurl, $applydescription, $info = null, $extra = null) {
+        $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
+        $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$user->firstname.' '.$user->lastname.'</p>';
+        $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
+        if($info){
+            $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
+            $body .= '<p>'. get_string('firstname') .': '.$info->firstname.'</p>';
+            $body .= '<p>'. get_string('lastname') .': '.$info->lastname.'</p>';
+            $body .= '<p>'. get_string('email') .': '.$info->email.'</p>';
+            $body .= '<p>'. get_string('city') .': '.$info->city.'</p>';
+            $body .= '<p>'. get_string('country') .': '.$info->country.'</p>';
+            $body .= '<p>'. get_string('preferredlanguage') .': '.$info->lang.'</p>';
+            $body .= '<p>'. get_string('description') .': '.$info->description_editor['text'].'</p>';
+
+            $body .= '<p>'. get_string('firstnamephonetic') .': '.$info->firstnamephonetic.'</p>';
+            $body .= '<p>'. get_string('lastnamephonetic') .': '.$info->lastnamephonetic.'</p>';
+            $body .= '<p>'. get_string('middlename') .': '.$info->middlename.'</p>';
+            $body .= '<p>'. get_string('alternatename') .': '.$info->alternatename.'</p>';
+            $body .= '<p>'. get_string('url') .': '.$info->url.'</p>';
+            $body .= '<p>'. get_string('icqnumber') .': '.$info->icq.'</p>';
+            $body .= '<p>'. get_string('skypeid') .': '.$info->skype.'</p>';
+            $body .= '<p>'. get_string('aimid') .': '.$info->aim.'</p>';
+            $body .= '<p>'. get_string('yahooid') .': '.$info->yahoo.'</p>';
+            $body .= '<p>'. get_string('msnid') .': '.$info->msn.'</p>';
+            $body .= '<p>'. get_string('idnumber') .': '.$info->idnumber.'</p>';
+            $body .= '<p>'. get_string('institution') .': '.$info->institution.'</p>';
+            $body .= '<p>'. get_string('department') .': '.$info->department.'</p>';
+            $body .= '<p>'. get_string('phone') .': '.$info->phone1.'</p>';
+            $body .= '<p>'. get_string('phone2') .': '.$info->phone2.'</p>';
+            $body .= '<p>'. get_string('address') .': '.$info->address.'</p>';
+        }
+
+        if($extra){
+            foreach ($extra as $key => $value) {
+                $body .= '<p>'. $key .': '.$value.'</p>';
+            }
+        }
+
+        $body .= '<p>'. html_writer::link($manageurl, get_string('applymanage', 'enrol_apply')).'</p>';
+
+        return $body;
+    }
 }
