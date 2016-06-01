@@ -211,10 +211,11 @@ class enrol_apply_plugin extends enrol_plugin {
             }
 
             $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE);
-
-            $info = $this->getRelatedInfo($enrol);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
-            $this->sendConfirmMail($info);
+
+            $subject = get_config('enrol_apply', 'confirmmailsubject');
+            $body = get_config('enrol_apply', 'confirmmailcontent');
+            $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
         }
     }
 
@@ -234,8 +235,9 @@ class enrol_apply_plugin extends enrol_plugin {
 
                 $this->update_user_enrol($instance, $userenrolment->userid, ENROL_APPLY_USER_WAIT);
 
-                $info = $this->getRelatedInfo($enrol);
-                $this->sendWaitMail($info);
+                $subject = get_config('enrol_apply', 'waitmailsubject');
+                $body = get_config('enrol_apply', 'waitmailcontent');
+                $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
             }
         }
     }
@@ -261,47 +263,25 @@ class enrol_apply_plugin extends enrol_plugin {
                 continue;
             }
 
-            $info = $this->getRelatedInfo($enrol);
             $this->unenrol_user($instance, $userenrolment->userid);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
-            $this->sendCancelMail($info);
+
+            $subject = get_config('enrol_apply', 'cancelmailsubject');
+            $body = get_config('enrol_apply', 'cancelmailcontent');
+            $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
         }
     }
 
-    function sendCancelMail($info){
+    function send_mail_to_applicant($instance, $userid, $subject, $body) {
         global $DB;
         global $CFG;
 
-        $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
-        $body = get_config('enrol_apply', 'cancelmailcontent');
-        $body = $this->updateMailContent($body,$replace);
+        $course = get_course($instance->courseid);
+        $user = core_user::get_user($userid);
+
+        $body = $this->updateMailContent($body, $course, $user);
         $contact = core_user::get_support_user();
-        email_to_user($info, $contact, get_config('enrol_apply', 'cancelmailsubject'), html_to_text($body), $body);
-    }
-
-    function sendConfirmMail($info){
-        global $DB;
-        global $CFG;
-
-        $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
-        $body = get_config('enrol_apply', 'confirmmailcontent');
-        $body = $this->updateMailContent($body,$replace);
-        $contact = core_user::get_support_user();
-        email_to_user($info, $contact, get_config('enrol_apply', 'confirmmailsubject'), html_to_text($body), $body);
-    }
-
-    function sendWaitMail($info){
-        global $DB;
-        global $CFG;
-        //global $USER;
-
-        $replace = array('firstname'=>$info->firstname,'content'=>format_string($info->coursename),'lastname'=>$info->lastname,'username'=>$info->username);
-        $body = get_config('enrol_apply', 'waitmailcontent');
-        $body = $this->updateMailContent($body,$replace);
-        $contact = get_admin();
-        //confirm mail will sent by the admin
-        //$contact = $USER;
-        email_to_user($info, $contact, get_config('enrol_apply', 'waitmailsubject'), html_to_text($body), $body);
+        email_to_user($user, $contact, $subject, html_to_text($body), $body);
     }
 
     function sendConfirmMailToTeachers($instance,$info,$applydescription){
@@ -391,14 +371,12 @@ class enrol_apply_plugin extends enrol_plugin {
         }
     }
 
-    function getRelatedInfo($enrolid){
-        global $DB;
-        global $CFG;
-        return $DB->get_record_sql('select u.*,c.fullname as coursename from '.$CFG->prefix.'user_enrolments as ue left join '.$CFG->prefix.'user as u on ue.userid=u.id left join '.$CFG->prefix.'enrol as e on ue.enrolid=e.id left
-        join '.$CFG->prefix.'course as c on e.courseid=c.id where ue.id='.$enrolid);
-    }
-
-    function updateMailContent($content,$replace){
+    function updateMailContent($content, $course, $user) {
+        $replace = array(
+            'firstname' => $user->firstname,
+            'content' => format_string($course->fullname),
+            'lastname' => $user->lastname,
+            'username' => $user->username);
         foreach ($replace as $key=>$val) {
             $content = str_replace("{".$key."}",$val,$content);
         }
