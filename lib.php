@@ -62,11 +62,6 @@ class enrol_apply_plugin extends enrol_plugin {
         if ($data = $form->get_data()) {
             // Only process when form submission is for this instance (multi instance support).
             if ($data->instance == $instance->id) {
-                $userInfo = $data;
-                $applydescription = $userInfo->applydescription;
-                unset($userInfo->applydescription);
-                $userInfo->id = $USER->id;
-
                 $timestart = 0;
                 $timeend = 0;
                 $roleid = $instance->roleid;
@@ -75,10 +70,10 @@ class enrol_apply_plugin extends enrol_plugin {
                 $userenrolment = $DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id), 'id', MUST_EXIST);
                 $applicationinfo = new stdClass();
                 $applicationinfo->userenrolmentid = $userenrolment->id;
-                $applicationinfo->comment = $applydescription;
+                $applicationinfo->comment = $data->applydescription;
                 $DB->insert_record('enrol_apply_applicationinfo', $applicationinfo, false);
-                $this->sendConfirmMailToTeachers($instance, $data, $applydescription);
-                $this->sendConfirmMailToManagers($instance, $data, $applydescription);
+
+                $this->send_application_notification($instance, $USER->id, $data);
 
                 redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
             }
@@ -284,89 +279,56 @@ class enrol_apply_plugin extends enrol_plugin {
         email_to_user($user, $contact, $subject, html_to_text($body), $body);
     }
 
-    function sendConfirmMailToTeachers($instance,$info,$applydescription){
-        global $DB;
-        global $CFG;
-        global $USER;
+    function send_application_notification($instance, $userid, $data) {
+        global $PAGE;
 
-        $courseid = $instance->courseid;
-        $instanceid = $instance->id;
+        $renderer = $PAGE->get_renderer('enrol_apply');
 
-        if($instance->customint3 == 1){
-            $course = get_course($courseid);
-            $context =  context_course::instance($courseid, MUST_EXIST);
-            $teacherType = $DB->get_record('role',array("shortname"=>"editingteacher"));
-            $teachers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$teacherType->id));
+        $course = get_course($instance->courseid);
+        $user = core_user::get_user($userid);
+        $contact = core_user::get_support_user();
 
-            if (!$instance->customint1) {
-                $info = null;
-            }
+        // Include standard user profile fields?
+        $standarduserfields = null;
+        if ($instance->customint1) {
+            $standarduserfields = $data;
+            unset($standarduserfields->applydescription);
+        }
 
-            $extra = null;
-            if($instance->customint2){
-                require_once($CFG->dirroot.'/user/profile/lib.php');
-                $user = $DB->get_record('user',array('id'=>$USER->id));
-                profile_load_custom_fields($user);
-                $extra = $user->profile;
-            }
+        // Include extra user profile fields?
+        $extrauserfields = null;
+        if ($instance->customint2) {
+            require_once($CFG->dirroot.'/user/profile/lib.php');
+            $user = $DB->get_record('user',array('id' => $user->id));
+            profile_load_custom_fields($user);
+            $extrauserfields = $user->profile;
+        }
 
-            $manageurl = new moodle_url("/enrol/apply/manage.php", array('id'=>$instanceid));
+        // Send notification to Teachers? Instance depending.
+        if ($instance->customint3 == 1) {
+            $context = context_course::instance($instance->courseid);
+            $editingteacherroles = get_archetype_roles('editingteacher');
+            $editingteacherrole = reset($editingteacherroles);
+            $teachers = get_role_users($editingteacherrole->id, $context);
 
-            global $PAGE;
-            $renderer = $PAGE->get_renderer('enrol_apply');
-            $body = $renderer->application_notification_mail_body($course, $USER, $manageurl, $applydescription, $info, $extra);
-
-            $contact = core_user::get_support_user();
-
-            foreach($teachers as $teacher){
-                $editTeacher = $DB->get_record('user',array('id'=>$teacher->userid));
-
-                $info = $editTeacher;
-                $info->coursename = $course->fullname;
-                email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
+            $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
+            $body = $renderer->application_notification_mail_body($course, $user, $manageurl, $data->applydescription, $standarduserfields, $extrauserfields);
+            foreach ($teachers as $teacher) {
+                email_to_user($teacher, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
             }
         }
-    }
 
-    function sendConfirmMailToManagers($instance,$info,$applydescription){
-        global $DB;
-        global $CFG;
-        global $USER;
-
-        $courseid = $instance->courseid;
-
-        if(get_config('enrol_apply', 'sendmailtomanager') == 1){
-            $course = get_course($courseid);
+        // Send notification to managers in system context?
+        if (get_config('enrol_apply', 'sendmailtomanager') == 1) {
             $context = context_system::instance();
-            $managerType = $DB->get_record('role',array("shortname"=>"manager"));
-            $managers = $DB->get_records('role_assignments', array('contextid'=>$context->id,'roleid'=>$managerType->id));
-
-            if (!$instance->customint1) {
-                $info = null;
-            }
-
-            $extra = null;
-            if($instance->customint2){
-                require_once($CFG->dirroot.'/user/profile/lib.php');
-                $user = $DB->get_record('user',array('id'=>$USER->id));
-                profile_load_custom_fields($user);
-                $extra = $user->profile;
-            }
+            $managerroles = get_archetype_roles('manager');
+            $managerrole = reset($editingteacherroles);
+            $managers = get_role_users($managerrole->id, $context);
 
             $manageurl = new moodle_url('/enrol/apply/manage.php');
-
-            global $PAGE;
-            $renderer = $PAGE->get_renderer('enrol_apply');
-            $body = $renderer->application_notification_mail_body($course, $USER, $manageurl, $applydescription, $info, $extra);
-
-            $contact = core_user::get_support_user();
-
-            foreach($managers as $manager){
-                $userWithManagerRole = $DB->get_record('user',array('id'=>$manager->userid));
-
-                $info = $userWithManagerRole;
-                $info->coursename = $course->fullname;
-                email_to_user($info, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
+            $body = $renderer->application_notification_mail_body($course, $user, $manageurl, $data->applydescription, $standarduserfields, $extrauserfields);
+            foreach ($managers as $manager) {
+                email_to_user($manager, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
             }
         }
     }
