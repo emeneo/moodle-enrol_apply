@@ -34,6 +34,13 @@ class enrol_apply_renderer extends plugin_renderer_base {
         echo $this->footer();
     }
 
+    public function edit_page($mform) {
+        echo $this->header();
+        echo $this->heading(get_string('pluginname', 'enrol_apply'));
+        $mform->display();
+        echo $this->footer();
+    }
+
     public function manage_form($table, $manageurl) {
         echo html_writer::start_tag('form', array('id' => 'enrol_apply_manage_form', 'method' => 'post', 'action' => $manageurl->out()));
 
