@@ -22,7 +22,7 @@
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
-require_once ('../../config.php');
+require_once('../../config.php');
 require_once($CFG->dirroot.'/enrol/apply/lib.php');
 require_once($CFG->dirroot.'/enrol/apply/manage_table.php');
 require_once($CFG->dirroot.'/enrol/apply/renderer.php');
@@ -38,7 +38,7 @@ if ($id == null) {
     require_capability('enrol/apply:manageapplications', $context);
     $pageheading = get_string('confirmusers', 'enrol_apply');
 } else {
-    $instance = $DB->get_record('enrol', array('id'=>$id, 'enrol'=>'apply'), '*', MUST_EXIST);
+    $instance = $DB->get_record('enrol', array('id' => $id, 'enrol' => 'apply'), '*', MUST_EXIST);
     require_course_login($instance->courseid);
     $course = get_course($instance->courseid);
     $context = context_course::instance($course->id, MUST_EXIST);
@@ -60,11 +60,11 @@ $PAGE->requires->css('/enrol/apply/style.css');
 if ($userenrolments != null) {
     $enrolapply = enrol_get_plugin('apply');
     if (optional_param('confirm', false, PARAM_BOOL)) {
-        $enrolapply->confirmEnrolment($userenrolments);
+        $enrolapply->confirm_enrolment($userenrolments);
     } else if (optional_param('wait', false, PARAM_BOOL)) {
-        $enrolapply->waitEnrolment($userenrolments);
+        $enrolapply->wait_enrolment($userenrolments);
     } else if (optional_param('cancel', false, PARAM_BOOL)) {
-        $enrolapply->cancelEnrolment($userenrolments);
+        $enrolapply->cancel_enrolment($userenrolments);
     }
     redirect($manageurl);
 }

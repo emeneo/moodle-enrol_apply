@@ -1,14 +1,25 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * *************************************************************************
- * *                  Apply	Enrol   				                      **
- * *************************************************************************
- * @copyright   emeneo.com                                                **
- * @link        emeneo.com                                                **
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
- * *************************************************************************
- * ************************************************************************
-*/ 
+ * @package    enrol_apply
+ * @copyright  emeneo.com (http://emeneo.com/)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // The name of your plugin. Displayed on admin menus.
 $string['enrolname'] = 'Conferma di iscrizione al corso';
 $string['pluginname'] = 'Conferma di iscrizione al corso';
@@ -38,7 +49,7 @@ $string['apply:config'] = 'Configura le istanze del plugin';
 $string['apply:manageapplications'] = 'Gestisci le richieste di iscrizione';
 $string['apply:unenrol'] = 'Cancella gli utenti dal corso';
 $string['apply:unenrolself'] = 'Permetti all\'utente di disiscriversi dal corso';
- 
+
 $string['notification'] = '<b>Richiesta di iscrizione al corso correttamente inviata</b>. <br/><br/>Verrai informato via email appena la tua richiesta di iscrizione viene confermata. Se vuoi iscriverti ad altri corsi, premi sul "catalogo dei corsi" sul top menu.';
 
 $string['sendmailtoteacher'] = 'Manda email di notifica agli insegnanti';
@@ -49,5 +60,3 @@ $string['comment'] = 'Commento';
 $string['applymanage'] = 'Gestisci richieste di iscrizione';
 
 $string['status_desc'] = 'Permette l\'accesso al corso agli utenti iscritti internamente.';
-
-?>

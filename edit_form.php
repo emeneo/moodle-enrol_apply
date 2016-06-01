@@ -28,7 +28,7 @@ require_once($CFG->libdir.'/formslib.php');
 
 class enrol_apply_edit_form extends moodleform {
 
-    function definition() {
+    protected function definition() {
         $mform = $this->_form;
 
         list($instance, $plugin, $context) = $this->_customdata;

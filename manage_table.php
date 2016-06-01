@@ -46,12 +46,13 @@ class enrol_apply_manage_table extends table_sql {
         }
 
         $this->set_sql(
-            'ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate, ai.comment AS applycomment, u.*, c.fullname as course',
+            'ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
+            ai.comment AS applycomment, u.*, c.fullname as course',
             "{user_enrolments} AS ue
-            LEFT JOIN {enrol_apply_applicationinfo} AS ai ON ai.userenrolmentid = ue.id
-            JOIN {user} AS u ON u.id = ue.userid
-            JOIN {enrol} AS e ON e.id = ue.enrolid
-            JOIN {course} AS c ON c.id = e.courseid",
+            LEFT JOIN {enrol_apply_applicationinfo} ai ON ai.userenrolmentid = ue.id
+            JOIN {user} u ON u.id = ue.userid
+            JOIN {enrol} e ON e.id = ue.enrolid
+            JOIN {course} c ON c.id = e.courseid",
             $sqlwhere,
             $sqlparams);
     }
@@ -61,7 +62,7 @@ class enrol_apply_manage_table extends table_sql {
      * @param $row array the data for this row. Note (Johannes): this is actually an object with all sql columns.
      * @return string added to the class="" attribute of the tr.
      */
-    function get_row_class($row) {
+    public function get_row_class($row) {
         if ($row->enrolstatus == 2) {
             return 'enrol_apply_waitinglist_highlight';
         }
@@ -73,9 +74,9 @@ class enrol_apply_manage_table extends table_sql {
     }
 
     public function col_fullname($row) {
-        // $row contains all user fields, see sql query.
+        // The $row variable contains all user fields, see sql query.
         global $OUTPUT;
-        $col = $OUTPUT->user_picture($row, array('popup'=>true));
+        $col = $OUTPUT->user_picture($row, array('popup' => true));
         $col .= fullname($row);
         return $col;
     }

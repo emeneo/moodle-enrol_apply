@@ -26,11 +26,12 @@
 define('ENROL_APPLY_USER_WAIT', 2);
 
 class enrol_apply_plugin extends enrol_plugin {
+
     /**
-    * Add new instance of enrol plugin with default settings.
-    * @param object $course
-    * @return int id of new instance
-    */
+     * Add new instance of enrol plugin with default settings.
+     * @param object $course
+     * @return int id of new instance
+     */
     public function add_default_instance($course) {
         $fields = $this->get_instance_defaults();
         return $this->add_instance($course, $fields);
@@ -48,28 +49,28 @@ class enrol_apply_plugin extends enrol_plugin {
      * @return moodle_url page url
      */
     public function get_newinstance_link($courseid) {
-        $context =  context_course::instance($courseid, MUST_EXIST);
+        $context = context_course::instance($courseid, MUST_EXIST);
 
         if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/apply:config', $context)) {
-            return NULL;
+            return null;
         }
-        return new moodle_url('/enrol/apply/edit.php', array('courseid'=>$courseid));
+        return new moodle_url('/enrol/apply/edit.php', array('courseid' => $courseid));
     }
 
     public function enrol_page_hook(stdClass $instance) {
         global $CFG, $OUTPUT, $SESSION, $USER, $DB;
 
         if (isguestuser()) {
-            // can not enrol guest!!
+            // Can not enrol guest!
             return null;
         }
-        if ($DB->record_exists('user_enrolments', array('userid'=>$USER->id, 'enrolid'=>$instance->id))) {
+        if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
             return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
         }
 
         require_once("$CFG->dirroot/enrol/apply/apply_form.php");
 
-        $form = new enrol_apply_apply_form(NULL, $instance);
+        $form = new enrol_apply_apply_form(null, $instance);
 
         if ($data = $form->get_data()) {
             // Only process when form submission is for this instance (multi instance support).
@@ -79,7 +80,12 @@ class enrol_apply_plugin extends enrol_plugin {
                 $roleid = $instance->roleid;
 
                 $this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend, ENROL_USER_SUSPENDED);
-                $userenrolment = $DB->get_record('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id), 'id', MUST_EXIST);
+                $userenrolment = $DB->get_record(
+                    'user_enrolments',
+                    array(
+                        'userid' => $USER->id,
+                        'enrolid' => $instance->id),
+                    'id', MUST_EXIST);
                 $applicationinfo = new stdClass();
                 $applicationinfo->userenrolmentid = $userenrolment->id;
                 $applicationinfo->comment = $data->applydescription;
@@ -102,54 +108,59 @@ class enrol_apply_plugin extends enrol_plugin {
         if ($instance->enrol !== 'apply') {
             throw new coding_exception('invalid enrol instance!');
         }
-        $context =  context_course::instance($instance->courseid);
+        $context = context_course::instance($instance->courseid);
 
         $icons = array();
 
         if (has_capability('enrol/apply:config', $context)) {
-            $editlink = new moodle_url("/enrol/apply/edit.php", array('courseid'=>$instance->courseid, 'id'=>$instance->id));
-            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon('t/edit', get_string('edit'), 'core', array('class' => 'iconsmall')));
+            $editlink = new moodle_url("/enrol/apply/edit.php", array('courseid' => $instance->courseid, 'id' => $instance->id));
+            $icons[] = $OUTPUT->action_icon($editlink, new pix_icon(
+                't/edit',
+                get_string('edit'),
+                'core',
+                array('class' => 'iconsmall')));
         }
 
         if (has_capability('enrol/apply:manageapplications', $context)) {
-            $managelink = new moodle_url("/enrol/apply/manage.php", array('id'=>$instance->id));
-            $icons[] = $OUTPUT->action_icon($managelink, new pix_icon('i/users', get_string('confirmenrol', 'enrol_apply'), 'core', array('class'=>'iconsmall')));
+            $managelink = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
+            $icons[] = $OUTPUT->action_icon($managelink, new pix_icon(
+                'i/users',
+                get_string('confirmenrol', 'enrol_apply'),
+                'core',
+                array('class' => 'iconsmall')));
         }
 
         return $icons;
     }
 
-       /**
-    * Is it possible to hide/show enrol instance via standard UI?
-    *
-    * @param stdClass $instance
-    * @return bool
-    */
+    /**
+     * Is it possible to hide/show enrol instance via standard UI?
+     * @param  stdClass $instance
+     * @return bool
+     */
     public function can_hide_show_instance($instance) {
             $context = context_course::instance($instance->courseid);
             return has_capability('enrol/apply:config', $context);
     }
-    
+
     /**
-    * Is it possible to delete enrol instance via standard UI?
-    *
-    * @param stdClass $instance
-    * @return bool
-    */
-    
+     * Is it possible to delete enrol instance via standard UI?
+     *
+     * @param stdClass $instance
+     * @return bool
+     */
     public function can_delete_instance($instance) {
             $context = context_course::instance($instance->courseid);
             return has_capability('enrol/apply:config', $context);
     }
-    
-    
+
     /**
-    * Sets up navigation entries.
-    *
-    * @param stdClass $instancesnode
-    * @param stdClass $instance
-    * @return void
-    */
+     * Sets up navigation entries.
+     *
+     * @param stdClass $instancesnode
+     * @param stdClass $instance
+     * @return void
+     */
     public function add_course_navigation($instancesnode, stdClass $instance) {
         if ($instance->enrol !== 'apply') {
              throw new coding_exception('Invalid enrol instance type!');
@@ -157,7 +168,7 @@ class enrol_apply_plugin extends enrol_plugin {
 
         $context = context_course::instance($instance->courseid);
         if (has_capability('enrol/apply:config', $context)) {
-            $managelink = new moodle_url('/enrol/apply/edit.php', array('courseid'=>$instance->courseid, 'id'=>$instance->id));
+            $managelink = new moodle_url('/enrol/apply/edit.php', array('courseid' => $instance->courseid, 'id' => $instance->id));
             $instancesnode->add($this->get_instance_name($instance), $managelink, navigation_node::TYPE_SETTING);
         }
     }
@@ -195,10 +206,9 @@ class enrol_apply_plugin extends enrol_plugin {
         return $fields;
     }
 
-    function confirmEnrolment($enrols){
+    public function confirm_enrolment($enrols) {
         global $DB;
-        foreach ($enrols as $enrol){
-            // $userenrolment = $DB->get_record('user_enrolments', array('id' => $enrol), '*', MUST_EXIST);
+        foreach ($enrols as $enrol) {
             $userenrolment = $DB->get_record_select(
                 'user_enrolments',
                 'id = :id AND (status = :enrolusersuspended OR status = :enrolapplyuserwait)',
@@ -226,10 +236,13 @@ class enrol_apply_plugin extends enrol_plugin {
         }
     }
 
-    function waitEnrolment($enrols){
+    public function wait_enrolment($enrols) {
         global $DB;
-        foreach ($enrols as $enrol){
-            $userenrolment = $DB->get_record('user_enrolments', array('id' => $enrol, 'status' => ENROL_USER_SUSPENDED), '*', IGNORE_MISSING);
+        foreach ($enrols as $enrol) {
+            $userenrolment = $DB->get_record(
+                'user_enrolments',
+                array('id' => $enrol, 'status' => ENROL_USER_SUSPENDED),
+                '*', IGNORE_MISSING);
 
             if ($userenrolment != null) {
                 $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
@@ -249,9 +262,9 @@ class enrol_apply_plugin extends enrol_plugin {
         }
     }
 
-    function cancelEnrolment($enrols){
+    public function cancel_enrolment($enrols) {
         global $DB;
-        foreach ($enrols as $enrol){
+        foreach ($enrols as $enrol) {
             $userenrolment = $DB->get_record_select(
                 'user_enrolments',
                 'id = :id AND (status = :enrolusersuspended OR status = :enrolapplyuserwait)',
@@ -279,19 +292,19 @@ class enrol_apply_plugin extends enrol_plugin {
         }
     }
 
-    function send_mail_to_applicant($instance, $userid, $subject, $body) {
+    private function send_mail_to_applicant($instance, $userid, $subject, $body) {
         global $DB;
         global $CFG;
 
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userid);
 
-        $body = $this->updateMailContent($body, $course, $user);
+        $body = $this->update_mail_content($body, $course, $user);
         $contact = core_user::get_support_user();
         email_to_user($user, $contact, $subject, html_to_text($body), $body);
     }
 
-    function send_application_notification($instance, $userid, $data) {
+    private function send_application_notification($instance, $userid, $data) {
         global $CFG, $PAGE;
 
         $renderer = $PAGE->get_renderer('enrol_apply');
@@ -323,7 +336,13 @@ class enrol_apply_plugin extends enrol_plugin {
             $teachers = get_role_users($editingteacherrole->id, $context);
 
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
-            $body = $renderer->application_notification_mail_body($course, $user, $manageurl, $data->applydescription, $standarduserfields, $extrauserfields);
+            $body = $renderer->application_notification_mail_body(
+                $course,
+                $user,
+                $manageurl,
+                $data->applydescription,
+                $standarduserfields,
+                $extrauserfields);
             foreach ($teachers as $teacher) {
                 email_to_user($teacher, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
             }
@@ -337,21 +356,27 @@ class enrol_apply_plugin extends enrol_plugin {
             $managers = get_role_users($managerrole->id, $context);
 
             $manageurl = new moodle_url('/enrol/apply/manage.php');
-            $body = $renderer->application_notification_mail_body($course, $user, $manageurl, $data->applydescription, $standarduserfields, $extrauserfields);
+            $body = $renderer->application_notification_mail_body(
+                $course,
+                $user,
+                $manageurl,
+                $data->applydescription,
+                $standarduserfields,
+                $extrauserfields);
             foreach ($managers as $manager) {
                 email_to_user($manager, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
             }
         }
     }
 
-    function updateMailContent($content, $course, $user) {
+    private function update_mail_content($content, $course, $user) {
         $replace = array(
             'firstname' => $user->firstname,
             'content' => format_string($course->fullname),
             'lastname' => $user->lastname,
             'username' => $user->username);
-        foreach ($replace as $key=>$val) {
-            $content = str_replace("{".$key."}",$val,$content);
+        foreach ($replace as $key => $val) {
+            $content = str_replace('{' . $key . '}', $val, $content);
         }
         return $content;
     }

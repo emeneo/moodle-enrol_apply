@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
 
-    $settings->add(new admin_setting_heading('enrol_apply_enrolname','',get_string('pluginname_desc', 'enrol_apply')));
-    
-    // Confirm mail settings.
+    $settings->add(new admin_setting_heading('enrol_apply_enrolname', '', get_string('pluginname_desc', 'enrol_apply')));
+
+    // Confirm mail settings...
     $settings->add(new admin_setting_heading(
         'enrol_apply_confirmmail',
         get_string('confirmmail_heading', 'enrol_apply'),
@@ -66,7 +66,7 @@ if ($ADMIN->fulltree) {
         null,
         PARAM_RAW));
 
-    // Cancel mail settings
+    // Cancel mail settings...
     $settings->add(new admin_setting_heading(
         'enrol_apply_cancelmail',
         get_string('cancelmail_heading', 'enrol_apply'),
@@ -85,7 +85,7 @@ if ($ADMIN->fulltree) {
         null,
         PARAM_RAW));
 
-    // Notification settings.
+    // Notification settings...
     $settings->add(new admin_setting_heading(
         'enrol_apply_notify',
         get_string('notify_heading', 'enrol_apply'),
@@ -101,7 +101,7 @@ if ($ADMIN->fulltree) {
         '',
         0));
 
-    // Enrol instance defaults.
+    // Enrol instance defaults...
     $settings->add(new admin_setting_heading('enrol_manual_defaults',
         get_string('enrolinstancedefaults', 'admin'), get_string('enrolinstancedefaults_desc', 'admin')));
 
@@ -132,7 +132,7 @@ if ($ADMIN->fulltree) {
     }
 }
 
-if ($hassiteconfig) { // needs this condition or there is error on login page
+if ($hassiteconfig) { // Needs this condition or there is error on login page.
     $ADMIN->add('courses', new admin_externalpage('enrol_apply',
             get_string('applymanage', 'enrol_apply'),
             new moodle_url('/enrol/apply/manage.php')));

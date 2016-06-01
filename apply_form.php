@@ -53,22 +53,22 @@ class enrol_apply_apply_form extends moodleform {
         $mform->addElement('header', 'selfheader', $heading);
 
         $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
-        $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'),'cols="80"');
+        $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'), 'cols="80"');
         $mform->setType('applydescription', PARAM_TEXT);
 
-        //user profile
+        // User profile...
         $editoroptions = $filemanageroptions = null;
 
-        if($instance->customint1){
+        if ($instance->customint1) {
             useredit_shared_definition($mform, $editoroptions, $filemanageroptions, $USER);
         }
 
-        if($instance->customint2){
+        if ($instance->customint2) {
             profile_definition($mform, $USER->id);
         }
 
         $mform->setDefaults((array)$USER);
-        
+
         $this->add_action_buttons(false, get_string('enrolme', 'enrol_self'));
 
         $mform->addElement('hidden', 'id');

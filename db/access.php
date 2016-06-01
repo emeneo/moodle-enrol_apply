@@ -36,8 +36,7 @@ $capabilities = array(
         )
     ),
 
-    /**
-     * Enrolment approval.
+    /* Enrolment approval.
      * If granted on CONTEXT_SYSTEM level it allows approval for all courses
      * at Site Administration -> Courses -> Manage enrolment applications.
      */

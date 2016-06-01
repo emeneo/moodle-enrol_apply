@@ -41,15 +41,27 @@ class enrol_apply_renderer extends plugin_renderer_base {
     }
 
     public function manage_form($table, $manageurl) {
-        echo html_writer::start_tag('form', array('id' => 'enrol_apply_manage_form', 'method' => 'post', 'action' => $manageurl->out()));
+        echo html_writer::start_tag('form', array(
+            'id' => 'enrol_apply_manage_form',
+            'method' => 'post',
+            'action' => $manageurl->out()));
 
         $this->manage_table($table);
 
         echo html_writer::start_tag('p', array('align' => 'center'));
 
-        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'confirm', 'value' => get_string('btnconfirm', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'wait', 'value' => get_string('btnwait', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'cancel', 'value' => get_string('btncancel', 'enrol_apply')));
+        echo html_writer::empty_tag('input', array(
+            'type' => 'submit',
+            'name' => 'confirm',
+            'value' => get_string('btnconfirm', 'enrol_apply')));
+        echo html_writer::empty_tag('input', array(
+            'type' => 'submit',
+            'name' => 'wait',
+            'value' => get_string('btnwait', 'enrol_apply')));
+        echo html_writer::empty_tag('input', array(
+            'type' => 'submit',
+            'name' => 'cancel',
+            'value' => get_string('btncancel', 'enrol_apply')));
 
         echo html_writer::end_tag('p');
         echo html_writer::end_tag('form');
@@ -78,11 +90,13 @@ class enrol_apply_renderer extends plugin_renderer_base {
         $table->out(50, true);
     }
 
-    public function application_notification_mail_body($course, $user, $manageurl, $applydescription, $standarduserfields = null, $extrauserfields = null) {
+    public function application_notification_mail_body(
+        $course, $user, $manageurl, $applydescription, $standarduserfields = null, $extrauserfields = null) {
+
         $body = '<p>'. get_string('coursename', 'enrol_apply') .': '.format_string($course->fullname).'</p>';
         $body .= '<p>'. get_string('applyuser', 'enrol_apply') .': '.$user->firstname.' '.$user->lastname.'</p>';
         $body .= '<p>'. get_string('comment', 'enrol_apply') .': '.$applydescription.'</p>';
-        if($standarduserfields){
+        if ($standarduserfields) {
             $body .= '<p><strong>'. get_string('user_profile', 'enrol_apply').'</strong></p>';
             $body .= '<p>'. get_string('firstname') .': '.$standarduserfields->firstname.'</p>';
             $body .= '<p>'. get_string('lastname') .': '.$standarduserfields->lastname.'</p>';
@@ -110,7 +124,7 @@ class enrol_apply_renderer extends plugin_renderer_base {
             $body .= '<p>'. get_string('address') .': '.$standarduserfields->address.'</p>';
         }
 
-        if($extrauserfields){
+        if ($extrauserfields) {
             foreach ($extrauserfields as $key => $value) {
                 $body .= '<p>'. $key .': '.$value.'</p>';
             }

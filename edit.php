@@ -26,18 +26,18 @@ require('../../config.php');
 require_once('edit_form.php');
 
 $courseid   = required_param('courseid', PARAM_INT);
-$instanceid = optional_param('id', 0, PARAM_INT); // instanceid
+$instanceid = optional_param('id', 0, PARAM_INT);
 
-$course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
-$context =  context_course::instance($course->id, MUST_EXIST);
+$course = get_course($courseid);
+$context = context_course::instance($course->id, MUST_EXIST);
 
 require_login($course);
 require_capability('enrol/apply:config', $context);
 
-$PAGE->set_url('/enrol/apply/edit.php', array('courseid'=>$course->id, 'id'=>$instanceid));
+$PAGE->set_url('/enrol/apply/edit.php', array('courseid' => $course->id, 'id' => $instanceid));
 $PAGE->set_pagelayout('admin');
 
-$return = new moodle_url('/enrol/instances.php', array('id'=>$course->id));
+$return = new moodle_url('/enrol/instances.php', array('id' => $course->id));
 if (!enrol_is_enabled('apply')) {
     redirect($return);
 }
@@ -45,42 +45,48 @@ if (!enrol_is_enabled('apply')) {
 $plugin = enrol_get_plugin('apply');
 
 if ($instanceid) {
-    $instance = $DB->get_record('enrol', array('courseid'=>$course->id, 'enrol'=>'apply', 'id'=>$instanceid), '*', MUST_EXIST);
+    $instance = $DB->get_record(
+        'enrol',
+        array(
+            'courseid' => $course->id,
+            'enrol' => 'apply',
+            'id' => $instanceid),
+        '*', MUST_EXIST);
 } else {
     require_capability('moodle/course:enrolconfig', $context);
-    // no instance yet, we have to add new instance
-    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id'=>$course->id)));
+    // No instance yet, we have to add new instance.
+    navigation_node::override_active_url(new moodle_url('/enrol/instances.php', array('id' => $course->id)));
     $instance = (object)$plugin->get_instance_defaults();
     $instance->id       = null;
     $instance->courseid = $course->id;
 }
 
-$mform = new enrol_apply_edit_form(NULL, array($instance, $plugin, $context));
+$mform = new enrol_apply_edit_form(null, array($instance, $plugin, $context));
 
 if ($mform->is_cancelled()) {
     redirect($return);
 
 } else if ($data = $mform->get_data()) {
     if ($instance->id) {
-        $instance->status         = $data->status;
-        $instance->name           = $data->name;
-        $instance->customtext1    = $data->customtext1;
-        $instance->customint1    = $data->customint1;
-        $instance->customint2    = $data->customint2;
-        $instance->customint3    = $data->customint3;
-        $instance->roleid         = $data->roleid;
-        $instance->timemodified   = time();
+        $instance->status       = $data->status;
+        $instance->name         = $data->name;
+        $instance->customtext1  = $data->customtext1;
+        $instance->customint1   = $data->customint1;
+        $instance->customint2   = $data->customint2;
+        $instance->customint3   = $data->customint3;
+        $instance->roleid       = $data->roleid;
+        $instance->timemodified = time();
         $DB->update_record('enrol', $instance);
 
     } else {
         $fields = array(
-            'status'          =>$data->status,
-            'name'            =>$data->name,
-            'roleid'          =>$data->roleid,
-            'customint1'      =>$data->customint1,
-            'customint2'      =>$data->customint2,
-            'customint3'      =>$data->customint3,
-            'customtext1'     =>$data->customtext1);
+            'status'      => $data->status,
+            'name'        => $data->name,
+            'roleid'      => $data->roleid,
+            'customint1'  => $data->customint1,
+            'customint2'  => $data->customint2,
+            'customint3'  => $data->customint3,
+            'customtext1' => $data->customtext1);
         $plugin->add_instance($course, $fields);
     }
 
