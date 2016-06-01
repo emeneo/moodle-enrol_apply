@@ -46,12 +46,13 @@ $PAGE->set_title(get_string('confirmusers', 'enrol_apply'));
 $PAGE->requires->css('/enrol/apply/style.css');
 
 if ($userenrolments != null) {
+    $enrolapply = enrol_get_plugin('apply');
     if (optional_param('confirm', false, PARAM_BOOL)) {
-        confirmEnrolment($userenrolments);
+        $enrolapply->confirmEnrolment($userenrolments);
     } else if (optional_param('wait', false, PARAM_BOOL)) {
-        waitEnrolment ($userenrolments);
+        $enrolapply->waitEnrolment($userenrolments);
     } else if (optional_param('cancel', false, PARAM_BOOL)) {
-        cancelEnrolment($userenrolments);
+        $enrolapply->cancelEnrolment($userenrolments);
     }
     redirect($manageurl);
 }

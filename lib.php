@@ -9,8 +9,11 @@
  * *************************************************************************
  * ************************************************************************
 */
-class enrol_apply_plugin extends enrol_plugin {
 
+/** User participation in course is suspended (used in user_enrolments->status) */
+define('ENROL_APPLY_USER_WAIT', 2);
+
+class enrol_apply_plugin extends enrol_plugin {
     /**
     * Add new instance of enrol plugin with default settings.
     * @param object $course
@@ -196,50 +199,82 @@ class enrol_apply_plugin extends enrol_plugin {
 
         return $fields;
     }
-}
 
-function confirmEnrolment($enrols){
-    global $DB;
-    global $CFG;
-    foreach ($enrols as $enrol){
-        @$enroluser->id = $enrol;
-        @$enroluser->status = 0;
+    function confirmEnrolment($enrols){
+        global $DB;
+        foreach ($enrols as $enrol){
+            // $userenrolment = $DB->get_record('user_enrolments', array('id' => $enrol), '*', MUST_EXIST);
+            $userenrolment = $DB->get_record_select(
+                'user_enrolments',
+                'id = :id AND (status = :enrolusersuspended OR status = :enrolapplyuserwait)',
+                array(
+                    'id' => $enrol,
+                    'enrolusersuspended' => ENROL_USER_SUSPENDED,
+                    'enrolapplyuserwait' => ENROL_APPLY_USER_WAIT),
+                '*',
+                MUST_EXIST);
 
-        if($DB->update_record('user_enrolments',$enroluser)){
-            $userenrolments = $DB->get_record_sql('select * from '.$CFG->prefix.'user_enrolments where id='.$enrol);
-            $role = $DB->get_record_sql("select * from ".$CFG->prefix."role where archetype='student' limit 1");
-            @$roleAssignments->userid = $userenrolments->userid;
-            @$roleAssignments->roleid = $role->id;
-            @$roleAssignments->contextid = 3;
-            @$roleAssignments->timemodified = time();
-            @$roleAssignments->modifierid = 2;
-            $DB->insert_record('role_assignments',$roleAssignments);
+            $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
+
+            // Check privileges.
+            $context = context_course::instance($instance->courseid, MUST_EXIST);
+            if (!has_capability('enrol/apply:manageapplications', $context)) {
+                continue;
+            }
+
+            $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE);
+
             $info = getRelatedInfo($enrol);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
             sendConfirmMail($info);
         }
     }
-}
 
-function waitEnrolment($enrols){
-    global $DB;
-    global $CFG;
-    foreach ($enrols as $enrol){
-        @$enroluser->id = $enrol;
-        @$enroluser->status = 2;
+    function waitEnrolment($enrols){
+        global $DB;
+        foreach ($enrols as $enrol){
+            $userenrolment = $DB->get_record('user_enrolments', array('id' => $enrol, 'status' => ENROL_USER_SUSPENDED), '*', IGNORE_MISSING);
 
-        if($DB->update_record('user_enrolments',$enroluser)){
-            $info = getRelatedInfo($enrol);
-            sendWaitMail($info);
+            if ($userenrolment != null) {
+                $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
+
+                // Check privileges.
+                $context = context_course::instance($instance->courseid, MUST_EXIST);
+                if (!has_capability('enrol/apply:manageapplications', $context)) {
+                    continue;
+                }
+
+                $this->update_user_enrol($instance, $userenrolment->userid, ENROL_APPLY_USER_WAIT);
+
+                $info = getRelatedInfo($enrol);
+                sendWaitMail($info);
+            }
         }
     }
-}
 
-function cancelEnrolment($enrols){
-    global $DB;
-    foreach ($enrols as $enrol){
-        $info = getRelatedInfo($enrol);
-        if($DB->delete_records('user_enrolments',array('id'=>$enrol))){
+    function cancelEnrolment($enrols){
+        global $DB;
+        foreach ($enrols as $enrol){
+            $userenrolment = $DB->get_record_select(
+                'user_enrolments',
+                'id = :id AND (status = :enrolusersuspended OR status = :enrolapplyuserwait)',
+                array(
+                    'id' => $enrol,
+                    'enrolusersuspended' => ENROL_USER_SUSPENDED,
+                    'enrolapplyuserwait' => ENROL_APPLY_USER_WAIT),
+                '*',
+                MUST_EXIST);
+
+            $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
+
+            // Check privileges.
+            $context = context_course::instance($instance->courseid, MUST_EXIST);
+            if (!has_capability('enrol/apply:manageapplications', $context)) {
+                continue;
+            }
+
+            $info = getRelatedInfo($enrol);
+            $this->unenrol_user($instance, $userenrolment->userid);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
             sendCancelMail($info);
         }
