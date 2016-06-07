@@ -61,7 +61,7 @@ $string['applyuser'] = 'First name / Surname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Enrol date';
 $string['btnconfirm'] = 'Confirm requests';
-$string['btnwait'] = 'put marked users on waiting list';
+$string['btnwait'] = 'Defer requests';
 $string['btncancel'] = 'Cancel requests';
 $string['enrolusers'] = 'Enrol users';
 

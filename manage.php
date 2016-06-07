@@ -28,6 +28,7 @@ require_once($CFG->dirroot.'/enrol/apply/manage_table.php');
 require_once($CFG->dirroot.'/enrol/apply/renderer.php');
 
 $id = optional_param('id', null, PARAM_INT);
+$formaction = optional_param('formaction', null, PARAM_TEXT);
 $userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
 
 require_login();
@@ -57,14 +58,18 @@ $PAGE->navbar->add(get_string('confirmusers', 'enrol_apply'));
 $PAGE->set_title(get_string('confirmusers', 'enrol_apply'));
 $PAGE->requires->css('/enrol/apply/style.css');
 
-if ($userenrolments != null) {
+if ($formaction != null && $userenrolments != null) {
     $enrolapply = enrol_get_plugin('apply');
-    if (optional_param('confirm', false, PARAM_BOOL)) {
-        $enrolapply->confirm_enrolment($userenrolments);
-    } else if (optional_param('wait', false, PARAM_BOOL)) {
-        $enrolapply->wait_enrolment($userenrolments);
-    } else if (optional_param('cancel', false, PARAM_BOOL)) {
-        $enrolapply->cancel_enrolment($userenrolments);
+    switch ($formaction) {
+        case 'confirm':
+            $enrolapply->confirm_enrolment($userenrolments);
+            break;
+        case 'wait':
+            $enrolapply->wait_enrolment($userenrolments);
+            break;
+        case 'cancel':
+            $enrolapply->cancel_enrolment($userenrolments);
+            break;
     }
     redirect($manageurl);
 }
