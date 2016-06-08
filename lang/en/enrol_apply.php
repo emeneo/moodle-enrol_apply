@@ -1,28 +1,57 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * *************************************************************************
- * *                  Apply	Enrol   				                      **
- * *************************************************************************
- * @copyright   emeneo.com                                                **
- * @link        emeneo.com                                                **
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
- * *************************************************************************
- * ************************************************************************
-*/ 
+ * @package    enrol_apply
+ * @copyright  emeneo.com (http://emeneo.com/)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     emeneo.com (http://emeneo.com/)
+ * @author     Johannes Burk <johannes.burk@sudile.com>
+ */
+
 // The name of your plug-in. Displayed on admin menus.
 $string['enrolname'] = 'Course enrol confirmation';
 $string['pluginname'] = 'Course enrol confirmation';
 $string['pluginname_desc'] = 'With this plug-in users can apply to be enrolled in a course. A teacher or site manager will then have to approve the enrolment before the user gets enroled.';
 
+$string['confirmmail_heading'] = 'Confirmation email';
+$string['confirmmail_desc'] = '';
 $string['confirmmailsubject'] = 'Confirmation email subject';
+$string['confirmmailsubject_desc'] = '';
 $string['confirmmailcontent'] = 'Confirmation email content';
-$string['waitmailsubject'] = 'Waiting list mail subject';
-$string['waitmailcontent'] = 'Waiting list mail content';
-$string['cancelmailsubject'] = 'Cancelation email subject';
-$string['cancelmailcontent'] = 'Cancelation email content';
 $string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['waitmail_heading'] = 'Waiting list email';
+$string['waitmail_desc'] = '';
+$string['waitmailsubject'] = 'Waiting list mail subject';
+$string['waitmailsubject_desc'] = '';
+$string['waitmailcontent'] = 'Waiting list mail content';
 $string['waitmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['cancelmail_heading'] = 'Cancelation email';
+$string['cancelmail_desc'] = '';
+$string['cancelmailsubject'] = 'Cancelation email subject';
+$string['cancelmailsubject_desc'] = '';
+$string['cancelmailcontent'] = 'Cancelation email content';
 $string['cancelmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+
+$string['notify_heading'] = 'Notification settings';
+$string['notify_desc'] = 'Define who gets notified about new enrolment applications.';
+$string['sendmailtoteacher'] = 'Send email notification to teachers';
+$string['sendmailtomanager'] = 'Send email notification to managers';
 
 $string['confirmusers'] = 'Enrol Confirm';
 $string['confirmusers_desc'] = 'Users in gray colored rows are on the waiting list.';
@@ -40,17 +69,12 @@ $string['status'] = 'Allow Course enrol confirmation';
 $string['confirmenrol'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enrol instances';
-$string['apply:enrol'] = 'Enrol users';
-$string['apply:manage'] = 'Manage apply enrolment';
+$string['apply:manageapplications'] = 'Manage apply enrolment';
 $string['apply:unenrol'] = 'Cancel users from the course';
-$string['apply:unenrolapply'] = 'Cancel self from the course'; // is this necessary now?
 $string['apply:unenrolself'] = 'Cancel self from the course';
 
- 
 $string['notification'] = '<b>Enrolment application successfully sent</b>. <br/><br/>You will be informed by email when your enrolment has been confirmed.';
 
-$string['sendmailtoteacher'] = 'Send email notification to teachers';
-$string['sendmailtomanager'] = 'Send email notification to managers';
 $string['mailtoteacher_suject'] = 'New Enrolment request!';
 $string['editdescription'] = 'Textarea description';
 $string['comment'] = 'Comment';
@@ -61,4 +85,3 @@ $string['user_profile'] = 'User Profile';
 
 $string['show_standard_user_profile'] = 'Show standard user profile fields on enrolment screen';
 $string['show_extra_user_profile'] = 'Show extra user profile fields on enrolment screen';
-?>

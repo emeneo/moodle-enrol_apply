@@ -16,7 +16,7 @@
 
 /**
  * @package    enrol_apply
- * @copyright  emeneo.com
+ * @copyright  emeneo.com (http://emeneo.com/)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
@@ -49,6 +49,22 @@ function xmldb_enrol_apply_upgrade($oldversion) {
 
         // Apply savepoint reached.
         upgrade_plugin_savepoint(true, 2016012801, 'enrol', 'apply');
+    }
+
+    if ($oldversion < 2016042202) {
+        // Invert settings for showing standard and extra user profile fields.
+        $enrolapply = enrol_get_plugin('apply');
+        $showstandarduserprofile = $enrolapply->get_config('show_standard_user_profile') == 0 ? true : false;
+        $enrolapply->set_config('show_standard_user_profile', $showstandarduserprofile);
+        $showextrauserprofile = $enrolapply->get_config('show_extra_user_profile') == 0 ? true : false;
+        $enrolapply->set_config('show_extra_user_profile', $showextrauserprofile);
+
+        $instances = $DB->get_records('enrol', array('enrol' => 'apply'));
+        foreach ($instances as $instance) {
+            $instance->customint1 = !$instance->customint1;
+            $instance->customint2 = !$instance->customint2;
+            $DB->update_record('enrol', $instance, true);
+        }
     }
 
     return true;

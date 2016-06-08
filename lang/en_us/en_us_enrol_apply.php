@@ -1,14 +1,25 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * *************************************************************************
- * *                  Apply	enrol   				                      **
- * *************************************************************************
- * @copyright   emeneo.com                                                **
- * @link        emeneo.com                                                **
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
- * *************************************************************************
- * ************************************************************************
-*/ 
+ * @package    enrol_apply
+ * @copyright  emeneo.com (http://emeneo.com/)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // The name of your plug-in. Displayed on admin menus.
 $string['enrollname'] = 'Course enrollment confirmation';
 $string['pluginname'] = 'Course enrollment confirmation';
@@ -35,10 +46,10 @@ $string['status'] = 'Allow course enroll confirmation';
 $string['confirmenroll'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enroll instances';
-$string['apply:manage'] = 'Manage apply enrollment';
+$string['apply:manageapplications'] = 'Manage apply enrollment';
 $string['apply:unenroll'] = 'Cancel users from the course';
 $string['apply:unenrollapply'] = 'Cancel self from the course';
- 
+
 $string['notification'] = '<b>Enrolllment application successfully sent</b>. <br/><br/>You will be informed by email when your enrollment has been confirmed.';
 
 $string['sendmailtoteacher'] = 'Send email notification to teachers';
@@ -49,4 +60,3 @@ $string['comment'] = 'Comment';
 $string['applymanage'] = 'Manage enrollment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
-?>

@@ -1,62 +1,76 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * *************************************************************************
- * *                  Apply	Enrol   				                      **
- * *************************************************************************
- * @copyright   emeneo.com                                                **
- * @link        emeneo.com                                                **
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
- * *************************************************************************
- * ************************************************************************
-*/
-require ('../../config.php');
-require_once ('lib.php');
+ * @package    enrol_apply
+ * @copyright  emeneo.com (http://emeneo.com/)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     emeneo.com (http://emeneo.com/)
+ * @author     Johannes Burk <johannes.burk@sudile.com>
+ */
+
+require_once('../../config.php');
+require_once($CFG->dirroot.'/enrol/apply/lib.php');
+require_once($CFG->dirroot.'/enrol/apply/manage_table.php');
+require_once($CFG->dirroot.'/enrol/apply/renderer.php');
+
+$id = optional_param('id', null, PARAM_INT);
+$userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
+
 require_login();
-require_capability('enrol/apply:manage', context_system::instance());
 
-$site = get_site ();
-$systemcontext = context_system::instance();
-
-$PAGE->set_url ( '/enrol/manage.php');
-$PAGE->set_context($systemcontext);
-$PAGE->set_pagelayout ( 'admin' );
-//$PAGE->set_heading ( $course->fullname );
-
-$PAGE->navbar->add ( get_string ( 'confirmusers', 'enrol_apply' ) );
-$PAGE->set_title ( "$site->shortname: " . get_string ( 'confirmusers', 'enrol_apply' ) );
-
-if (isset ( $_POST ['enrolid'] )) {
-	if ($_POST ['enrolid']) {
-		if ($_POST ['type'] == 'confirm') {
-			confirmEnrolment ( $_POST ['enrolid'] );
-		} elseif ($_POST ['type'] == 'cancel') {
-			cancelEnrolment ( $_POST ['enrolid'] );
-		}
-		redirect ( "$CFG->wwwroot/enrol/apply/manage.php" );
-	}
+$manageurlparams = array();
+if ($id == null) {
+    $context = context_system::instance();
+    require_capability('enrol/apply:manageapplications', $context);
+    $pageheading = get_string('confirmusers', 'enrol_apply');
+} else {
+    $instance = $DB->get_record('enrol', array('id' => $id, 'enrol' => 'apply'), '*', MUST_EXIST);
+    require_course_login($instance->courseid);
+    $course = get_course($instance->courseid);
+    $context = context_course::instance($course->id, MUST_EXIST);
+    require_capability('enrol/apply:manageapplications', $context);
+    $manageurlparams['id'] = $instance->id;
+    $pageheading = $course->fullname;
 }
 
-$enrols = getAllEnrolment();
-echo $OUTPUT->header ();
-echo $OUTPUT->heading ( get_string ( 'confirmusers', 'enrol_apply' ) );
-echo '<form id="frmenrol" method="post" action="manage.php">';
-echo '<input type="hidden" id="type" name="type" value="confirm">';
-echo '<table class="generalbox editcourse boxaligncenter"><tr class="header">';
-echo '<th class="header" scope="col">&nbsp;</th>';
-echo '<th class="header" scope="col">' . get_string ( 'coursename', 'enrol_apply' ) . '</th>';
-echo '<th class="header" scope="col">' . get_string ( 'applyuser', 'enrol_apply' ) . '</th>';
-echo '<th class="header" scope="col">' . get_string ( 'applyusermail', 'enrol_apply' ) . '</th>';
-echo '<th class="header" scope="col">' . get_string ( 'applydate', 'enrol_apply' ) . '</th>';
-echo '</tr>';
-foreach ( $enrols as $enrol ) {
-	echo '<tr><td><input type="checkbox" name="enrolid[]" value="' . $enrol->id . '"></td>';
-	echo '<td>' . format_string($enrol->course) . '</td>';
-	echo '<td>' . $enrol->firstname . ' ' . $enrol->lastname . '</td>';
-	echo '<td>' . $enrol->email . '</td>';
-	echo '<td>' . date ( "Y-m-d", $enrol->timecreated ) . '</td></tr>';
+$manageurl = new moodle_url('/enrol/apply/manage.php', $manageurlparams);
+
+$PAGE->set_context($context);
+$PAGE->set_url($manageurl);
+$PAGE->set_pagelayout('admin');
+$PAGE->set_heading($pageheading);
+$PAGE->navbar->add(get_string('confirmusers', 'enrol_apply'));
+$PAGE->set_title(get_string('confirmusers', 'enrol_apply'));
+$PAGE->requires->css('/enrol/apply/style.css');
+
+if ($userenrolments != null) {
+    $enrolapply = enrol_get_plugin('apply');
+    if (optional_param('confirm', false, PARAM_BOOL)) {
+        $enrolapply->confirm_enrolment($userenrolments);
+    } else if (optional_param('wait', false, PARAM_BOOL)) {
+        $enrolapply->wait_enrolment($userenrolments);
+    } else if (optional_param('cancel', false, PARAM_BOOL)) {
+        $enrolapply->cancel_enrolment($userenrolments);
+    }
+    redirect($manageurl);
 }
-echo '</table>';
-echo '<p align="center"><input type="button" value="' . get_string ( 'btnconfirm', 'enrol_apply' ) . '" onclick="doSubmit(\'confrim\');">&nbsp;&nbsp;<input type="button" value="' . get_string ( 'btncancel', 'enrol_apply' ) . '" onclick="doSubmit(\'cancel\');"></p>';
-echo '</form>';
-echo '<script>function doSubmit(type){if(type=="cancel"){document.getElementById("type").value=type;}document.getElementById("frmenrol").submit();}</script>';
-echo $OUTPUT->footer ();
+
+$table = new enrol_apply_manage_table($id);
+$table->define_baseurl($manageurl);
+
+$renderer = $PAGE->get_renderer('enrol_apply');
+$renderer->manage_page($table, $manageurl);
