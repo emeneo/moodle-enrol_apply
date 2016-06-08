@@ -18,14 +18,14 @@
  * @package    enrol_apply
  * @copyright  emeneo.com (http://emeneo.com/)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     emeneo.com (http://emeneo.com/)
+ * @author     Flotter Totte <flottertotte@emeneo.com>
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2016042203;
+$plugin->version  = 2016060800;
 $plugin->requires = 2011080100;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Enrolment upon approval plugin Version 3.0-d';
+$plugin->release = 'Enrolment upon approval plugin Version 3.1-a';
 $plugin->component = 'enrol_apply';
