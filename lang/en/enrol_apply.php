@@ -53,6 +53,16 @@ $string['notify_desc'] = 'Define who gets notified about new enrolment applicati
 $string['sendmailtoteacher'] = 'Send email notification to teachers';
 $string['sendmailtomanager'] = 'Send email notification to managers';
 
+$string['messageprovider:application'] = 'Course enrolment application notifications';
+$string['messageprovider:confirmation'] = 'Course enrolment application confirmation notifications';
+$string['messageprovider:cancelation'] = 'Course enrolment application cancelation notifications';
+$string['messageprovider:waitinglist'] = 'Course enrolment application defer notifications';
+
+$string['newapplicationnotification'] = 'There is a new course enrolment application awaiting review.';
+$string['applicationconfirmednotification'] = 'Your course enrolment application was confirmed.';
+$string['applicationcancelednotification'] = 'Your course enrolment application was canceled.';
+$string['applicationdeferrednotification'] = 'Your course enrolment application was deferred (you are currently on the waiting list).';
+
 $string['confirmusers'] = 'Enrol Confirm';
 $string['confirmusers_desc'] = 'Users in gray colored rows are on the waiting list.';
 

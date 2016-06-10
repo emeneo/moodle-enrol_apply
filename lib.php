@@ -230,9 +230,12 @@ class enrol_apply_plugin extends enrol_plugin {
             $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 
-            $subject = get_config('enrol_apply', 'confirmmailsubject');
-            $body = get_config('enrol_apply', 'confirmmailcontent');
-            $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
+            $this->notify_applicant(
+                    $instance,
+                    $userenrolment->userid,
+                    'confirmation',
+                    get_config('enrol_apply', 'confirmmailsubject'),
+                    get_config('enrol_apply', 'confirmmailcontent'));
         }
     }
 
@@ -255,9 +258,12 @@ class enrol_apply_plugin extends enrol_plugin {
 
                 $this->update_user_enrol($instance, $userenrolment->userid, ENROL_APPLY_USER_WAIT);
 
-                $subject = get_config('enrol_apply', 'waitmailsubject');
-                $body = get_config('enrol_apply', 'waitmailcontent');
-                $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
+                $this->notify_applicant(
+                    $instance,
+                    $userenrolment->userid,
+                    'waitinglist',
+                    get_config('enrol_apply', 'waitmailsubject'),
+                    get_config('enrol_apply', 'waitmailcontent'));
             }
         }
     }
@@ -286,26 +292,41 @@ class enrol_apply_plugin extends enrol_plugin {
             $this->unenrol_user($instance, $userenrolment->userid);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 
-            $subject = get_config('enrol_apply', 'cancelmailsubject');
-            $body = get_config('enrol_apply', 'cancelmailcontent');
-            $this->send_mail_to_applicant($instance, $userenrolment->userid, $subject, $body);
+            $this->notify_applicant(
+                $instance,
+                $userenrolment->userid,
+                'cancelation',
+                get_config('enrol_apply', 'cancelmailsubject'),
+                get_config('enrol_apply', 'cancelmailcontent'));
         }
     }
 
-    private function send_mail_to_applicant($instance, $userid, $subject, $body) {
-        global $DB;
+    private function notify_applicant($instance, $userid, $type, $subject, $content) {
         global $CFG;
+        require_once($CFG->dirroot.'/enrol/apply/notification.php');
+        // Required for course_get_url() function.
+        require_once($CFG->dirroot.'/course/lib.php');
 
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userid);
 
-        $body = $this->update_mail_content($body, $course, $user);
-        $contact = core_user::get_support_user();
-        email_to_user($user, $contact, $subject, html_to_text($body), $body);
+        $content = $this->update_mail_content($content, $course, $user);
+
+        $message = new enrol_apply_notification(
+            $user,
+            core_user::get_support_user(),
+            $type,
+            $subject,
+            $content,
+            course_get_url($course));
+        message_send($message);
     }
 
     private function send_application_notification($instance, $userid, $data) {
         global $CFG, $PAGE;
+        require_once($CFG->dirroot.'/enrol/apply/notification.php');
+        // Required for course_get_url() function.
+        require_once($CFG->dirroot.'/course/lib.php');
 
         $renderer = $PAGE->get_renderer('enrol_apply');
 
@@ -336,7 +357,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $teachers = get_role_users($editingteacherrole->id, $context);
 
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
-            $body = $renderer->application_notification_mail_body(
+            $content = $renderer->application_notification_mail_body(
                 $course,
                 $user,
                 $manageurl,
@@ -344,7 +365,14 @@ class enrol_apply_plugin extends enrol_plugin {
                 $standarduserfields,
                 $extrauserfields);
             foreach ($teachers as $teacher) {
-                email_to_user($teacher, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
+                $message = new enrol_apply_notification(
+                    $teacher,
+                    $contact,
+                    'application',
+                    get_string('mailtoteacher_suject', 'enrol_apply'),
+                    $content,
+                    $manageurl);
+                message_send($message);
             }
         }
 
@@ -356,7 +384,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $managers = get_role_users($managerrole->id, $context);
 
             $manageurl = new moodle_url('/enrol/apply/manage.php');
-            $body = $renderer->application_notification_mail_body(
+            $content = $renderer->application_notification_mail_body(
                 $course,
                 $user,
                 $manageurl,
@@ -364,7 +392,14 @@ class enrol_apply_plugin extends enrol_plugin {
                 $standarduserfields,
                 $extrauserfields);
             foreach ($managers as $manager) {
-                email_to_user($manager, $contact, get_string('mailtoteacher_suject', 'enrol_apply'), html_to_text($body), $body);
+                $message = new enrol_apply_notification(
+                    $manager,
+                    $contact,
+                    'application',
+                    get_string('mailtoteacher_suject', 'enrol_apply'),
+                    $content,
+                    $manageurl);
+                message_send($message);
             }
         }
     }

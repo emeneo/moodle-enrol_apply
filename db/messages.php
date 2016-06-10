@@ -16,16 +16,25 @@
 
 /**
  * @package    enrol_apply
- * @copyright  emeneo.com (http://emeneo.com/)
+ * @copyright  2016 sudile GbR (http://www.sudile.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Flotter Totte <flottertotte@emeneo.com>
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2016060801;
-$plugin->requires = 2011080100;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Enrolment upon approval plugin Version 3.1-a';
-$plugin->component = 'enrol_apply';
+$messageproviders = array (
+    // Notify teacher/manager that a student has applied for a course enrolment.
+    'application' => array (
+        'capability'  => 'enrol/apply:manageapplications'
+    ),
+
+    // Notify student that his application was confirmed.
+    'confirmation' => array (),
+
+    // Notify student that his application was canceled.
+    'cancelation' => array (),
+
+    // Notify student that his application was deferred (put on a waiting list).
+    'waitinglist' => array (),
+);
