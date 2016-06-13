@@ -55,6 +55,8 @@ class enrol_apply_manage_table extends table_sql {
             JOIN {course} c ON c.id = e.courseid",
             $sqlwhere,
             $sqlparams);
+
+        $this->no_sorting('checkboxcolumn');
     }
 
     /**

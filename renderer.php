@@ -48,22 +48,24 @@ class enrol_apply_renderer extends plugin_renderer_base {
 
         $this->manage_table($table);
 
-        echo html_writer::start_tag('p', array('align' => 'center'));
+        if ($table->totalrows > 0) {
+            echo html_writer::empty_tag('br');
+            echo html_writer::start_tag('div', array('class' => 'formaction'));
 
-        echo html_writer::empty_tag('input', array(
-            'type' => 'submit',
-            'name' => 'confirm',
-            'value' => get_string('btnconfirm', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array(
-            'type' => 'submit',
-            'name' => 'wait',
-            'value' => get_string('btnwait', 'enrol_apply')));
-        echo html_writer::empty_tag('input', array(
-            'type' => 'submit',
-            'name' => 'cancel',
-            'value' => get_string('btncancel', 'enrol_apply')));
+            $formactions = array(
+                'confirm' => get_string('btnconfirm', 'enrol_apply'),
+                'wait' => get_string('btnwait', 'enrol_apply'),
+                'cancel' => get_string('btncancel', 'enrol_apply'));
+            echo html_writer::tag('label', get_string('withselectedusers'), array('for' => 'formaction'));
+            echo html_writer::select($formactions, 'formaction', '', array('' => 'choosedots'), array('id' => 'formaction'));
+            echo html_writer::tag('noscript',
+                html_writer::empty_tag('input', array('type' => 'submit', get_string('submit'))),
+                array('style' => 'display: inline;'));
 
-        echo html_writer::end_tag('p');
+            echo html_writer::end_tag('div');
+
+            $this->page->requires->js_call_amd('enrol_apply/manage', 'init');
+        }
         echo html_writer::end_tag('form');
     }
 
@@ -76,7 +78,7 @@ class enrol_apply_renderer extends plugin_renderer_base {
             'applydate',
             'applycomment');
         $headers = array(
-            '',
+            html_writer::checkbox('toggleall', 'toggleall', false, '', array('id' => 'toggleall')),
             get_string('course'),
             'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
             get_string('email'),
