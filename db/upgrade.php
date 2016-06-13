@@ -67,6 +67,31 @@ function xmldb_enrol_apply_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2016060803) {
+        // Convert old notification settings.
+        $enrolapply = enrol_get_plugin('apply');
+
+        $sendmailtoteacher = $enrolapply->get_config('sendmailtoteacher');
+        $notifycoursebased = $sendmailtoteacher;
+        $enrolapply->set_config('notifycoursebased', $notifycoursebased);
+        $enrolapply->set_config('sendmailtoteacher', null);
+
+        $sendmailtomanager = $enrolapply->get_config('sendmailtomanager');
+        $notifyglobal = $sendmailtomanager ? '$@ALL@$' : '';
+        $enrolapply->set_config('notifyglobal', $notifyglobal);
+        $enrolapply->set_config('sendmailtomanager', null);
+
+        $instances = $DB->get_records('enrol', array('enrol' => 'apply'));
+        foreach ($instances as $instance) {
+            $sendmailtoteacher = $instance->customint3;
+            $notify = $sendmailtoteacher ? '$@ALL@$' : '';
+            $instance->customtext2 = $notify;
+            $instance->customint3 = null;
+            $instance->customint4 = null;
+            $DB->update_record('enrol', $instance, true);
+        }
+    }
+
     return true;
 
 }

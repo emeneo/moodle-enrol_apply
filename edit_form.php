@@ -60,7 +60,15 @@ class enrol_apply_edit_form extends moodleform {
         $mform->addElement('select', 'customint2', get_string('show_extra_user_profile', 'enrol_apply'), $options);
         $mform->setDefault('customint2', $plugin->get_config('customint2'));
 
-        $mform->addElement('advcheckbox', 'customint3', get_string('sendmailtoteacher', 'enrol_apply'));
+        $choices = array(
+            '$@NONE@$' => get_string('nobody'),
+            '$@ALL@$' => get_string('everyonewhocan', 'admin', get_capability_string('enrol/apply:manageapplications')));
+        $users = get_enrolled_users($context, 'enrol/apply:manageapplications');
+        foreach ($users as $userid => $user) {
+            $choices[$userid] = fullname($user);
+        }
+        $select = $mform->addElement('select', 'notify', get_string('notify_desc', 'enrol_apply'), $choices);
+        $select->setMultiple(true);
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);

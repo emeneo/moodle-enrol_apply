@@ -90,16 +90,12 @@ if ($ADMIN->fulltree) {
         'enrol_apply_notify',
         get_string('notify_heading', 'enrol_apply'),
         get_string('notify_desc', 'enrol_apply')));
-    $settings->add(new admin_setting_configcheckbox(
-        'enrol_apply/sendmailtoteacher',
-        get_string('sendmailtoteacher', 'enrol_apply'),
-        '',
-        0));
-    $settings->add(new admin_setting_configcheckbox(
-        'enrol_apply/sendmailtomanager',
-        get_string('sendmailtomanager', 'enrol_apply'),
-        '',
-        0));
+    $settings->add(new admin_setting_users_with_capability(
+        'enrol_apply/notifyglobal',
+        get_string('notifyglobal', 'enrol_apply'),
+        get_string('notifyglobal_desc', 'enrol_apply'),
+        array(),
+        'enrol/apply:manageapplications'));
 
     // Enrol instance defaults...
     $settings->add(new admin_setting_heading('enrol_manual_defaults',
@@ -130,6 +126,12 @@ if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_configselect('enrol_apply/roleid',
             get_string('defaultrole', 'role'), '', $student->id, $options));
     }
+
+    $settings->add(new admin_setting_configcheckbox(
+        'enrol_apply/notifycoursebased',
+        get_string('notifycoursebased', 'enrol_apply'),
+        get_string('notifycoursebased_desc', 'enrol_apply'),
+        0));
 }
 
 if ($hassiteconfig) { // Needs this condition or there is error on login page.

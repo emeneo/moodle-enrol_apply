@@ -200,8 +200,7 @@ class enrol_apply_plugin extends enrol_plugin {
         $fields['roleid']          = $this->get_config('roleid', 0);
         $fields['customint1']      = $this->get_config('show_standard_user_profile');
         $fields['customint2']      = $this->get_config('show_extra_user_profile');
-        $fields['customint3']      = $this->get_config('sendmailtoteacher');
-        $fields['customint4']      = $this->get_config('sendmailtomanager');
+        $fields['customtext2']     = $this->get_config('notifycoursebased') ? '$@ALL@$' : '';
 
         return $fields;
     }
@@ -349,13 +348,9 @@ class enrol_apply_plugin extends enrol_plugin {
             $extrauserfields = $user->profile;
         }
 
-        // Send notification to Teachers? Instance depending.
-        if ($instance->customint3 == 1) {
-            $context = context_course::instance($instance->courseid);
-            $editingteacherroles = get_archetype_roles('editingteacher');
-            $editingteacherrole = reset($editingteacherroles);
-            $teachers = get_role_users($editingteacherrole->id, $context);
-
+        // Send notification to users with manageapplications in course context (instance depending)?
+        $courseuserstonotify = $this->get_notifycoursebased_users($instance);
+        if (!empty($courseuserstonotify)) {
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
             $content = $renderer->application_notification_mail_body(
                 $course,
@@ -364,9 +359,9 @@ class enrol_apply_plugin extends enrol_plugin {
                 $data->applydescription,
                 $standarduserfields,
                 $extrauserfields);
-            foreach ($teachers as $teacher) {
+            foreach ($courseuserstonotify as $user) {
                 $message = new enrol_apply_notification(
-                    $teacher,
+                    $user,
                     $contact,
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
@@ -376,13 +371,12 @@ class enrol_apply_plugin extends enrol_plugin {
             }
         }
 
-        // Send notification to managers in system context?
-        if (get_config('enrol_apply', 'sendmailtomanager') == 1) {
-            $context = context_system::instance();
-            $managerroles = get_archetype_roles('manager');
-            $managerrole = reset($editingteacherroles);
-            $managers = get_role_users($managerrole->id, $context);
-
+        // Send notification to users with manageapplications in system context?
+        $globaluserstonotify = $this->get_notifyglobal_users();
+        $globaluserstonotify = array_udiff($globaluserstonotify, $courseuserstonotify, function($usera, $userb) {
+            return $usera->id == $userb->id ? 0 : -1;
+        });
+        if (!empty($globaluserstonotify)) {
             $manageurl = new moodle_url('/enrol/apply/manage.php');
             $content = $renderer->application_notification_mail_body(
                 $course,
@@ -391,9 +385,9 @@ class enrol_apply_plugin extends enrol_plugin {
                 $data->applydescription,
                 $standarduserfields,
                 $extrauserfields);
-            foreach ($managers as $manager) {
+            foreach ($globaluserstonotify as $user) {
                 $message = new enrol_apply_notification(
-                    $manager,
+                    $user,
                     $contact,
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
@@ -402,6 +396,50 @@ class enrol_apply_plugin extends enrol_plugin {
                 message_send($message);
             }
         }
+    }
+
+    /**
+     * Returns enrolled users of a course who should be notified about new course enrolment applications.
+     *
+     * Note: mostly copied from get_users_from_config() function in moodlelib.php.
+     * @param  array $instance Enrol apply instance record.
+     * @return array           Array of user IDs.
+     */
+    public function get_notifycoursebased_users($instance) {
+        $value = $instance->customtext2;
+        if (empty($value) or $value === '$@NONE@$') {
+            return array();
+        }
+
+        $context = context_course::instance($instance->courseid);
+
+        // We have to make sure that users still have the necessary capability,
+        // it should be faster to fetch them all first and then test if they are present
+        // instead of validating them one-by-one.
+        $users = get_enrolled_users($context, 'enrol/apply:manageapplications');
+
+        if ($value === '$@ALL@$') {
+            return $users;
+        }
+
+        $result = array(); // Result in correct order.
+        $allowed = explode(',', $value);
+        foreach ($allowed as $uid) {
+            if (isset($users[$uid])) {
+                $user = $users[$uid];
+                $result[$user->id] = $user;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns users who should be notified about new course enrolment applications.
+     * @return array Array of user IDs.
+     */
+    public function get_notifyglobal_users() {
+        return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications');
     }
 
     private function update_mail_content($content, $course, $user) {

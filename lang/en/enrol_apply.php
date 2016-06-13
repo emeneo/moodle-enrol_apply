@@ -50,8 +50,10 @@ $string['cancelmailcontent_desc'] = 'Please use the following special marks to r
 
 $string['notify_heading'] = 'Notification settings';
 $string['notify_desc'] = 'Define who gets notified about new enrolment applications.';
-$string['sendmailtoteacher'] = 'Send email notification to teachers';
-$string['sendmailtomanager'] = 'Send email notification to managers';
+$string['notifycoursebased'] = "New enrolment application notification (instance based, eg. course teachers)";
+$string['notifycoursebased_desc'] = "Default for new instances: Notify everyone who have the 'Manage apply enrolment' capability for the corresponding course (eg. teachers and managers)";
+$string['notifyglobal'] = "New enrolment application notification (global, eg. global managers and admins)";
+$string['notifyglobal_desc'] = "Define who gets notified about new enrolment applications for any course.";
 
 $string['messageprovider:application'] = 'Course enrolment application notifications';
 $string['messageprovider:confirmation'] = 'Course enrolment application confirmation notifications';
