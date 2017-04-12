@@ -68,6 +68,15 @@ class enrol_apply_plugin extends enrol_plugin {
             return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
         }
 
+        if ($instance->customint3 > 0) {
+            // Max enrol limit specified.
+            $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
+            if ($count >= $instance->customint3) {
+                // Bad luck, no more self enrolments here.
+                return '<div class="alert alert-error">'.get_string('maxenrolledreached_left', 'enrol_apply')." (".$count.") ".get_string('maxenrolledreached_right', 'enrol_apply').'</div>';
+            }
+        }
+
         require_once("$CFG->dirroot/enrol/apply/apply_form.php");
 
         $form = new enrol_apply_apply_form(null, $instance);

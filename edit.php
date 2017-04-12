@@ -94,6 +94,7 @@ if ($mform->is_cancelled()) {
         $instance->customtext2  = $data->customtext2;
         $instance->customint1   = $data->customint1;
         $instance->customint2   = $data->customint2;
+        $instance->customint3   = $data->customint3;
         $instance->roleid       = $data->roleid;
         $instance->timemodified = time();
         $DB->update_record('enrol', $instance);
@@ -105,6 +106,7 @@ if ($mform->is_cancelled()) {
             'roleid'      => $data->roleid,
             'customint1'  => $data->customint1,
             'customint2'  => $data->customint2,
+            'customint3'  => $data->customint3,
             'customtext1' => $data->customtext1,
             'customtext2' => $data->customtext2);
         $plugin->add_instance($course, $fields);

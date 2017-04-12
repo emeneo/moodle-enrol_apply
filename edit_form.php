@@ -73,6 +73,10 @@ class enrol_apply_edit_form extends moodleform {
         $select = $mform->addElement('select', 'notify', get_string('notify_desc', 'enrol_apply'), $choices);
         $select->setMultiple(true);
 
+        $mform->addElement('text', 'customint3', get_string('maxenrolled', 'enrol_apply'));
+        $mform->setType('customint3', PARAM_INT);
+        $mform->setDefault('customint3', $plugin->get_config('customint3'));
+
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');

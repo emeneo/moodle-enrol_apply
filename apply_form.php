@@ -42,7 +42,7 @@ class enrol_apply_apply_form extends moodleform {
     }
 
     public function definition() {
-        global $USER;
+        global $USER, $DB;
 
         $mform = $this->_form;
         $instance = $this->_customdata;
@@ -51,6 +51,13 @@ class enrol_apply_apply_form extends moodleform {
 
         $heading = $plugin->get_instance_name($instance);
         $mform->addElement('header', 'selfheader', $heading);
+
+        if ($instance->customint3 > 0) {
+            $count = $DB->count_records('user_enrolments', array('enrolid' => $instance->id));
+            if ($count < $instance->customint3) {
+                $mform->addElement('html', '<div class="alert alert-info">'.$count.' '.get_string('maxenrolled_tip_1', 'enrol_apply').' '.$instance->customint3.' '.get_string('maxenrolled_tip_2', 'enrol_apply').'</div>');
+            }
+        }
 
         $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
         $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'), 'cols="80"');

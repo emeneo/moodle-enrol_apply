@@ -97,3 +97,11 @@ $string['user_profile'] = 'User Profile';
 
 $string['show_standard_user_profile'] = 'Show standard user profile fields on enrolment screen';
 $string['show_extra_user_profile'] = 'Show extra user profile fields on enrolment screen';
+
+$string['maxenrolled'] = 'Max enrolled users';
+$string['maxenrolled_help'] = 'Specifies the maximum number of users that can self enrol. 0 means no limit.';
+$string['maxenrolledreached_left'] = 'Maximum number of users allowed';
+$string['maxenrolledreached_right'] = 'has already been reached.';
+
+$string['maxenrolled_tip_1'] = 'out of';
+$string['maxenrolled_tip_2'] = 'seats already booked.';
