@@ -39,7 +39,7 @@ $string['confirmusers'] = 'Einschreibung bestätigen';
 $string['confirmusers_desc'] = 'Nutzer in grau hinterlegten Zeilen befinden sich auf der Warteliste und können noch nachträglich dem Kurs hinzugefügt oder gelöscht werden.';
 
 $string['coursename'] = 'Kurs';
-$string['applyuser'] = 'Voname / Nachname';
+$string['applyuser'] = 'Vorname / Nachname';
 $string['applyusermail'] = 'Email';
 $string['applydate'] = 'Einschreibungsdatum';
 $string['btnconfirm'] = 'Einschreibungsanfragen bestätigen';
