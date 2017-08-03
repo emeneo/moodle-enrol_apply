@@ -235,6 +235,7 @@ class enrol_apply_plugin extends enrol_plugin {
         $fields['customint1']      = $this->get_config('show_standard_user_profile');
         $fields['customint2']      = $this->get_config('show_extra_user_profile');
         $fields['customtext2']     = $this->get_config('notifycoursebased') ? '$@ALL@$' : '';
+        $fields['enrolperiod']     = $this->get_config('enrolperiod', 0);
 
         return $fields;
     }
@@ -260,12 +261,19 @@ class enrol_apply_plugin extends enrol_plugin {
                 continue;
             }
 
-            $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE, time());
+            // Set timestart and timeend if an enrolment duration is set.
+            $userenrolment->timestart = time();
+            $userenrolment->timeend   = 0;
+            if ($instance->enrolperiod) {
+                $userenrolment->timeend = $userenrolment->timestart + $instance->enrolperiod;
+            }
+
+            $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE, $userenrolment->timestart, $userenrolment->timeend);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 
             $this->notify_applicant(
                     $instance,
-                    $userenrolment->userid,
+                    $userenrolment,
                     'confirmation',
                     get_config('enrol_apply', 'confirmmailsubject'),
                     get_config('enrol_apply', 'confirmmailcontent'));
@@ -293,7 +301,7 @@ class enrol_apply_plugin extends enrol_plugin {
 
                 $this->notify_applicant(
                     $instance,
-                    $userenrolment->userid,
+                    $userenrolment,
                     'waitinglist',
                     get_config('enrol_apply', 'waitmailsubject'),
                     get_config('enrol_apply', 'waitmailcontent'));
@@ -327,23 +335,23 @@ class enrol_apply_plugin extends enrol_plugin {
 
             $this->notify_applicant(
                 $instance,
-                $userenrolment->userid,
+                $userenrolment,
                 'cancelation',
                 get_config('enrol_apply', 'cancelmailsubject'),
                 get_config('enrol_apply', 'cancelmailcontent'));
         }
     }
 
-    private function notify_applicant($instance, $userid, $type, $subject, $content) {
+    private function notify_applicant($instance, $userenrolment, $type, $subject, $content) {
         global $CFG;
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
         // Required for course_get_url() function.
         require_once($CFG->dirroot.'/course/lib.php');
 
         $course = get_course($instance->courseid);
-        $user = core_user::get_user($userid);
+        $user = core_user::get_user($userenrolment->userid);
 
-        $content = $this->update_mail_content($content, $course, $user);
+        $content = $this->update_mail_content($content, $course, $user, $userenrolment);
 
         $message = new enrol_apply_notification(
             $user,
@@ -476,12 +484,14 @@ class enrol_apply_plugin extends enrol_plugin {
         return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications');
     }
 
-    private function update_mail_content($content, $course, $user) {
+    private function update_mail_content($content, $course, $user, $userenrolment) {
         $replace = array(
             'firstname' => $user->firstname,
-            'content' => format_string($course->fullname),
-            'lastname' => $user->lastname,
-            'username' => $user->username);
+            'content'   => format_string($course->fullname),
+            'lastname'  => $user->lastname,
+            'username'  => $user->username,
+            'timeend'   => !empty($userenrolment->timeend) ? userdate($userenrolment->timeend) : ''
+        );
         foreach ($replace as $key => $val) {
             $content = str_replace('{' . $key . '}', $val, $content);
         }
@@ -512,5 +522,13 @@ class enrol_apply_plugin extends enrol_plugin {
 
     public function restore_user_enrolment(restore_enrolments_structure_step $step, $data, $instance, $userid, $oldinstancestatus) {
         $this->enrol_user($instance, $userid, null, $data->timestart, $data->timeend, $oldinstancestatus);
+    }
+    /**
+     * Enrol cron support.
+     * @return void
+     */
+    public function cron() {
+        $trace = new text_progress_trace();
+        $this->process_expirations($trace);
     }
 }

@@ -88,27 +88,29 @@ if ($mform->is_cancelled()) {
     // Convert back to string for storing in enrol table.
     $data->customtext2 = implode(',', $notify);
     if ($instance->id) {
-        $instance->status       = $data->status;
-        $instance->name         = $data->name;
-        $instance->customtext1  = $data->customtext1;
-        $instance->customtext2  = $data->customtext2;
-        $instance->customint1   = $data->customint1;
-        $instance->customint2   = $data->customint2;
-        $instance->customint3   = $data->customint3;
-        $instance->roleid       = $data->roleid;
+        $instance->status           = $data->status;
+        $instance->name             = $data->name;
+        $instance->customtext1      = $data->customtext1;
+        $instance->customtext2      = $data->customtext2;
+        $instance->customint1       = $data->customint1;
+        $instance->customint2       = $data->customint2;
+        $instance->customint3       = $data->customint3;
+        $instance->roleid           = $data->roleid;
+        $instance->enrolperiod      = $data->enrolperiod;
         $instance->timemodified = time();
         $DB->update_record('enrol', $instance);
-
     } else {
         $fields = array(
-            'status'      => $data->status,
-            'name'        => $data->name,
-            'roleid'      => $data->roleid,
-            'customint1'  => $data->customint1,
-            'customint2'  => $data->customint2,
-            'customint3'  => $data->customint3,
-            'customtext1' => $data->customtext1,
-            'customtext2' => $data->customtext2);
+            'status'            => $data->status,
+            'name'              => $data->name,
+            'roleid'            => $data->roleid,
+            'customint1'        => $data->customint1,
+            'customint2'        => $data->customint2,
+            'customint3'        => $data->customint3,
+            'customtext1'       => $data->customtext1,
+            'customtext2'       => $data->customtext2,
+            'enrolperiod'       => $data->enrolperiod
+        );
         $plugin->add_instance($course, $fields);
     }
 

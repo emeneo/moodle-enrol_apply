@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-
     $settings->add(new admin_setting_heading('enrol_apply_enrolname', '', get_string('pluginname_desc', 'enrol_apply')));
 
     // Confirm mail settings...
@@ -97,6 +96,23 @@ if ($ADMIN->fulltree) {
         array(),
         'enrol/apply:manageapplications'));
 
+    // Expiry settings.
+    $settings->add(new admin_setting_heading(
+        'enrol_apply_expiry',
+        get_string('expiry_heading', 'enrol_apply'),
+        get_string('expiry_desc', 'enrol_apply')));
+    $options = array(
+        ENROL_EXT_REMOVED_KEEP           => get_string('extremovedkeep', 'enrol'),
+        ENROL_EXT_REMOVED_SUSPEND        => get_string('extremovedsuspend', 'enrol'),
+        ENROL_EXT_REMOVED_SUSPENDNOROLES => get_string('extremovedsuspendnoroles', 'enrol'),
+        ENROL_EXT_REMOVED_UNENROL        => get_string('extremovedunenrol', 'enrol'),
+    );
+    $settings->add(new admin_setting_configselect('enrol_apply/expiredaction',
+        get_string('expiredaction', 'enrol_apply'),
+        get_string('expiredaction_help', 'enrol_apply'),
+        ENROL_EXT_REMOVED_KEEP,
+        $options));
+
     // Enrol instance defaults...
     $settings->add(new admin_setting_heading('enrol_manual_defaults',
         get_string('enrolinstancedefaults', 'admin'), get_string('enrolinstancedefaults_desc', 'admin')));
@@ -132,6 +148,9 @@ if ($ADMIN->fulltree) {
         get_string('notifycoursebased', 'enrol_apply'),
         get_string('notifycoursebased_desc', 'enrol_apply'),
         0));
+
+    $settings->add(new admin_setting_configduration('enrol_apply/enrolperiod',
+        get_string('defaultperiod', 'enrol_apply'), get_string('defaultperiod_desc', 'enrol_apply'), 0));
 }
 
 if ($hassiteconfig) { // Needs this condition or there is error on login page.
