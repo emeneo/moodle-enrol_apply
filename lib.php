@@ -41,7 +41,20 @@ class enrol_apply_plugin extends enrol_plugin {
         // Users with unenrol cap may unenrol other users manually.
         return true;
     }
-
+    /**
+     * Prevent to unenrol an user with a pending application
+     *
+     * @param stdClass $instance course enrol instance
+     * @param stdClass $ue record from user_enrolments table, specifies user
+     * @return bool
+     */
+    public function allow_unenrol_user(stdClass $instance, stdClass $ue) {
+        global $DB;
+        if ($DB->record_exists('enrol_apply_applicationinfo', ['userenrolmentid' => $ue->id])) {
+            return false;
+        }
+        return parent::allow_unenrol_user($instance, $ue);
+    }
     /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
      * Multiple instances supported.
