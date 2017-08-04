@@ -41,6 +41,10 @@ class enrol_apply_plugin extends enrol_plugin {
         // Users with unenrol cap may unenrol other users manually.
         return true;
     }
+    public function roles_protected() {
+        // Users may tweak the roles later.
+        return false;
+    }
     /**
      * Prevent to unenrol an user with a pending application
      *
