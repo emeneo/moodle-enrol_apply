@@ -479,4 +479,30 @@ class enrol_apply_plugin extends enrol_plugin {
         }
         return $content;
     }
+
+    /**
+     * Backup execution step hook.
+     *
+     * @param backup_enrolments_execution_step $step
+     * @param stdClass $enrol
+     */
+    public function backup_annotate_custom_fields(backup_enrolments_execution_step $step, stdClass $enrol) {
+        // annotate customint1 as a role
+        $step->annotate_id('role', $enrol->customint1);
+    }
+
+    public function restore_instance(restore_enrolments_structure_step $step, stdClass $data, $course, $oldid) {
+        global $DB, $CFG;
+
+        $data->customint1 = $step->get_mappingid('role', $data->customint1, null);
+
+        $instanceid = $this->add_instance($course, (array)$data);
+        $step->set_mapping('enrol', $oldid, $instanceid);
+
+        //$this->sync_enrols($DB->get_record('enrol', array('id'=>$instanceid)));
+    }
+
+    public function restore_user_enrolment(restore_enrolments_structure_step $step, $data, $instance, $userid, $oldinstancestatus) {
+        $this->enrol_user($instance, $userid, null, $data->timestart, $data->timeend, $oldinstancestatus);
+    }
 }
