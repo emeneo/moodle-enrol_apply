@@ -252,7 +252,7 @@ class enrol_apply_plugin extends enrol_plugin {
                 continue;
             }
 
-            $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE);
+            $this->update_user_enrol($instance, $userenrolment->userid, ENROL_USER_ACTIVE, time());
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
 
             $this->notify_applicant(
