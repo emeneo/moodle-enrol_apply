@@ -59,6 +59,10 @@ class enrol_apply_plugin extends enrol_plugin {
         }
         return parent::allow_unenrol_user($instance, $ue);
     }
+    public function allow_manage(stdClass $instance) {
+        // Users with manage cap may tweak period and status.
+        return true;
+    }
     /**
      * Returns link to page which may be used to add new instance of enrolment plugin in course.
      * Multiple instances supported.
@@ -212,6 +216,10 @@ class enrol_apply_plugin extends enrol_plugin {
                 get_string('unenrol', 'enrol'),
                 $url,
                 array('class' => 'unenrollink', 'rel' => $ue->id));
+        }
+        if ($this->allow_manage($instance) && has_capability("enrol/apply:manage", $context)) {
+            $url = new moodle_url('/enrol/editenrolment.php', $params);
+            $actions[] = new user_enrolment_action(new pix_icon('t/edit', ''), get_string('edit'), $url, array('class'=>'editenrollink', 'rel'=>$ue->id));
         }
         return $actions;
     }

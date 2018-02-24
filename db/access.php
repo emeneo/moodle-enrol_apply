@@ -49,6 +49,16 @@ $capabilities = array(
         )
     ),
 
+    /* Manage enrolments of users. */
+    'enrol/apply:manage' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+        )
+    ),
+
     /* Unenrol a user */
     'enrol/apply:unenrol' => array(
         'captype' => 'write',
