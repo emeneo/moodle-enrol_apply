@@ -32,7 +32,7 @@ $string['confirmmail_desc'] = '';
 $string['confirmmailsubject'] = 'Confirmation email subject';
 $string['confirmmailsubject_desc'] = '';
 $string['confirmmailcontent'] = 'Confirmation email content';
-$string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username';
+$string['confirmmailcontent_desc'] = 'Please use the following special marks to replace email content with data from Moodle.<br/>{firstname}:The first name of the user; {content}:The course name;{lastname}:The last name of the user;{username}:The users registration username;{timeend}: The enrolment expiration date';
 
 $string['waitmail_heading'] = 'Waiting list email';
 $string['waitmail_desc'] = '';
@@ -106,3 +106,11 @@ $string['maxenrolledreached_right'] = 'has already been reached.';
 
 $string['maxenrolled_tip_1'] = 'out of';
 $string['maxenrolled_tip_2'] = 'seats already booked.';
+
+$string['defaultperiod'] = 'Default enrolment duration';
+$string['defaultperiod_desc'] = 'Default length of time that the enrolment is valid. If set to zero, the enrolment duration will be unlimited by default.';
+$string['defaultperiod_help'] = 'Default length of time that the enrolment is valid, starting with the moment the user is enrolled. If disabled, the enrolment duration will be unlimited by default.';
+$string['expiry_heading'] = 'Expiry settings';
+$string['expiry_desc'] = '';
+$string['expiredaction'] = 'Enrolment expiry action';
+$string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';

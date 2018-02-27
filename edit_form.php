@@ -77,6 +77,11 @@ class enrol_apply_edit_form extends moodleform {
         $mform->setType('customint3', PARAM_INT);
         $mform->setDefault('customint3', $plugin->get_config('customint3'));
 
+        $options = array('optional' => true, 'defaultunit' => 86400);
+        $mform->addElement('duration', 'enrolperiod', get_string('defaultperiod', 'enrol_apply'), $options);
+        $mform->setDefault('enrolperiod', $plugin->get_config('enrolperiod'));
+        $mform->addHelpButton('enrolperiod', 'defaultperiod', 'enrol_apply');
+
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');
