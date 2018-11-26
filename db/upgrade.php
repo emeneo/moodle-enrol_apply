@@ -102,6 +102,14 @@ function xmldb_enrol_apply_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2018112603) {
+        $instances = $DB->get_records('enrol', array('enrol' => 'apply'));
+        foreach ($instances as $instance) {
+            $instance->customint6 = 1;
+            $DB->update_record('enrol', $instance, true);
+        }
+    }
+
     return true;
 
 }

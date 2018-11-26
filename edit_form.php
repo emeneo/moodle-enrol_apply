@@ -44,6 +44,12 @@ class enrol_apply_edit_form extends moodleform {
         // $mform->addHelpButton('status', 'status', 'enrol_apply');
         $mform->setDefault('status', $plugin->get_config('status'));
 
+        $mform->addElement('select', 'customint6', get_string('newenrols', 'enrol_apply'), array(
+                1 => get_string('yes'),
+                0 => get_string('no')
+        ));
+        $mform->setDefault('newenrols', $plugin->get_config('newenrols'));
+
         if ($instance->id) {
             $roles = get_default_enrol_roles($context, $instance->roleid);
         } else {
