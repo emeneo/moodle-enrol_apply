@@ -45,6 +45,17 @@ class enrol_apply_plugin extends enrol_plugin {
         // Users may tweak the roles later.
         return false;
     }
+
+    public function allow_apply(stdClass $instance) {
+        if ($instance->status != ENROL_INSTANCE_ENABLED) {
+            return get_string('cantenrol', 'enrol_apply');
+        }
+        if (!$instance->customint6) {
+            // New enrols not allowed.
+            return get_string('cantenrol', 'enrol_apply');
+        }
+        return true;
+    }
     /**
      * Prevent to unenrol an user with a pending application
      *
@@ -85,6 +96,12 @@ class enrol_apply_plugin extends enrol_plugin {
             // Can not enrol guest!
             return null;
         }
+
+        $allowapply = $this->allow_apply($instance);
+        if ($allowapply !== true) {
+            return '<div class="alert alert-error">' . $allowapply . '</div>';
+        }
+
         if ($DB->record_exists('user_enrolments', array('userid' => $USER->id, 'enrolid' => $instance->id))) {
             return $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
         }

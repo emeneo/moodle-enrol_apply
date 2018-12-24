@@ -125,6 +125,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('enrol_apply/status',
         get_string('status', 'enrol_apply'), get_string('status_desc', 'enrol_apply'), ENROL_INSTANCE_ENABLED, $options));
 
+    $options = array(1 => get_string('yes'), 0 => get_string('no'));
+    $settings->add(new admin_setting_configselect('enrol_apply/newenrols',
+        get_string('status', 'enrol_apply'), get_string('status_desc', 'enrol_apply'), 1, $options));
+
     $options = array(1 => get_string('yes'),
                      0  => get_string('no'));
     $settings->add(new admin_setting_configselect('enrol_apply/show_standard_user_profile',

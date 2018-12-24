@@ -95,6 +95,7 @@ if ($mform->is_cancelled()) {
         $instance->customint1       = $data->customint1;
         $instance->customint2       = $data->customint2;
         $instance->customint3       = $data->customint3;
+        $instance->customint6       = $data->customint6;
         $instance->roleid           = $data->roleid;
         $instance->enrolperiod      = $data->enrolperiod;
         $instance->timemodified = time();
@@ -107,6 +108,7 @@ if ($mform->is_cancelled()) {
             'customint1'        => $data->customint1,
             'customint2'        => $data->customint2,
             'customint3'        => $data->customint3,
+            'customint6'        => $data->customint6,
             'customtext1'       => $data->customtext1,
             'customtext2'       => $data->customtext2,
             'enrolperiod'       => $data->enrolperiod

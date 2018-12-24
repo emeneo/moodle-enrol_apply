@@ -78,6 +78,7 @@ $string['btncancel'] = 'Cancel requests';
 $string['enrolusers'] = 'Enrol users';
 
 $string['status'] = 'Allow Course enrol confirmation';
+$string['newenrols'] = 'Allow new course enrol request';
 $string['confirmenrol'] = 'Manage application';
 
 $string['apply:config'] = 'Configure apply enrol instances';
@@ -103,6 +104,8 @@ $string['maxenrolled'] = 'Max enrolled users';
 $string['maxenrolled_help'] = 'Specifies the maximum number of users that can self enrol. 0 means no limit.';
 $string['maxenrolledreached_left'] = 'Maximum number of users allowed';
 $string['maxenrolledreached_right'] = 'has already been reached.';
+
+$string['cantenrol'] = 'Enrolment is disabled or inactive';
 
 $string['maxenrolled_tip_1'] = 'out of';
 $string['maxenrolled_tip_2'] = 'seats already booked.';
