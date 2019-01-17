@@ -100,6 +100,9 @@ $string['user_profile'] = 'User Profile';
 $string['show_standard_user_profile'] = 'Show standard user profile fields on enrolment screen';
 $string['show_extra_user_profile'] = 'Show extra user profile fields on enrolment screen';
 
+//$string['custom_label'] = 'Custom label "{replace_title}"';
+$string['custom_label'] = 'Custom label';
+
 $string['maxenrolled'] = 'Max enrolled users';
 $string['maxenrolled_help'] = 'Specifies the maximum number of users that can self enrol. 0 means no limit.';
 $string['maxenrolledreached_left'] = 'Maximum number of users allowed';
@@ -117,3 +120,5 @@ $string['expiry_heading'] = 'Expiry settings';
 $string['expiry_desc'] = '';
 $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
+
+$string['submitted_info'] = 'Enrol info';

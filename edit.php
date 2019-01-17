@@ -64,10 +64,13 @@ if ($instanceid) {
 // Process notify setting for editing...
 // Convert to array for use with multi-select element.
 $notify = array('$@NONE@$');
+/*
 if ($instance->customtext2 != '') {
     $notify = explode(',', $instance->customtext2);
 }
+*/
 $instance->notify = $notify;
+
 $mform = new enrol_apply_edit_form(null, array($instance, $plugin, $context));
 
 if ($mform->is_cancelled()) {
@@ -86,7 +89,7 @@ if ($mform->is_cancelled()) {
         unset($notify[array_search('$@NONE@$', $notify)]);
     }
     // Convert back to string for storing in enrol table.
-    $data->customtext2 = implode(',', $notify);
+    //$data->customtext2 = implode(',', $notify);
     if ($instance->id) {
         $instance->status           = $data->status;
         $instance->name             = $data->name;

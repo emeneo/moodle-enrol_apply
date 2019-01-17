@@ -60,12 +60,16 @@ class enrol_apply_apply_form extends moodleform {
         }
 
         $mform->addElement('html', '<p>'.$instance->customtext1.'</p>');
-        $mform->addElement('textarea', 'applydescription', get_string('comment', 'enrol_apply'), 'cols="80"');
+        $comment_title = get_string('comment', 'enrol_apply');
+        if($instance->customtext2 != ''){
+            $comment_title = $instance->customtext2;
+        }
+        $mform->addElement('textarea', 'applydescription', $comment_title, 'cols="80"');
         $mform->setType('applydescription', PARAM_TEXT);
 
         // User profile...
         $editoroptions = $filemanageroptions = null;
-
+        
         if ($instance->customint1) {
             useredit_shared_definition($mform, $editoroptions, $filemanageroptions, $USER);
         }
@@ -85,5 +89,6 @@ class enrol_apply_apply_form extends moodleform {
         $mform->addElement('hidden', 'instance');
         $mform->setType('instance', PARAM_INT);
         $mform->setDefault('instance', $instance->id);
+
     }
 }

@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_apply_notification extends \core\message\message {
-    public function __construct($to, $from, $type, $subject, $content, $url) {
+    public function __construct($to, $from, $type, $subject, $content, $url,$courseid) {
         $this->component = 'enrol_apply';
 
         switch ($type) {
@@ -60,5 +60,6 @@ class enrol_apply_notification extends \core\message\message {
         $this->notification = true;
         $this->contexturl = $url;
         $this->contexturlname = get_string('course');
+        $this->courseid = $courseid;
     }
 }

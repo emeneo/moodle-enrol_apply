@@ -25,11 +25,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 class enrol_apply_renderer extends plugin_renderer_base {
-    public function manage_page($table, $manageurl) {
+    public function manage_page($table, $manageurl, $instance) {
         echo $this->header();
         echo $this->heading(get_string('confirmusers', 'enrol_apply'));
         echo get_string('confirmusers_desc', 'enrol_apply');
-        $this->manage_form($table, $manageurl);
+        $this->manage_form($table, $manageurl, $instance);
         echo $this->footer();
     }
 
@@ -40,13 +40,13 @@ class enrol_apply_renderer extends plugin_renderer_base {
         echo $this->footer();
     }
 
-    public function manage_form($table, $manageurl) {
+    public function manage_form($table, $manageurl, $instance) {
         echo html_writer::start_tag('form', array(
             'id' => 'enrol_apply_manage_form',
             'method' => 'post',
             'action' => $manageurl->out()));
 
-        $this->manage_table($table);
+        $this->manage_table($table, $instance);
 
         if ($table->totalrows > 0) {
             echo html_writer::empty_tag('br');
@@ -69,7 +69,15 @@ class enrol_apply_renderer extends plugin_renderer_base {
         echo html_writer::end_tag('form');
     }
 
-    public function manage_table($table) {
+    public function info_page($table, $manageurl,$instance) {
+        echo $this->header();
+        echo $this->heading(get_string('submitted_info', 'enrol_apply'));
+        echo get_string('submitted_info', 'enrol_apply');
+        $this->info_form($table, $manageurl,$instance);
+        echo $this->footer();
+    }
+
+    public function manage_table($table, $instance) {
         $columns = array(
             'checkboxcolumn',
             'course',
@@ -83,7 +91,42 @@ class enrol_apply_renderer extends plugin_renderer_base {
             'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
             get_string('email'),
             get_string('applydate', 'enrol_apply'),
-            get_string('comment', 'enrol_apply'));
+            $instance->customtext2);
+        $table->define_columns($columns);
+        $table->define_headers($headers);
+
+        $table->sortable(true, 'id');
+
+        $table->out(50, true);
+    }
+
+    public function info_form($table, $manageurl,$instance) {
+        echo html_writer::start_tag('form', array(
+            'id' => 'enrol_apply_info_form',
+            'method' => 'post',
+            'action' => $manageurl->out()));
+
+        $this->info_table($table,$instance);
+
+        if ($table->totalrows > 0) {
+            echo html_writer::empty_tag('br');
+            echo html_writer::start_tag('div', array('class' => 'formaction'));
+
+
+            echo html_writer::end_tag('div');
+
+            $this->page->requires->js_call_amd('enrol_apply/info', 'init');
+        }
+        echo html_writer::end_tag('form');
+    }
+
+    public function info_table($table,$instance) {
+        $columns = array(
+            'fullname',
+            'applycomment');
+        $headers = array(
+            'User', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
+            $instance->customtext2);
         $table->define_columns($columns);
         $table->define_headers($headers);
 
@@ -105,7 +148,9 @@ class enrol_apply_renderer extends plugin_renderer_base {
             $body .= '<p>'. get_string('email') .': '.$standarduserfields->email.'</p>';
             $body .= '<p>'. get_string('city') .': '.$standarduserfields->city.'</p>';
             $body .= '<p>'. get_string('country') .': '.$standarduserfields->country.'</p>';
-            $body .= '<p>'. get_string('preferredlanguage') .': '.$standarduserfields->lang.'</p>';
+            if(isset($standarduserfields->lang)){
+                $body .= '<p>'. get_string('preferredlanguage') .': '.$standarduserfields->lang.'</p>';
+            }
             $body .= '<p>'. get_string('description') .': '.$standarduserfields->description_editor['text'].'</p>';
 
             $body .= '<p>'. get_string('firstnamephonetic') .': '.$standarduserfields->firstnamephonetic.'</p>';

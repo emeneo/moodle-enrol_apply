@@ -60,6 +60,12 @@ class enrol_apply_edit_form extends moodleform {
 
         $mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
 
+        //new added requirement_20190110
+        //$title_customtext2 = str_replace("{replace_title}",$instance->customtext2,get_string('custom_label', 'enrol_apply'));
+        $title_customtext2 = get_string('custom_label', 'enrol_apply');
+        $mform->addElement('text', 'customtext2', $title_customtext2);
+        $mform->setDefault('customtext2', "Comment");
+
         $options = array(1 => get_string('yes'),
                          0 => get_string('no'));
 
@@ -94,7 +100,7 @@ class enrol_apply_edit_form extends moodleform {
         $mform->setType('courseid', PARAM_INT);
 
         $this->add_action_buttons(true, ($instance->id ? null : get_string('addinstance', 'enrol')));
-
+        //echo "<pre>";print_r($instance);exit;
         $this->set_data($instance);
     }
 }

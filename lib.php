@@ -175,6 +175,13 @@ class enrol_apply_plugin extends enrol_plugin {
                 get_string('confirmenrol', 'enrol_apply'),
                 'core',
                 array('class' => 'iconsmall')));
+
+            $infolink = new moodle_url("/enrol/apply/info.php", array('id' => $instance->id));
+            $icons[] = $OUTPUT->action_icon($infolink, new pix_icon(
+                'i/files',
+                get_string('submitted_info', 'enrol_apply'),
+                'core',
+                array('class' => 'iconsmall')));
         }
 
         return $icons;
@@ -364,7 +371,7 @@ class enrol_apply_plugin extends enrol_plugin {
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
         // Required for course_get_url() function.
         require_once($CFG->dirroot.'/course/lib.php');
-
+       
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userenrolment->userid);
 
@@ -376,7 +383,8 @@ class enrol_apply_plugin extends enrol_plugin {
             $type,
             $subject,
             $content,
-            course_get_url($course));
+            course_get_url($course),
+            $instance->courseid);
         message_send($message);
     }
 
@@ -387,7 +395,7 @@ class enrol_apply_plugin extends enrol_plugin {
         require_once($CFG->dirroot.'/course/lib.php');
 
         $renderer = $PAGE->get_renderer('enrol_apply');
-
+        
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userid);
         $contact = core_user::get_support_user();
@@ -425,7 +433,8 @@ class enrol_apply_plugin extends enrol_plugin {
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
                     $content,
-                    $manageurl);
+                    $manageurl,
+                    $instance->courseid);
                 message_send($message);
             }
         }
@@ -451,7 +460,8 @@ class enrol_apply_plugin extends enrol_plugin {
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
                     $content,
-                    $manageurl);
+                    $manageurl,
+                    $instance->courseid);
                 message_send($message);
             }
         }
