@@ -29,6 +29,7 @@ require_once($CFG->libdir.'/formslib.php');
 class enrol_apply_edit_form extends moodleform {
 
     protected function definition() {
+        global $DB;
         $mform = $this->_form;
 
         list($instance, $plugin, $context) = $this->_customdata;
@@ -84,6 +85,19 @@ class enrol_apply_edit_form extends moodleform {
         }
         $select = $mform->addElement('select', 'notify', get_string('notify_desc', 'enrol_apply'), $choices);
         $select->setMultiple(true);
+        $userid = $DB->get_field('enrol', 'customtext3', array('id' => $instance->id), IGNORE_MISSING);
+        if(!empty($userid)) {
+            if($userid == '$@ALL@$') {
+                $select->setSelected('$@ALL@$');
+            }
+            else if($userid == '$@NONE@$') {
+                $select->setSelected('$@NONE@$');
+            }
+            else {
+                $userid = explode(",", $userid);
+                $select->setSelected($userid);
+            }
+        }
 
         $mform->addElement('text', 'customint3', get_string('maxenrolled', 'enrol_apply'));
         $mform->setType('customint3', PARAM_INT);
