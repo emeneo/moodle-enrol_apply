@@ -15,11 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
  * @package    enrol_apply
- * @copyright  2016 sudile GbR (http://www.sudile.com)
+ * @copyright  emeneo (http://emeneo.com/)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Johannes Burk <johannes.burk@sudile.com>
+ * @author     emeneo (http://emeneo.com/)
  */
 
 defined('MOODLE_INTERNAL') || die();
