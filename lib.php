@@ -397,8 +397,7 @@ class enrol_apply_plugin extends enrol_plugin {
         $renderer = $PAGE->get_renderer('enrol_apply');
         
         $course = get_course($instance->courseid);
-        $user = core_user::get_user($userid);
-        $contact = core_user::get_support_user();
+        $applicant = core_user::get_user($userid);
 
         // Include standard user profile fields?
         $standarduserfields = null;
@@ -411,8 +410,8 @@ class enrol_apply_plugin extends enrol_plugin {
         $extrauserfields = null;
         if ($instance->customint2) {
             require_once($CFG->dirroot.'/user/profile/lib.php');
-            profile_load_custom_fields($user);
-            $extrauserfields = $user->profile;
+            profile_load_custom_fields($applicant);
+            $extrauserfields = $applicant->profile;
         }
 
         // Send notification to users with manageapplications in course context (instance depending)?
@@ -421,7 +420,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
             $content = $renderer->application_notification_mail_body(
                 $course,
-                $user,
+                $applicant,
                 $manageurl,
                 $data->applydescription,
                 $standarduserfields,
@@ -429,7 +428,7 @@ class enrol_apply_plugin extends enrol_plugin {
             foreach ($courseuserstonotify as $user) {
                 $message = new enrol_apply_notification(
                     $user,
-                    $contact,
+                    $applicant,
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
                     $content,
@@ -448,7 +447,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $manageurl = new moodle_url('/enrol/apply/manage.php');
             $content = $renderer->application_notification_mail_body(
                 $course,
-                $user,
+                $applicant,
                 $manageurl,
                 $data->applydescription,
                 $standarduserfields,
@@ -456,7 +455,7 @@ class enrol_apply_plugin extends enrol_plugin {
             foreach ($globaluserstonotify as $user) {
                 $message = new enrol_apply_notification(
                     $user,
-                    $contact,
+                    $applicant,
                     'application',
                     get_string('mailtoteacher_suject', 'enrol_apply'),
                     $content,
@@ -475,7 +474,7 @@ class enrol_apply_plugin extends enrol_plugin {
      * @return array           Array of user IDs.
      */
     public function get_notifycoursebased_users($instance) {
-        $value = $instance->customtext2;
+        $value = $instance->customtext3;
         if (empty($value) or $value === '$@NONE@$') {
             return array();
         }
@@ -508,7 +507,7 @@ class enrol_apply_plugin extends enrol_plugin {
      * @return array Array of user IDs.
      */
     public function get_notifyglobal_users() {
-        return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications');
+        return get_users_from_config($this->get_config('notifyglobal'), 'enrol/apply:manageapplications', false);
     }
 
     private function update_mail_content($content, $course, $user, $userenrolment) {
