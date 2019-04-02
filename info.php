@@ -21,7 +21,7 @@
  * @author     emeneo (http://emeneo.com/)
  */
 
- defined('MOODLE_INTERNAL') || die();
+
  
 require_once('../../config.php');
 require_once($CFG->dirroot.'/enrol/apply/lib.php');
