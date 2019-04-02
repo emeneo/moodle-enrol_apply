@@ -467,7 +467,7 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 
     /**
-     * Returns enrolled users of a course who should be notified about new course enrolment applications.
+     * Returns users of a course who should be notified about new course enrolment applications.
      *
      * Note: mostly copied from get_users_from_config() function in moodlelib.php.
      * @param  array $instance Enrol apply instance record.
@@ -484,7 +484,7 @@ class enrol_apply_plugin extends enrol_plugin {
         // We have to make sure that users still have the necessary capability,
         // it should be faster to fetch them all first and then test if they are present
         // instead of validating them one-by-one.
-        $users = get_enrolled_users($context, 'enrol/apply:manageapplications');
+        $users = get_users_by_capability($context, 'enrol/apply:manageapplications');
 
         if ($value === '$@ALL@$') {
             return $users;
