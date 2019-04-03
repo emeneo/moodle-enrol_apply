@@ -90,8 +90,9 @@ if ($mform->is_cancelled()) {
     }
     // Convert back to string for storing in enrol table.
     //$data->customtext2 = implode(',', $notify);
+    $notify = implode(",", $notify);
+
     if ($instance->id) {
-        $notify = implode(",", $notify);
         $instance->status           = $data->status;
         $instance->name             = $data->name;
         $instance->customtext1      = $data->customtext1;
@@ -116,6 +117,7 @@ if ($mform->is_cancelled()) {
             'customint6'        => $data->customint6,
             'customtext1'       => $data->customtext1,
             'customtext2'       => $data->customtext2,
+            'customtext3'       => $notify,
             'enrolperiod'       => $data->enrolperiod
         );
         $plugin->add_instance($course, $fields);
