@@ -38,6 +38,7 @@ if ($id == null) {
     $context = context_system::instance();
     require_capability('enrol/apply:manageapplications', $context);
     $pageheading = get_string('confirmusers', 'enrol_apply');
+    $instance = null;
 } else {
     $instance = $DB->get_record('enrol', array('id' => $id, 'enrol' => 'apply'), '*', MUST_EXIST);
     require_course_login($instance->courseid);

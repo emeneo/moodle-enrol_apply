@@ -91,7 +91,8 @@ class enrol_apply_renderer extends plugin_renderer_base {
             'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
             get_string('email'),
             get_string('applydate', 'enrol_apply'),
-            $instance->customtext2);
+            get_string('applycomment', 'enrol_apply'),
+        );
         $table->define_columns($columns);
         $table->define_headers($headers);
 
