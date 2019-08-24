@@ -92,6 +92,7 @@ $string['notification'] = '<b>Enrolment application successfully sent</b>. <br/>
 $string['mailtoteacher_suject'] = 'New Enrolment request!';
 $string['editdescription'] = 'Textarea description';
 $string['comment'] = 'Comment';
+$string['applycomment'] = 'Comment';
 $string['applymanage'] = 'Manage enrolment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';

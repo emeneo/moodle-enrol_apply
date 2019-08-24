@@ -57,6 +57,7 @@ $string['sendmailtomanager'] = 'Send email notification to managers';
 $string['mailtoteacher_suject'] = 'New enrollment request!';
 $string['editdescription'] = 'Textarea description';
 $string['comment'] = 'Comment';
+$string['applycomment'] = 'Comment';
 $string['applymanage'] = 'Manage enrollment applications';
 
 $string['status_desc'] = 'Allow course access of internally enrolled users.';
