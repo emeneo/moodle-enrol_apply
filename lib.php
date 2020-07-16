@@ -66,7 +66,7 @@ class enrol_apply_plugin extends enrol_plugin {
     public function allow_unenrol_user(stdClass $instance, stdClass $ue) {
         global $DB;
         if ($DB->record_exists('enrol_apply_applicationinfo', ['userenrolmentid' => $ue->id])) {
-            return false;
+            $DB->delete_records('enrol_apply_applicationinfo', ['userenrolmentid' => $ue->id]);
         }
         return parent::allow_unenrol_user($instance, $ue);
     }
