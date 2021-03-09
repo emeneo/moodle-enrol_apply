@@ -123,3 +123,4 @@ $string['expiredaction'] = 'Enrolment expiry action';
 $string['expiredaction_help'] = 'Select action to carry out when user enrolment expires. Please note that some user data and settings are purged from course during course unenrolment.';
 
 $string['submitted_info'] = 'Enrol info';
+$string['privacy:metadata'] = 'The Course enrol confirmation plugin does not store any personal data.';
