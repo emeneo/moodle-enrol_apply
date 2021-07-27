@@ -15,17 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    enrol_apply
- * @copyright  emeneo.com (http://emeneo.com/)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author     Flotter Totte <flottertotte@emeneo.com>
- * @author     Johannes Burk <johannes.burk@sudile.com>
+ * Task definition for enrol_apply.
+ * @author    Romain DELEAU
+ * @copyright IMT Lille Douai <imt-lille-douai.fr>
+ * @package   enrol_apply
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2021121300;
-$plugin->requires = 2011080100;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Enrolment upon approval plugin Version 3.9-a';
-$plugin->component = 'enrol_apply';
+$tasks = array(
+    array(
+        'classname' => '\enrol_apply\task\send_expiry_notifications',
+        'blocking' => 0,
+        'minute' => '*/10',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+        'disabled' => 0
+    )
+);
+

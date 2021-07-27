@@ -124,3 +124,34 @@ $string['expiredaction_help'] = 'Select action to carry out when user enrolment 
 
 $string['submitted_info'] = 'Enrol info';
 $string['privacy:metadata'] = 'The Course enrol confirmation plugin does not store any personal data.';
+
+$string['enrolperiod'] = 'Enrolment duration';
+$string['enrolperiod_desc'] = 'Default length of time that the enrolment is valid. If set to zero, the enrolment duration will be unlimited by default.';
+$string['enrolperiod_help'] = 'Length of time that the enrolment is valid, starting with the moment the user enrols themselves. If disabled, the enrolment duration will be unlimited.';
+
+$string['expirynotifyall'] = 'Teacher and enrolled user';
+$string['expirynotifyenroller'] = 'Teacher only';
+
+$string['group'] = 'Group assignement';
+$string['group_help'] = 'You can assign none or multiples groups';
+
+$string['opt_commentaryzone'] = 'Commentary field';
+$string['opt_commentaryzone_help'] = 'Yes -> Enable the commentary field in the enrol form';
+
+$string['expirymessageenrollersubject'] = 'Apply enrolment expiry notification';
+$string['expirymessageenrollerbody'] = 'Apply enrolment in the course \'{$a->course}\' will expire within the next {$a->threshold} for the following users:
+
+    {$a->users}
+
+To extend their enrolment, go to {$a->extendurl}';
+$string['expirymessageenrolledsubject'] = 'Apply enrolment expiry notification';
+$string['expirymessageenrolledbody'] = 'Dear {$a->user},
+
+This is a notification that your enrolment in the course \'{$a->course}\' is due to expire on {$a->timeend}.
+
+If you need help, please contact {$a->enroller}.';
+
+$string['sendexpirynotificationstask'] = "Apply enrolment send expiry notifications task";
+
+$string['messageprovider:expiry_notification'] = 'Apply enrolment expiry notifications';
+

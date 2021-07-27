@@ -64,12 +64,18 @@ class enrol_apply_apply_form extends moodleform {
         if($instance->customtext2 != ''){
             $comment_title = $instance->customtext2;
         }
-        $mform->addElement('textarea', 'applydescription', $comment_title, 'cols="80"');
-        $mform->setType('applydescription', PARAM_TEXT);
+
+        // Optionnal commentary zone
+        // Start modification
+        if (($instance->customint7) == 1) {
+            $mform->addElement('textarea', 'applydescription', $comment_title, 'cols="80"');
+            $mform->setType('applydescription', PARAM_TEXT);
+        }
+        // End modification
 
         // User profile...
         $editoroptions = $filemanageroptions = null;
-        
+
         if ($instance->customint1) {
             useredit_shared_definition($mform, $editoroptions, $filemanageroptions, $USER);
         }

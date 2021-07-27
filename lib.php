@@ -24,6 +24,7 @@
 
 /** The user is put onto a waiting list and therefore the enrolment not active (used in user_enrolments->status) */
 define('ENROL_APPLY_USER_WAIT', 2);
+require_once($CFG->dirroot.'/group/lib.php');
 
 class enrol_apply_plugin extends enrol_plugin {
 
@@ -124,8 +125,12 @@ class enrol_apply_plugin extends enrol_plugin {
         if ($data = $form->get_data()) {
             // Only process when form submission is for this instance (multi instance support).
             if ($data->instance == $instance->id) {
-                $timestart = 0;
-                $timeend = 0;
+                $timestart = time();
+
+                // Start modification
+                $timeend = $timestart + $instance->enrolperiod;
+                // End modification
+
                 $roleid = $instance->roleid;
 
                 $this->enrol_user($instance, $USER->id, $roleid, $timestart, $timeend, ENROL_USER_SUSPENDED);
@@ -137,12 +142,39 @@ class enrol_apply_plugin extends enrol_plugin {
                     'id', MUST_EXIST);
                 $applicationinfo = new stdClass();
                 $applicationinfo->userenrolmentid = $userenrolment->id;
-                $applicationinfo->comment = $data->applydescription;
+                // Opt_comment
+                // Start modification
+                if (isset($data->applydescription)) {
+                    $applicationinfo->comment = $data->applydescription;
+                } else {
+                    $applicationinfo->comment = '';
+                }
+
+                // End modification
                 $DB->insert_record('enrol_apply_applicationinfo', $applicationinfo, false);
+
+                // Adding groups to the user
+                // Start modification
+                $groups = $DB->get_records(
+                    'enrol_apply_groups',
+                    array('enrolid' => $instance->id),
+                    null,
+                    '*',
+                    null,
+                    null
+                );
+                foreach ($groups as $value) {
+                    groups_add_member($value->groupid, $USER->id);
+                }
+                // End modification
+
 
                 $this->send_application_notification($instance, $USER->id, $data);
 
-                redirect("$CFG->wwwroot/course/view.php?id=$instance->courseid");
+                $notification = $OUTPUT->notification(get_string('notification', 'enrol_apply'), 'notifysuccess');
+                $button = $OUTPUT->single_button(new moodle_url('/course/view.php', array('id'=> $instance->courseid)),
+                    get_string('continue'));
+                return $notification . $button;
             }
         }
 
@@ -377,7 +409,7 @@ class enrol_apply_plugin extends enrol_plugin {
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
         // Required for course_get_url() function.
         require_once($CFG->dirroot.'/course/lib.php');
-       
+
         $course = get_course($instance->courseid);
         $user = core_user::get_user($userenrolment->userid);
 
@@ -401,7 +433,7 @@ class enrol_apply_plugin extends enrol_plugin {
         require_once($CFG->dirroot.'/course/lib.php');
 
         $renderer = $PAGE->get_renderer('enrol_apply');
-        
+
         $course = get_course($instance->courseid);
         $applicant = core_user::get_user($userid);
 
@@ -424,6 +456,9 @@ class enrol_apply_plugin extends enrol_plugin {
         $courseuserstonotify = $this->get_notifycoursebased_users($instance);
         if (!empty($courseuserstonotify)) {
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('id' => $instance->id));
+            if (!isset($data->applydescription)) {
+                $data->applydescription = '';
+            }
             $content = $renderer->application_notification_mail_body(
                 $course,
                 $applicant,
@@ -451,6 +486,9 @@ class enrol_apply_plugin extends enrol_plugin {
         });
         if (!empty($globaluserstonotify)) {
             $manageurl = new moodle_url('/enrol/apply/manage.php');
+            if (!isset($data->applydescription)) {
+                $data->applydescription = '';
+            }
             $content = $renderer->application_notification_mail_body(
                 $course,
                 $applicant,
@@ -555,6 +593,45 @@ class enrol_apply_plugin extends enrol_plugin {
     public function restore_user_enrolment(restore_enrolments_structure_step $step, $data, $instance, $userid, $oldinstancestatus) {
         $this->enrol_user($instance, $userid, null, $data->timestart, $data->timeend, $oldinstancestatus);
     }
+
+    // Start modification
+
+    /**
+     * Returns the user who is responsible for self enrolments in given instance.
+     *
+     * Usually it is the first editing teacher - the person with "highest authority"
+     * as defined by sort_by_roleassignment_authority() having 'enrol/self:manage'
+     * capability.
+     *
+     * @param int $instanceid enrolment instance id
+     * @return stdClass user record
+     */
+    protected function get_enroller($instanceid) {
+        global $DB;
+
+        if ($this->lasternollerinstanceid == $instanceid and $this->lasternoller) {
+            return $this->lasternoller;
+        }
+
+        $instance = $DB->get_record('enrol', array('id' => $instanceid, 'enrol' => $this->get_name()), '*', MUST_EXIST);
+        $context = context_course::instance($instance->courseid);
+
+        if ($users = get_enrolled_users($context, 'enrol/apply:manage')) {
+            $users = sort_by_roleassignment_authority($users, $context);
+            $this->lasternoller = reset($users);
+            unset($users);
+        } else {
+            $this->lasternoller = parent::get_enroller($instanceid);
+        }
+
+        $this->lasternollerinstanceid = $instanceid;
+
+        return $this->lasternoller;
+    }
+
+    // End modification
+
+
     /**
      * Enrol cron support.
      * @return void
@@ -563,4 +640,5 @@ class enrol_apply_plugin extends enrol_plugin {
         $trace = new text_progress_trace();
         $this->process_expirations($trace);
     }
+
 }
