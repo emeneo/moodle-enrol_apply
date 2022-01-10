@@ -22,6 +22,8 @@
  * @author     Johannes Burk <johannes.burk@sudile.com>
  */
 
+use mod_forum\local\exporters\group;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
@@ -59,7 +61,86 @@ class enrol_apply_edit_form extends moodleform {
         $mform->addElement('select', 'roleid', get_string('defaultrole', 'role'), $roles);
         $mform->setDefault('roleid', $plugin->get_config('roleid'));
 
+
+        // Add fields for group affectation and enrol duration
+        // Start modification
+
+        // Group affectation field
+        $courseid = required_param('courseid', PARAM_INT);
+        $groups = groups_get_all_groups($courseid);
+
+        $groups2 = array();
+        foreach ($groups as $value) {
+            $groups2[$value->id] = $value->name;
+        }
+
+
+        $groupselector = $mform->addElement('autocomplete', 'groupselect', get_string('group', 'enrol_apply'), $groups2);
+        $groupselector->setMultiple(true);
+        $mform->addHelpButton('groupselect', 'group', 'enrol_apply');
+        $contains = $DB->get_records(
+            'enrol_apply_groups',
+            array('enrolid' => $instance->id),
+            null,
+            'groupid',
+            null,
+            null
+        );
+        $defaults = array();
+        foreach ($contains as $value) {
+            array_push($defaults, $value->groupid);
+        }
+        $groupselector->setSelected($defaults);
+
+        // Enrol duration fields
+        $options = array('optional' => true, 'defaultunit' => 86400);
+        $mform->addElement('duration', 'enrolperiod', get_string('defaultperiod', 'enrol_apply'), $options);
+        $mform->setDefault('enrolperiod', $plugin->get_config('enrolperiod'));
+        $mform->addHelpButton('enrolperiod', 'defaultperiod', 'enrol_apply');
+
+        // Information field
+
+        $options = array(
+            0 => get_string('no'),
+            1 => get_string('expirynotifyenroller', 'enrol_apply'),
+            2 => get_string('expirynotifyall', 'enrol_apply')
+        );
+        if (isset($instance->notifyall)) {
+            if ($instance->notifyall and $instance->expirynotify) {
+                $instance->expirynotify = 2;
+            }
+            unset($instance->notifyall);
+        }
+
+        $mform->addElement('select', 'expirynotify', get_string('expirynotify', 'core_enrol'), $options);
+        $mform->addHelpButton('expirynotify', 'expirynotify', 'core_enrol');
+
+        // Notification threshold
+        $options = array('optional' => false, 'defaultunit' => 86400);
+        $mform->addElement('duration', 'expirythreshold', get_string('expirythreshold', 'core_enrol'), $options);
+        $mform->addHelpButton('expirythreshold', 'expirythreshold', 'core_enrol');
+        $mform->disabledIf('expirythreshold', 'expirynotify', 'eq', 0);
+
+        if (!isset($instance->notifythreshold)) {
+            $mform->setDefault('expirythreshold', 86400);
+        }
+
+        // End modification
+
         $mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
+
+        // Add checkbox for optionnal commentary zone
+        // Start modification
+        $options = array(
+            1 => get_string('yes'),
+            0 => get_string('no'),
+        );
+        $mform->addElement('select', 'customint7', get_string('opt_commentaryzone', 'enrol_apply'), $options);
+        $mform->setDefault('customint7', 0);
+        $mform->addHelpButton('customint7', 'opt_commentaryzone', 'enrol_apply');
+        // End modification
+
+
 
         //new added requirement_20190110
         //$title_customtext2 = str_replace("{replace_title}",$instance->customtext2,get_string('custom_label', 'enrol_apply'));
@@ -103,11 +184,6 @@ class enrol_apply_edit_form extends moodleform {
         $mform->setType('customint3', PARAM_INT);
         $mform->setDefault('customint3', $plugin->get_config('customint3'));
 
-        $options = array('optional' => true, 'defaultunit' => 86400);
-        $mform->addElement('duration', 'enrolperiod', get_string('defaultperiod', 'enrol_apply'), $options);
-        $mform->setDefault('enrolperiod', $plugin->get_config('enrolperiod'));
-        $mform->addHelpButton('enrolperiod', 'defaultperiod', 'enrol_apply');
-
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');
@@ -117,4 +193,5 @@ class enrol_apply_edit_form extends moodleform {
         //echo "<pre>";print_r($instance);exit;
         $this->set_data($instance);
     }
+
 }

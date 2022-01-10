@@ -102,11 +102,78 @@ if ($mform->is_cancelled()) {
         $instance->customint2       = $data->customint2;
         $instance->customint3       = $data->customint3;
         $instance->customint6       = $data->customint6;
+        // Add optionnal commentary zone
+        // customint7 -> select for opt_commentaryzone
+        // Start modification
+        $instance->customint7       = $data->customint7;
+        // End mofication
         $instance->roleid           = $data->roleid;
         $instance->enrolperiod      = $data->enrolperiod;
+        // Add notifications
+        // Start modification
+        $selectedvalue = $data->expirynotify;
+        if ($selectedvalue > 0) {
+            $instance->expirynotify = 1;
+        } else {
+            $instance->expirynotify = 0;
+        }
+        if ($selectedvalue == 2) {
+            $instance->notifyall = 1;
+        } else {
+            $instance->notifyall = 0;
+        }
+        if ($selectedvalue != 0) {
+            if ($data->expirythreshold < 86400) {
+                $instance->expirythreshold = 86400;
+            } else {
+                $instance->expirythreshold = $data->expirythreshold;
+            }
+        }
+
+        // End modification
         $instance->timemodified = time();
+
         $DB->update_record('enrol', $instance);
+
+        // Adding record in enrol_apply_groups
+        // Start modification
+
+        $groups = $data->groupselect;
+
+        $DB->delete_records('enrol_apply_groups', array('enrolid' => $instance->id));
+
+        foreach ($groups as $value) {
+            $object = new stdClass();
+            $object->groupid = $value;
+            $object->enrolid = $instance->id;
+            $DB->insert_record('enrol_apply_groups', $object);
+        }
+
+        // End modification
+
+
     } else {
+        // Notification threshold
+        // Start modification
+        $selectedvalue = $data->expirynotify;
+        if ($selectedvalue > 0) {
+            $expirynotify = 1;
+        } else {
+            $expirynotify = 0;
+        }
+        if ($selectedvalue == 2) {
+            $notifyall = 1;
+        } else {
+            $notifyall = 0;
+        }
+
+        if ($data->expirythreshold < 86400) {
+            $expirythreshold = 86400;
+        } else {
+            $expirythreshold = $data->expirythreshold;
+        }
+        // End modification
+
         $fields = array(
             'status'            => $data->status,
             'name'              => $data->name,
@@ -115,14 +182,34 @@ if ($mform->is_cancelled()) {
             'customint2'        => $data->customint2,
             'customint3'        => $data->customint3,
             'customint6'        => $data->customint6,
+            // customint7 -> field for opt_commentaryzone
+            // Start modification
+            'customint7'        => $data->customint7,
+            // End modification
             'customtext1'       => $data->customtext1,
             'customtext2'       => $data->customtext2,
             'customtext3'       => $notify,
-            'enrolperiod'       => $data->enrolperiod
-        );
-        $plugin->add_instance($course, $fields);
-    }
+            'enrolperiod'       => $data->enrolperiod,
+            // Notification Threshold
+            // Start modification
+            'expirynotify'      => $expirynotify,
+            'notifyall'         => $notifyall,
+            'expirythreshold'   => $expirythreshold,
+            // End modification
 
+        );
+        $id = $plugin->add_instance($course, $fields);
+
+        // Start modification
+        $groups = $data->groupselect;
+        foreach ($groups as $value) {
+            $object = new stdClass();
+            $object->groupid = $value;
+            $object->enrolid = $id;
+            $DB->insert_record('enrol_apply_groups', $object);
+        }
+        // End modification
+    }
     redirect($return);
 }
 

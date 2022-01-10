@@ -155,6 +155,16 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configduration('enrol_apply/enrolperiod',
         get_string('defaultperiod', 'enrol_apply'), get_string('defaultperiod_desc', 'enrol_apply'), 0));
+
+    // Start modification
+
+    $options = array();
+    for ($i = 0; $i < 24; $i++) {
+        $options[$i] = $i;
+    }
+    $settings->add(new admin_setting_configselect('enrol_apply/expirynotifyhour', get_string('expirynotifyhour', 'core_enrol'), '', 6, $options));
+
+    // End modification
 }
 
 if ($hassiteconfig) { // Needs this condition or there is error on login page.

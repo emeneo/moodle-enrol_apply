@@ -110,6 +110,39 @@ function xmldb_enrol_apply_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2021120501) {
+
+        // Define table
+        $table = new xmldb_table('enrol_apply_groups');
+
+        // Adding fields
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null, null);
+        $table->add_field('enrolid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+        $table->add_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+
+        // Adding keys
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('enrol', XMLDB_KEY_FOREIGN, ['enrolid'], 'enrol', ['id']);
+        $table->add_key('group', XMLDB_KEY_FOREIGN, ['groupid'], 'groups', ['id']);
+
+        // Create table if not exist
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Apply savepoint reached.
+        upgrade_plugin_savepoint(true, 2021120501, 'enrol', 'apply');
+    }
+
+    if ($oldversion < 2021120607) {
+        $day = 86400;
+        $DB->set_field('enrol',
+            'expirythreshold',
+            $day,
+            array('enrol' => 'apply')
+        );
+    }
+
     return true;
 
 }
