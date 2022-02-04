@@ -85,7 +85,7 @@ function xmldb_enrol_apply_upgrade($oldversion) {
         foreach ($instances as $instance) {
             $sendmailtoteacher = $instance->customint3;
             $notify = $sendmailtoteacher ? '$@ALL@$' : '';
-            $instance->customtext2 = $notify;
+            $instance->customtext3 = $notify;
             $instance->customint3 = null;
             $instance->customint4 = null;
             $DB->update_record('enrol', $instance, true);

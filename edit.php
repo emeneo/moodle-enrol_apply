@@ -65,8 +65,8 @@ if ($instanceid) {
 // Convert to array for use with multi-select element.
 //$notify = array('$@NONE@$');
 /*
-if ($instance->customtext2 != '') {
-    $notify = explode(',', $instance->customtext2);
+if ($instance->customtext3 != '') {
+    $notify = explode(',', $instance->customtext3);
 }
 */
 //$instance->notify = $notify;
@@ -89,7 +89,7 @@ if ($mform->is_cancelled()) {
         unset($notify[array_search('$@NONE@$', $notify)]);
     }
     // Convert back to string for storing in enrol table.
-    //$data->customtext2 = implode(',', $notify);
+    //$data->customtext3 = implode(',', $notify);
     $notify = implode(",", $notify);
 
     if ($instance->id) {

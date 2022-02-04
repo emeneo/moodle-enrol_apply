@@ -292,7 +292,8 @@ class enrol_apply_plugin extends enrol_plugin {
         $fields['roleid']          = $this->get_config('roleid', 0);
         $fields['customint1']      = $this->get_config('show_standard_user_profile');
         $fields['customint2']      = $this->get_config('show_extra_user_profile');
-        $fields['customtext2']     = $this->get_config('notifycoursebased') ? '$@ALL@$' : '';
+        $fields['customtext2']     = '';
+        $fields['customtext3']     = $this->get_config('notifycoursebased') ? '$@ALL@$' : '';
         $fields['enrolperiod']     = $this->get_config('enrolperiod', 0);
         $fields['customint3']      = $this->get_config('maxenrolled');
         $fields['customint4']      = $this->get_config('sendcoursewelcomemessage');
