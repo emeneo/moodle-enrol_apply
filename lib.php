@@ -303,6 +303,24 @@ class enrol_apply_plugin extends enrol_plugin {
         return $fields;
     }
 
+    function check_privileges($courseid,$userid){
+        global $DB;
+        //check for sistem privilege
+        $context = context_system::instance();
+        if(has_capability('enrol/apply:manageapplications', $context)){
+            return true;
+        }
+        $context = context_course::instance($courseid, MUST_EXIST);
+        if(has_capability('enrol/apply:manageapplications', $context)){
+            return true;
+        }
+        $contextuser = $DB->get_record("context",array("instanceid"=>$userid,"contextlevel"=>CONTEXT_USER));
+        $context = context::instance_by_id($contextuser->id);
+        if(has_capability('enrol/apply:manageapplications', $context)){
+            return true;
+        }
+    }
+
     public function confirm_enrolment($enrols) {
         global $DB;
         foreach ($enrols as $enrol) {
@@ -319,8 +337,7 @@ class enrol_apply_plugin extends enrol_plugin {
             $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
 
             // Check privileges.
-            $context = context_course::instance($instance->courseid, MUST_EXIST);
-            if (!has_capability('enrol/apply:manageapplications', $context)) {
+            if(!$this->check_privileges($instance->courseid,$userenrolment->userid)){
                 continue;
             }
 
@@ -355,10 +372,10 @@ class enrol_apply_plugin extends enrol_plugin {
                 $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
 
                 // Check privileges.
-                $context = context_course::instance($instance->courseid, MUST_EXIST);
-                if (!has_capability('enrol/apply:manageapplications', $context)) {
+                if(!$this->check_privileges($instance->courseid,$userenrolment->userid)){
                     continue;
                 }
+    
 
                 $this->update_user_enrol($instance, $userenrolment->userid, ENROL_APPLY_USER_WAIT);
 
@@ -388,10 +405,10 @@ class enrol_apply_plugin extends enrol_plugin {
             $instance = $DB->get_record('enrol', array('id' => $userenrolment->enrolid, 'enrol' => 'apply'), '*', MUST_EXIST);
 
             // Check privileges.
-            $context = context_course::instance($instance->courseid, MUST_EXIST);
-            if (!has_capability('enrol/apply:manageapplications', $context)) {
+            if(!$this->check_privileges($instance->courseid,$userenrolment->userid)){
                 continue;
             }
+
 
             $this->unenrol_user($instance, $userenrolment->userid);
             $DB->delete_records('enrol_apply_applicationinfo', array('userenrolmentid' => $enrol));
@@ -428,7 +445,7 @@ class enrol_apply_plugin extends enrol_plugin {
     }
 
     private function send_application_notification($instance, $userid, $data) {
-        global $CFG, $PAGE;
+        global $CFG, $PAGE,$DB;
         require_once($CFG->dirroot.'/enrol/apply/notification.php');
         // Required for course_get_url() function.
         require_once($CFG->dirroot.'/course/lib.php');
@@ -476,12 +493,43 @@ class enrol_apply_plugin extends enrol_plugin {
                     $content,
                     $manageurl,
                     $instance->courseid);
+            }
+        }
+
+        // Send notification to users with manageapplications in user context
+        $cohortuserstonotify = $this->get_users_from_usercapabilits($userid);
+
+        if (!empty($cohortuserstonotify)) {
+            $userenrol = $DB->get_record("user_enrolments",array("userid"=>$userid,"enrolid"=>$instance->id));
+            var_dump( $userenrol);
+            $manageurl = new moodle_url("/enrol/apply/manage.php", array('userenrol' => $userenrol->id));
+            if (!isset($data->applydescription)) {
+                $data->applydescription = '';
+            }
+            $content = $renderer->application_notification_mail_body(
+                $course,
+                $applicant,
+                $manageurl,
+                $data->applydescription,
+                $standarduserfields,
+                $extrauserfields);
+            foreach ($cohortuserstonotify as $user) {
+                $message = new enrol_apply_notification(
+                    $user,
+                    $applicant,
+                    'application',
+                    get_string('mailtoteacher_suject', 'enrol_apply'),
+                    $content,
+                    $manageurl,
+                    $instance->courseid);
                 message_send($message);
             }
+ 
         }
 
         // Send notification to users with manageapplications in system context?
         $globaluserstonotify = $this->get_notifyglobal_users();
+        
         $globaluserstonotify = array_udiff($globaluserstonotify, $courseuserstonotify, function($usera, $userb) {
             return $usera->id == $userb->id ? 0 : -1;
         });
@@ -545,6 +593,13 @@ class enrol_apply_plugin extends enrol_plugin {
         }
 
         return $result;
+    }
+
+    //get user with capability to this user
+    function get_users_from_usercapabilits($userid) {
+        global $DB;
+        $context = $DB->get_record("context",array("instanceid"=>$userid,"contextlevel"=>CONTEXT_USER));
+        return get_users_by_capability(context::instance_by_id($context->id), 'enrol/apply:manageapplications');  
     }
 
     /**
