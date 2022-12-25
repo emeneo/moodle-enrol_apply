@@ -48,33 +48,32 @@ if($id) {
                         JOIN {enrol} e ON e.id = ue.enrolid
                         where enrol='apply' and ue.id ={$userenrol}");
     $user = $DB->get_record("user",array("id"=>$instance->userid));
-    $context = $DB->get_record("context",array("instanceid"=>$instance->userid,"contextlevel"=>CONTEXT_USER));
-    $context = context::instance_by_id($context->id);
+    $contexti = $DB->get_record("context",array("instanceid"=>$instance->userid,"contextlevel"=>CONTEXT_USER));
+    $context = context::instance_by_id($contexti->id);
     require_capability('enrol/apply:manageapplications', context::instance_by_id($context->id));
     $manageurlparams['userenrol'] = $userenrol;
     $pageheading = $user->fisrtname." ".$user->lastname;
 }else{
     //check if he is a choort
-    $sql = "SELECT distinct ue.userid FROM {cohort_members} mc
-                    JOIN {user_enrolments} AS ue on ue.userid = mc.userid
-                    JOIN {enrol} e ON e.id = ue.enrolid
-                WHERE mc.cohortid in (SELECT cohortid FROM {cohort_members} cm WHERE cm.userid ={$USER->id}) 
-                and e.enrol='apply'";
-    $cohorts = $DB->get_records_sql($sql);
+    $sql = "SELECT distinct mc.userid FROM {cohort_members} mc
+                WHERE mc.userid <>{$USER->id} and mc.cohortid 
+                in (SELECT cohortid FROM {cohort_members} cm WHERE cm.userid ={$USER->id})";
+    $cohortsusers = $DB->get_records_sql($sql);
     
-    $coortadmn = array();
-    /*
-    if($cohorts){
-        foreach($cohorts as $cohort){
-            if(has_capability('enrol/apply:manageapplications', context::instance_by_id($cohort->contextid))){
-                $coortadmn[] = $cohorts;
+    $useradm = array();
+    
+    if($cohortsusers){
+        foreach($cohortsusers as $userchort){
+            $contexti = $DB->get_record("context",array("instanceid"=>$userchort->userid,"contextlevel"=>CONTEXT_USER));
+            if(has_capability('enrol/apply:manageapplications', context::instance_by_id($contexti->id))){
+                $useradm[] = $userchort->userid;
             }
         }
     }
-    */
+    
     
     $context = context_system::instance();
-    if(count($coortadmn)==0){
+    if(count($useradm)==0){
         require_capability('enrol/apply:manageapplications', $context);
     }
     $pageheading = get_string('confirmusers', 'enrol_apply');
@@ -107,7 +106,7 @@ if ($formaction != null && $userenrolments != null) {
     redirect($manageurl);
 }
 
-$table = new enrol_apply_manage_table($id);
+$table = new enrol_apply_manage_table($id,$userenrol,$useradm);
 $table->define_baseurl($manageurl);
 
 $renderer = $PAGE->get_renderer('enrol_apply');

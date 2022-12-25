@@ -30,7 +30,7 @@ class enrol_apply_manage_table extends table_sql {
 
     public $is_collapsible = false;
 
-    public function __construct($enrolid = null) {
+    public function __construct($enrolid = null,$iduserenrol = null,$usersadm = null) {
         parent::__construct('enrol_apply_manage_table');
 
         global $DB;
@@ -43,6 +43,15 @@ class enrol_apply_manage_table extends table_sql {
         } else {
             $sqlwhere .= " AND e.enrol = :enrol";
             $sqlparams['enrol'] = 'apply';
+        }
+
+        if($iduserenrol){
+            $sqlwhere .= " AND ue.id = :userenrol";
+            $sqlparams['userenrol'] = $iduserenrol;
+        }
+
+        if($usersadm){
+            $sqlwhere .= " AND ue.userid in (".implode(",",$usersadm).")";
         }
 
         $this->set_sql(

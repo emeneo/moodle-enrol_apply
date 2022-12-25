@@ -501,7 +501,6 @@ class enrol_apply_plugin extends enrol_plugin {
 
         if (!empty($cohortuserstonotify)) {
             $userenrol = $DB->get_record("user_enrolments",array("userid"=>$userid,"enrolid"=>$instance->id));
-            var_dump( $userenrol);
             $manageurl = new moodle_url("/enrol/apply/manage.php", array('userenrol' => $userenrol->id));
             if (!isset($data->applydescription)) {
                 $data->applydescription = '';
