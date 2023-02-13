@@ -47,12 +47,14 @@ if($id) {
     $instance = $DB->get_record_sql("SELECT ue.userid,ue.status from {user_enrolments} ue
                         JOIN {enrol} e ON e.id = ue.enrolid
                         where enrol='apply' and ue.id ={$userenrol}");
-    $user = $DB->get_record("user",array("id"=>$instance->userid));
-    $contexti = $DB->get_record("context",array("instanceid"=>$instance->userid,"contextlevel"=>CONTEXT_USER));
-    $context = context::instance_by_id($contexti->id);
-    require_capability('enrol/apply:manageapplications', context::instance_by_id($context->id));
-    $manageurlparams['userenrol'] = $userenrol;
-    $pageheading = $user->fisrtname." ".$user->lastname;
+    if($instance){
+        $user = $DB->get_record("user",array("id"=>$instance->userid));
+        $contexti = $DB->get_record("context",array("instanceid"=>$instance->userid,"contextlevel"=>CONTEXT_USER));
+        $context = context::instance_by_id($contexti->id);
+        require_capability('enrol/apply:manageapplications', context::instance_by_id($context->id));
+        $manageurlparams['userenrol'] = $userenrol;
+        $pageheading = $user->fisrtname." ".$user->lastname;
+    }
 }else{
     //check if he is a choort
     $sql = "SELECT distinct mc.userid FROM {cohort_members} mc
