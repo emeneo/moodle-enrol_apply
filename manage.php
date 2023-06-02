@@ -43,7 +43,7 @@ if($id) {
     require_capability('enrol/apply:manageapplications', $context);
     $manageurlparams['id'] = $instance->id;
     $pageheading = $course->fullname;
-}elseif(is_int($userenrol)){
+}elseif(is_int($userenrol)&&$userenrol>0){
     $instance = $DB->get_record_sql("SELECT ue.userid,ue.status from {user_enrolments} ue
                         JOIN {enrol} e ON e.id = ue.enrolid
                         where enrol='apply' and ue.id ={$userenrol}");
