@@ -25,6 +25,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
+
+    //custon fiel in enrol
+    global $DB;
+    $fields =  $DB->get_records("user_info_field",array('datatype'=>'text'));
+
+    //Campos de curso
+    $fieldarray = array(0=> get_string('none'));
+    foreach ($fields as $field) {
+        $fieldarray[$field->id] = $field->name;
+    }
+    $settings->add(new admin_setting_configselect('enrol_apply/profileoption', get_string('profileoption', 'enrol_apply'),'',0,$fieldarray));
+    //end mod
     $settings->add(new admin_setting_heading('enrol_apply_enrolname', '', get_string('pluginname_desc', 'enrol_apply')));
 
     // Confirm mail settings...
@@ -165,6 +177,8 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('enrol_apply/expirynotifyhour', get_string('expirynotifyhour', 'core_enrol'), '', 6, $options));
 
     // End modification
+
+
 }
 
 if ($hassiteconfig) { // Needs this condition or there is error on login page.
