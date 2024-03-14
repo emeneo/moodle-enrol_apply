@@ -54,6 +54,8 @@ $string['notification'] = '<b>Solicitação de matrícula enviada com sucesso</b
 $string['sendmailtoteacher'] = 'Enviar e-mail de notificação para professores';
 $string['mailtoteacher_suject'] = 'Nova solicitação de inscrição!';
 $string['editdescription'] = 'Descrição';
-$string['applymanage'] = 'Manage enrolment applications'; // Needs to be translated.
+$string['applymanage'] = 'Gerencial pedidos de inscrição'; // Needs to be translated.
 
-$string['status_desc'] = 'Allow course access of internally enrolled users.'; // Needs to be translated.
+$string['status_desc'] = 'Permitir acesso ao curso por usuário inscritos internamente.'; // Needs to be translated.
+
+$string["profileoption"] = "Campo de Perfil para Exibir";

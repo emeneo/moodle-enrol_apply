@@ -30,7 +30,7 @@ class enrol_apply_manage_table extends table_sql {
 
     public $is_collapsible = false;
 
-    public function __construct($enrolid = null) {
+    public function __construct($enrolid = null,$iduserenrol = null,$usersadm = null) {
         parent::__construct('enrol_apply_manage_table');
 
         global $DB;
@@ -45,17 +45,40 @@ class enrol_apply_manage_table extends table_sql {
             $sqlparams['enrol'] = 'apply';
         }
 
-        $this->set_sql(
-            'ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
-            ai.comment AS applycomment, u.*, c.fullname as course',
-            "{user_enrolments} AS ue
+        if($iduserenrol){
+            $sqlwhere .= " AND ue.id = :userenrol";
+            $sqlparams['userenrol'] = $iduserenrol;
+        }
+
+        if($usersadm){
+            $sqlwhere .= " AND ue.userid in (".implode(",",$usersadm).")";
+        }
+        $extra = get_config('enrol_apply', 'profileoption');
+        if($extra) {
+            $this->set_sql(
+                "ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
+            ai.comment AS applycomment, u.*, c.fullname as course, c.id as courseid,uid.data as field",
+                "{user_enrolments} AS ue
+            LEFT JOIN {enrol_apply_applicationinfo} ai ON ai.userenrolmentid = ue.id
+            JOIN {user} u ON u.id = ue.userid
+            JOIN {enrol} e ON e.id = ue.enrolid
+            JOIN {course} c ON c.id = e.courseid
+            LEFT OUTER JOIN {user_info_data} uid on uid.userid=u.id and uid.fieldid={$extra}",
+                $sqlwhere,
+                $sqlparams);
+        }
+        else{
+            $this->set_sql(
+                "ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
+            ai.comment AS applycomment, u.*, c.fullname as course, c.id as courseid",
+                "{user_enrolments} AS ue
             LEFT JOIN {enrol_apply_applicationinfo} ai ON ai.userenrolmentid = ue.id
             JOIN {user} u ON u.id = ue.userid
             JOIN {enrol} e ON e.id = ue.enrolid
             JOIN {course} c ON c.id = e.courseid",
-            $sqlwhere,
-            $sqlparams);
-
+                $sqlwhere,
+                $sqlparams);
+        }
         $this->no_sorting('checkboxcolumn');
     }
 
@@ -82,6 +105,13 @@ class enrol_apply_manage_table extends table_sql {
         $col .= fullname($row);
         return $col;
     }
+
+    public function col_course($row) {
+        global $CFG;
+        $col = "<a target='_blank' href='{$CFG->wwwroot}/course/view.php?id={$row->courseid}'>{$row->course}</a>";
+        return $col;
+    }
+
 
     public function col_applydate($row) {
         return date("Y-m-d", $row->applydate);

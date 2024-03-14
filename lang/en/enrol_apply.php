@@ -155,3 +155,5 @@ $string['sendexpirynotificationstask'] = "Apply enrolment send expiry notificati
 
 $string['messageprovider:expiry_notification'] = 'Apply enrolment expiry notifications';
 
+$string["profileoption"] = "Profile Field to Show in Table";
+

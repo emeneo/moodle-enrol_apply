@@ -28,18 +28,14 @@ require_once($CFG->dirroot.'/enrol/apply/manage_table.php');
 require_once($CFG->dirroot.'/enrol/apply/renderer.php');
 
 $id = optional_param('id', null, PARAM_INT);
+$userenrol = optional_param('userenrol', null, PARAM_INT);
 $formaction = optional_param('formaction', null, PARAM_TEXT);
 $userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
 
 require_login();
 
 $manageurlparams = array();
-if ($id == null) {
-    $context = context_system::instance();
-    require_capability('enrol/apply:manageapplications', $context);
-    $pageheading = get_string('confirmusers', 'enrol_apply');
-    $instance = null;
-} else {
+if($id) {
     $instance = $DB->get_record('enrol', array('id' => $id, 'enrol' => 'apply'), '*', MUST_EXIST);
     require_course_login($instance->courseid);
     $course = get_course($instance->courseid);
@@ -47,6 +43,43 @@ if ($id == null) {
     require_capability('enrol/apply:manageapplications', $context);
     $manageurlparams['id'] = $instance->id;
     $pageheading = $course->fullname;
+}elseif(is_int($userenrol)&&$userenrol>0){
+    $instance = $DB->get_record_sql("SELECT ue.userid,ue.status from {user_enrolments} ue
+                        JOIN {enrol} e ON e.id = ue.enrolid
+                        where enrol='apply' and ue.id ={$userenrol}");
+    if($instance){
+        $user = $DB->get_record("user",array("id"=>$instance->userid));
+        $contexti = $DB->get_record("context",array("instanceid"=>$instance->userid,"contextlevel"=>CONTEXT_USER));
+        $context = context::instance_by_id($contexti->id);
+        require_capability('enrol/apply:manageapplications', context::instance_by_id($context->id));
+        $manageurlparams['userenrol'] = $userenrol;
+        $pageheading = $user->fisrtname." ".$user->lastname;
+    }
+}else{
+    //check if he is a choort
+    $sql = "SELECT distinct mc.userid FROM {cohort_members} mc
+                WHERE mc.userid <>{$USER->id} and mc.cohortid 
+                in (SELECT cohortid FROM {cohort_members} cm WHERE cm.userid ={$USER->id})";
+    $cohortsusers = $DB->get_records_sql($sql);
+    
+    $useradm = array();
+    
+    if($cohortsusers){
+        foreach($cohortsusers as $userchort){
+            $contexti = $DB->get_record("context",array("instanceid"=>$userchort->userid,"contextlevel"=>CONTEXT_USER));
+            if(has_capability('enrol/apply:manageapplications', context::instance_by_id($contexti->id))){
+                $useradm[] = $userchort->userid;
+            }
+        }
+    }
+    
+    
+    $context = context_system::instance();
+    if(count($useradm)==0){
+        require_capability('enrol/apply:manageapplications', $context);
+    }
+    $pageheading = get_string('confirmusers', 'enrol_apply');
+    $instance = null;
 }
 
 $manageurl = new moodle_url('/enrol/apply/manage.php', $manageurlparams);
@@ -75,7 +108,7 @@ if ($formaction != null && $userenrolments != null) {
     redirect($manageurl);
 }
 
-$table = new enrol_apply_manage_table($id);
+$table = new enrol_apply_manage_table($id,$userenrol,$useradm);
 $table->define_baseurl($manageurl);
 
 $renderer = $PAGE->get_renderer('enrol_apply');

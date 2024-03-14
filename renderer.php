@@ -78,21 +78,47 @@ class enrol_apply_renderer extends plugin_renderer_base {
     }
 
     public function manage_table($table, $instance) {
-        $columns = array(
-            'checkboxcolumn',
-            'course',
-            'fullname', // Magic happens here: The column heading will automatically be set.
-            'email',
-            'applydate',
-            'applycomment');
-        $headers = array(
-            html_writer::checkbox('toggleall', 'toggleall', false, '', array('id' => 'toggleall')),
-            get_string('course'),
-            'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
-            get_string('email'),
-            get_string('applydate', 'enrol_apply'),
-            get_string('applycomment', 'enrol_apply'),
-        );
+        global $DB;
+        $extra = get_config('enrol_apply', 'profileoption');
+        if($extra) {
+            $field = $DB->get_record("user_info_field", array("id" => $extra));
+            $columns = array(
+                'checkboxcolumn',
+                'course',
+                'fullname', // Magic happens here: The column heading will automatically be set.
+                'email',
+                'applydate',
+                'field',
+                'applycomment');
+
+            $headers = array(
+                html_writer::checkbox('toggleall', 'toggleall', false, '', array('id' => 'toggleall')),
+                get_string('course'),
+                'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
+                get_string('email'),
+                get_string('applydate', 'enrol_apply'),
+                $field->name,
+                get_string('applycomment', 'enrol_apply'),
+            );
+        }
+        else{
+            $columns = array(
+                'checkboxcolumn',
+                'course',
+                'fullname', // Magic happens here: The column heading will automatically be set.
+                'email',
+                'applydate',
+                'applycomment');
+
+            $headers = array(
+                html_writer::checkbox('toggleall', 'toggleall', false, '', array('id' => 'toggleall')),
+                get_string('course'),
+                'fullname', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
+                get_string('email'),
+                get_string('applydate', 'enrol_apply'),
+                get_string('applycomment', 'enrol_apply'),
+            );
+        }
         $table->define_columns($columns);
         $table->define_headers($headers);
 
