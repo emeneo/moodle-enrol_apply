@@ -6,6 +6,6 @@ form#enrol_apply_manage_form tr.enrol_apply_waitinglist_highlight {
     border-color: grey;
 }
 
-.formaction {
+.path-enrol-apply .formaction {
     text-align: center;
 }
