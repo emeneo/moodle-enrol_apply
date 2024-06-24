@@ -128,6 +128,7 @@ class enrol_apply_edit_form extends moodleform {
         // End modification
 
         $mform->addElement('textarea', 'customtext1', get_string('editdescription', 'enrol_apply'));
+        $mform->setType('customtext1', PARAM_TEXT);
 
         // Add checkbox for optionnal commentary zone
         // Start modification
@@ -147,20 +148,23 @@ class enrol_apply_edit_form extends moodleform {
         $title_customtext2 = get_string('custom_label', 'enrol_apply');
         $mform->addElement('text', 'customtext2', $title_customtext2);
         $mform->setDefault('customtext2', "Comment");
+        $mform->setType('customtext2', PARAM_TEXT);
 
         $options = array(1 => get_string('yes'),
                          0 => get_string('no'));
 
         $mform->addElement('select', 'customint1', get_string('show_standard_user_profile', 'enrol_apply'), $options);
         $mform->setDefault('customint1', $plugin->get_config('customint1'));
+        $mform->setType('customint1', PARAM_INT);
 
         $mform->addElement('select', 'customint2', get_string('show_extra_user_profile', 'enrol_apply'), $options);
         $mform->setDefault('customint2', $plugin->get_config('customint2'));
+        $mform->setType('customint2', PARAM_INT);
 
         $choices = array(
             '$@NONE@$' => get_string('nobody'),
             '$@ALL@$' => get_string('everyonewhocan', 'admin', get_capability_string('enrol/apply:manageapplications')));
-        $users = get_enrolled_users($context, 'enrol/apply:manageapplications');
+        $users = get_users_by_capability($context, 'enrol/apply:manageapplications');
         foreach ($users as $userid => $user) {
             $choices[$userid] = fullname($user);
         }
